@@ -50,6 +50,8 @@ meaning the largest number of same-color points that can be chosen on an `n × n
 
 For odd `n`, the two colors have different sizes. In that case it is useful to record both color classes separately.
 
+## Current verified result: the `17×17` monochromatic checkerboard case is closed with exact value `26`.
+
 ## A small example
 
 On a normal chessboard-style grid, the problem is not just about avoiding three points in a row.
