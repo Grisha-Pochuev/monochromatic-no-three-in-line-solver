@@ -1,0 +1,147 @@
+pts 162 lines 1109
+best 2 rpos 1 time 8.2149e-05
+best 4 rpos 2 time 0.000179124
+best 6 rpos 3 time 0.000234904
+best 8 rpos 4 time 0.000287596
+best 10 rpos 5 time 0.000339715
+best 11 rpos 6 time 0.000392152
+best 13 rpos 9 time 0.000452373
+best 14 rpos 10 time 0.000505275
+best 15 rpos 11 time 0.00082241
+best 16 rpos 12 time 0.00106089
+best 17 rpos 12 time 0.00297937
+best 18 rpos 13 time 0.00595859
+best 19 rpos 13 time 0.00674181
+best 20 rpos 14 time 0.00686209
+best 21 rpos 14 time 0.80456
+best 22 rpos 15 time 0.887075
+nodes 1048576 rpos 12 chosen 17 best 22 time 5.30649
+nodes 2097152 rpos 11 chosen 14 best 22 time 9.78768
+nodes 3145728 rpos 10 chosen 12 best 22 time 15.205
+best 23 rpos 15 time 17.3868
+best 24 rpos 16 time 18.2038
+nodes 4194304 rpos 13 chosen 18 best 24 time 20.9967
+nodes 5242880 rpos 13 chosen 19 best 24 time 23.8058
+nodes 6291456 rpos 13 chosen 18 best 24 time 26.0852
+nodes 7340032 rpos 12 chosen 16 best 24 time 28.328
+nodes 8388608 rpos 13 chosen 18 best 24 time 30.5881
+nodes 9437184 rpos 12 chosen 16 best 24 time 33.0211
+nodes 10485760 rpos 11 chosen 14 best 24 time 35.4345
+nodes 11534336 rpos 12 chosen 17 best 24 time 37.8655
+nodes 12582912 rpos 13 chosen 18 best 24 time 40.1736
+nodes 13631488 rpos 12 chosen 17 best 24 time 42.3839
+nodes 14680064 rpos 10 chosen 12 best 24 time 44.6271
+nodes 15728640 rpos 13 chosen 18 best 24 time 46.9036
+nodes 16777216 rpos 13 chosen 18 best 24 time 49.1655
+nodes 17825792 rpos 10 chosen 13 best 24 time 51.4678
+nodes 18874368 rpos 12 chosen 16 best 24 time 53.7349
+nodes 19922944 rpos 13 chosen 18 best 24 time 55.9911
+nodes 20971520 rpos 13 chosen 18 best 24 time 58.3293
+nodes 22020096 rpos 12 chosen 17 best 24 time 60.5723
+nodes 23068672 rpos 10 chosen 12 best 24 time 62.8386
+nodes 24117248 rpos 12 chosen 16 best 24 time 65.1194
+nodes 25165824 rpos 12 chosen 17 best 24 time 67.4174
+nodes 26214400 rpos 12 chosen 16 best 24 time 69.7895
+best 25 rpos 16 time 71.8246
+nodes 27262976 rpos 11 chosen 14 best 25 time 72.1025
+nodes 28311552 rpos 12 chosen 16 best 25 time 74.3733
+nodes 29360128 rpos 11 chosen 14 best 25 time 76.919
+nodes 30408704 rpos 12 chosen 16 best 25 time 81.5796
+nodes 31457280 rpos 12 chosen 16 best 25 time 87.2938
+nodes 32505856 rpos 11 chosen 15 best 25 time 92.7983
+nodes 33554432 rpos 10 chosen 13 best 25 time 98.9985
+nodes 34603008 rpos 10 chosen 12 best 25 time 105.073
+nodes 35651584 rpos 12 chosen 16 best 25 time 110.681
+nodes 36700160 rpos 12 chosen 17 best 25 time 116.174
+nodes 37748736 rpos 10 chosen 12 best 25 time 121.501
+nodes 38797312 rpos 10 chosen 13 best 25 time 127.19
+nodes 39845888 rpos 10 chosen 13 best 25 time 133.086
+nodes 40894464 rpos 12 chosen 17 best 25 time 139.013
+nodes 41943040 rpos 11 chosen 16 best 25 time 144.783
+nodes 42991616 rpos 11 chosen 14 best 25 time 150.395
+nodes 44040192 rpos 12 chosen 16 best 25 time 155.891
+nodes 45088768 rpos 12 chosen 16 best 25 time 162.503
+nodes 46137344 rpos 13 chosen 18 best 25 time 168.799
+nodes 47185920 rpos 12 chosen 16 best 25 time 175.077
+nodes 48234496 rpos 11 chosen 14 best 25 time 180.574
+nodes 49283072 rpos 12 chosen 18 best 25 time 186.106
+nodes 50331648 rpos 11 chosen 16 best 25 time 191.592
+nodes 51380224 rpos 10 chosen 12 best 25 time 196.987
+nodes 52428800 rpos 12 chosen 17 best 25 time 202.382
+nodes 53477376 rpos 8 chosen 12 best 25 time 207.608
+nodes 54525952 rpos 12 chosen 16 best 25 time 212.876
+nodes 55574528 rpos 11 chosen 14 best 25 time 217.998
+nodes 56623104 rpos 12 chosen 18 best 25 time 223.576
+nodes 57671680 rpos 12 chosen 16 best 25 time 229.009
+nodes 58720256 rpos 12 chosen 17 best 25 time 234.487
+nodes 59768832 rpos 12 chosen 17 best 25 time 239.913
+nodes 60817408 rpos 10 chosen 14 best 25 time 245.907
+nodes 61865984 rpos 12 chosen 16 best 25 time 251.109
+nodes 62914560 rpos 11 chosen 14 best 25 time 256.377
+nodes 63963136 rpos 12 chosen 16 best 25 time 261.886
+nodes 65011712 rpos 13 chosen 18 best 25 time 267.297
+nodes 66060288 rpos 11 chosen 14 best 25 time 272.896
+nodes 67108864 rpos 13 chosen 18 best 25 time 278.086
+nodes 68157440 rpos 12 chosen 16 best 25 time 283.409
+nodes 69206016 rpos 11 chosen 14 best 25 time 288.975
+nodes 70254592 rpos 10 chosen 14 best 25 time 294.285
+nodes 71303168 rpos 12 chosen 16 best 25 time 299.68
+nodes 72351744 rpos 11 chosen 14 best 25 time 305.213
+nodes 73400320 rpos 12 chosen 17 best 25 time 310.608
+nodes 74448896 rpos 12 chosen 16 best 25 time 316.196
+nodes 75497472 rpos 12 chosen 16 best 25 time 321.607
+nodes 76546048 rpos 12 chosen 16 best 25 time 327.013
+nodes 77594624 rpos 12 chosen 16 best 25 time 332.601
+nodes 78643200 rpos 12 chosen 16 best 25 time 337.813
+nodes 79691776 rpos 13 chosen 18 best 25 time 343.002
+nodes 80740352 rpos 11 chosen 14 best 25 time 348.485
+nodes 81788928 rpos 13 chosen 18 best 25 time 354.013
+nodes 82837504 rpos 11 chosen 15 best 25 time 359.301
+nodes 83886080 rpos 12 chosen 16 best 25 time 364.993
+nodes 84934656 rpos 11 chosen 14 best 25 time 370.709
+nodes 85983232 rpos 11 chosen 14 best 25 time 376.286
+nodes 87031808 rpos 12 chosen 17 best 25 time 379.171
+nodes 88080384 rpos 13 chosen 19 best 25 time 381.387
+nodes 89128960 rpos 12 chosen 16 best 25 time 383.589
+nodes 90177536 rpos 12 chosen 17 best 25 time 385.996
+nodes 91226112 rpos 11 chosen 14 best 25 time 388.291
+nodes 92274688 rpos 10 chosen 15 best 25 time 390.503
+nodes 93323264 rpos 13 chosen 19 best 25 time 392.696
+nodes 94371840 rpos 14 chosen 20 best 25 time 395.17
+nodes 95420416 rpos 9 chosen 11 best 25 time 397.371
+nodes 96468992 rpos 12 chosen 17 best 25 time 399.553
+nodes 97517568 rpos 10 chosen 14 best 25 time 401.794
+nodes 98566144 rpos 13 chosen 18 best 25 time 404.027
+nodes 99614720 rpos 11 chosen 16 best 25 time 406.516
+nodes 100663296 rpos 14 chosen 21 best 25 time 408.773
+nodes 101711872 rpos 14 chosen 20 best 25 time 411.045
+nodes 102760448 rpos 12 chosen 17 best 25 time 413.536
+nodes 103809024 rpos 12 chosen 16 best 25 time 415.805
+nodes 104857600 rpos 13 chosen 18 best 25 time 418.039
+nodes 105906176 rpos 10 chosen 16 best 25 time 420.245
+nodes 106954752 rpos 11 chosen 16 best 25 time 422.56
+nodes 108003328 rpos 10 chosen 13 best 25 time 424.802
+nodes 109051904 rpos 11 chosen 14 best 25 time 427.064
+nodes 110100480 rpos 13 chosen 18 best 25 time 429.321
+nodes 111149056 rpos 13 chosen 18 best 25 time 431.592
+nodes 112197632 rpos 12 chosen 17 best 25 time 433.822
+nodes 113246208 rpos 11 chosen 14 best 25 time 436.222
+nodes 114294784 rpos 12 chosen 16 best 25 time 438.601
+nodes 115343360 rpos 11 chosen 14 best 25 time 440.956
+nodes 116391936 rpos 12 chosen 16 best 25 time 443.22
+nodes 117440512 rpos 13 chosen 18 best 25 time 445.869
+nodes 118489088 rpos 11 chosen 14 best 25 time 448.201
+nodes 119537664 rpos 10 chosen 13 best 25 time 450.564
+nodes 120586240 rpos 10 chosen 14 best 25 time 452.822
+nodes 121634816 rpos 11 chosen 16 best 25 time 455.136
+nodes 122683392 rpos 12 chosen 16 best 25 time 457.428
+nodes 123731968 rpos 12 chosen 16 best 25 time 459.641
+nodes 124780544 rpos 12 chosen 17 best 25 time 461.898
+nodes 125829120 rpos 12 chosen 16 best 25 time 464.174
+nodes 126877696 rpos 13 chosen 18 best 25 time 466.427
+nodes 127926272 rpos 12 chosen 16 best 25 time 468.65
+nodes 128974848 rpos 12 chosen 17 best 25 time 470.888
+nodes 130023424 rpos 12 chosen 16 best 25 time 473.097
+nodes 131072000 rpos 12 chosen 17 best 25 time 475.454
+nodes 132120576 rpos 12 chosen 16 best 25 time 477.787
+nodes 133169152 rpos 12 chosen 16 best 25 time 480.01

@@ -1,0 +1,23 @@
+pts 162 lines 1109
+best 40 time 0.00014162063598632812 restart 1 step 0
+best 34 time 0.0012786388397216797 restart 1 step 1
+best 30 time 0.002398967742919922 restart 1 step 2
+best 26 time 0.003469228744506836 restart 1 step 3
+best 22 time 0.004583835601806641 restart 1 step 4
+best 19 time 0.0056149959564208984 restart 1 step 5
+best 16 time 0.006656646728515625 restart 1 step 6
+best 14 time 0.007724761962890625 restart 1 step 7
+best 13 time 0.008790254592895508 restart 1 step 8
+best 12 time 0.010829687118530273 restart 1 step 10
+best 11 time 0.012825489044189453 restart 1 step 12
+best 10 time 0.017791032791137695 restart 1 step 17
+best 9 time 0.01885390281677246 restart 1 step 18
+best 8 time 0.02085113525390625 restart 1 step 20
+best 7 time 0.08565425872802734 restart 1 step 29
+best 6 time 0.09976601600646973 restart 1 step 44
+best 5 time 0.11566638946533203 restart 1 step 61
+best 4 time 0.3163607120513916 restart 1 step 136
+best 3 time 0.3895604610443115 restart 1 step 150
+best 2 time 0.4028141498565674 restart 1 step 165
+NO best 2 time 174.50411415100098
+[[0, 2], [0, 8], [1, 9], [1, 11], [2, 0], [2, 6], [3, 7], [3, 15], [4, 12], [4, 16], [5, 1], [6, 0], [6, 16], [8, 10], [8, 14], [9, 3], [11, 17], [12, 2], [13, 1], [13, 3], [14, 10], [14, 12], [15, 13], [15, 15], [16, 4], [16, 8], [17, 9], [17, 17]]
