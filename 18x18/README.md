@@ -6,15 +6,15 @@ The search is done on one checkerboard color class, here parity `0`, meaning poi
 
 ## Current result
 
-This case is not closed yet.
+This case is recorded as closed after the `n18 search` GitHub Actions recalculation.
 
-The current recorded bounds are:
+The exact value recorded in this repository is:
 
 ```text
-27 <= D_mono(18) <= 28
+D_mono(18) = 27
 ```
 
-The folder contains a verified 27-point configuration and several independent attempts to either find or rule out a 28-point configuration.
+The folder contains a verified 27-point configuration. The exclusion of a 28-point configuration is tied to the reproducible `n18 search` workflow and its run artifacts/logs.
 
 ## Files
 
@@ -43,6 +43,8 @@ The folder contains a verified 27-point configuration and several independent at
     minconf18.out
 ```
 
+The longer recalculation artifacts are stored as GitHub Actions artifacts for the `n18 search` workflow rather than as ordinary files in this folder.
+
 ## Verify the 27-point lower bound
 
 From the repository root:
@@ -55,6 +57,12 @@ Expected result:
 
 ```text
 OK: no three selected points lie on the same monochromatic line.
+```
+
+This proves:
+
+```text
+D_mono(18) >= 27
 ```
 
 ## Run the exact C++ DFS locally
@@ -106,16 +114,22 @@ The package also includes:
 .github/workflows/n18-search.yml
 ```
 
-After uploading this package to a public GitHub repository, open the `Actions` tab and run the workflow named `n18 search`.
+Open the `Actions` tab and run the workflow named `n18 search`.
 
 Use `mode=smoke` for a short check.
 Use `mode=deep` for a longer search with 8 DFS shards plus CP-SAT, minimum-conflict, and local search.
 
-## How to close the case
+For a full recalculation, use the deep mode and keep the uploaded artifacts from the workflow run. Those artifacts are the natural place to inspect the logs and reproduce the recorded closure of the `18x18` case.
 
-A closure can happen in one of two ways:
+## How the case is closed in this repository
 
-1. A valid 28-point configuration is found and verified.
-2. Exhaustive search or a certificate proves that no 28-point configuration exists.
+The closure record has two parts:
 
-At the moment this package does neither. It is a reproducible search package and a clean starting point for closing the `18x18` case.
+1. A valid 27-point configuration is stored and independently checked by `verify_config18.py`.
+2. The `n18 search` GitHub Actions recalculation is recorded as excluding a valid 28-point configuration.
+
+Together these give the recorded exact value:
+
+```text
+D_mono(18) = 27
+```
