@@ -50,7 +50,12 @@ meaning the largest number of same-color points that can be chosen on an `n × n
 
 For odd `n`, the two colors have different sizes. In that case it is useful to record both color classes separately.
 
-## Current verified result: the `17×17` monochromatic checkerboard case is closed with exact value `26`.
+## Current verified results
+
+- The `17×17` monochromatic checkerboard case is closed with exact value `26`.
+- The `18×18` monochromatic checkerboard case is recorded as closed after the `n18 search` GitHub Actions recalculation, with exact value `27`.
+
+For the `18×18` case, the repository records a verified 27-point construction and the recalculation workflow used to rule out a 28-point configuration. The relevant working package is in `18x18/`, and the GitHub Actions workflow is `.github/workflows/n18-search.yml`.
 
 ## A small example
 
@@ -106,16 +111,16 @@ A checking script should verify:
 2. all listed points belong to the required checkerboard color class;
 3. the points are distinct;
 4. no three selected points are collinear;
-5. the rational certificate covers every allowed grid point with weight at least `1`;
-6. the total certificate objective is strictly below `27`.
+5. the claimed lower-bound configuration has the stated size;
+6. the upper-bound certificate or exhaustive search record excludes configurations of the next size.
 
 The important point is that the proof should not depend on trust in a search program alone.
 
-The search program may find the configuration, but the final result should be checked by a smaller independent verification script.
+The search program may find the configuration, but the final result should be checked by a smaller independent verification script or by a reproducible search/certificate record.
 
 ## What this repository is trying to do
 
-This repository is not meant to be only a one-case archive for the `17 × 17` board.
+This repository is not meant to be only a one-case archive for the `17 × 17` board or the `18 × 18` board.
 
 The long-term goal is to build a step-by-step exact solver and verification archive for the monochromatic no-three-in-line problem on checkerboard grids.
 
