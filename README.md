@@ -52,10 +52,17 @@ For odd `n`, the two colors have different sizes. In that case it is useful to r
 
 ## Current verified results
 
-- The `17×17` monochromatic checkerboard case is closed with exact value `26`.
-- The `18×18` monochromatic checkerboard case is recorded as closed after the `n18 search` GitHub Actions recalculation, with exact value `27`.
+The repository records exact closed cases and active frontier packages separately. A case should be marked as closed only when both sides are independently checkable: a lower-bound construction and an upper-bound certificate or exhaustive search record.
+
+| Board size | Recorded result | Status | Verification record |
+|---:|---:|---|---|
+| `17×17` | `D_mono(17) = 26` | closed | `n17/` |
+| `18×18` | `D_mono(18) = 27` | closed | `18x18/`, `.github/workflows/n18-search.yml` |
+| `19×19` | `28 <= D_mono(19) <= 29` | active frontier | `19x19/`, `python 19x19/verify_19x19.py` |
 
 For the `18×18` case, the repository records a verified 27-point construction and the recalculation workflow used to rule out a 28-point configuration. The relevant working package is in `18x18/`, and the GitHub Actions workflow is `.github/workflows/n18-search.yml`.
+
+For the `19×19` case, the repository currently records a verified 28-point construction and a rational four-direction upper certificate proving that 30 points are impossible. This gives the reproducible bound `28 <= D_mono(19) <= 29`. The case is not marked as closed until either a valid 29-point configuration is verified or a stronger upper certificate proves `D_mono(19) <= 28`.
 
 ## A small example
 
@@ -100,7 +107,6 @@ The monochromatic checkerboard version is especially suitable for step-by-step e
 
 This makes it a good test case for a modern style of open mathematical work: not only finding configurations, but also recording certificates that prove optimality.
 
-
 ## How the verification works
 
 The verification is meant to be simple and reproducible.
@@ -120,7 +126,7 @@ The search program may find the configuration, but the final result should be ch
 
 ## What this repository is trying to do
 
-This repository is not meant to be only a one-case archive for the `17 × 17` board or the `18 × 18` board.
+This repository is not meant to be only a one-case archive for the `17 × 17`, `18 × 18`, or `19 × 19` boards.
 
 The long-term goal is to build a step-by-step exact solver and verification archive for the monochromatic no-three-in-line problem on checkerboard grids.
 
@@ -154,7 +160,6 @@ This repository follows the spirit of **The Open Mathematics Project**:
 The point is not only to solve instances, but also to make the process visible.
 
 If something here helps another person move the problem even a little further, then the repository has already done part of its job.
-
 
 The exact structure can change as the project grows. The main principle is simple: every result should have a readable explanation and a reproducible check.
 
