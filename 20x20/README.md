@@ -78,3 +78,42 @@ verified frontier: 30 <= D_mono(20) <= 31
 ```
 
 This script checks both the stored 30-point configuration and the rational upper certificate directly. It does not rely on trusting the search that found the configuration.
+
+## Optional local search
+
+Compile and run the parameterized local search:
+
+```bash
+g++ -O3 -std=c++17 20x20/local_mono_param.cpp -o local_mono_param
+./local_mono_param 20 31 600 1 0
+```
+
+Arguments:
+
+```text
+./local_mono_param N K seconds seed parity
+```
+
+A successful run prints a valid JSON array with a 31-point configuration and exits with status `0`.
+
+## Optional MILP feasibility attempt
+
+The enhanced 31-point feasibility script uses SciPy/HiGHS:
+
+```bash
+python 20x20/milp31_enhanced.py 600
+```
+
+It should be treated as a search/infeasibility attempt, not as a compact independent proof unless it finishes with a rigorous infeasible status and the log is archived.
+
+## GitHub Actions
+
+The repository includes:
+
+```text
+.github/workflows/n20-search.yml
+```
+
+Open the `Actions` tab and run the workflow named `n20 search`.
+
+Use `mode=smoke` for a short verification and search-script check. Use `mode=deep` for a longer 31-point search with local-search shards and the enhanced MILP attempt.
