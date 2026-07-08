@@ -1,29 +1,31 @@
-# 19x19 working package: 28 <= D_mono(19) <= 29
+# 19x19 closed package: D_mono(19) = 29
 
-This folder records the current reproducible `19 x 19` state for the monochromatic no-three-in-line problem on checkerboard grids.
+This folder records the exact verified `19 x 19` result for the monochromatic no-three-in-line problem on checkerboard grids.
 
-It does **not** mark the case as closed yet. The current verified bounds are:
+The exact value is:
 
 ```text
-28 <= D_mono(19) <= 29
+D_mono(19) = 29
 ```
 
 ## Lower bound
 
-`config_28.json` contains a directly checkable 28-point configuration on the even checkerboard colour class.
+`config_29.json` contains a directly checkable 29-point configuration on the even checkerboard colour class.
 
 The verifier checks that:
 
 - all points lie in the `19 x 19` grid;
 - all points have the same checkerboard parity;
-- there are exactly 28 distinct points;
+- there are exactly 29 distinct points;
 - no three selected points are collinear.
 
 So:
 
 ```text
-D_mono(19) >= 28
+D_mono(19) >= 29
 ```
+
+The older `config_28.json` is kept only as a historical frontier record. It is no longer the best lower-bound construction.
 
 ## Upper bound
 
@@ -51,10 +53,10 @@ Since the number of selected points is an integer, both colour classes have at m
 D_mono(19) <= 29
 ```
 
-Together with the stored lower construction this gives:
+Together with the stored 29-point construction this proves:
 
 ```text
-28 <= D_mono(19) <= 29
+D_mono(19) = 29
 ```
 
 ## How to verify
@@ -74,7 +76,7 @@ python verify_19x19.py
 Expected final line:
 
 ```text
-verified bounds: 28 <= D_mono(19) <= 29
+Result verified: D_mono(19) = 29
 ```
 
 ## Optional search reproduction
@@ -87,11 +89,13 @@ Example:
 python search_19x19_cpsat.py 0 600
 ```
 
-This script is not needed to verify the stored bounds. The verification script checks the saved construction and the rational upper certificate directly.
+This script is not needed to verify the stored result. The verification script checks the saved construction and the rational upper certificate directly.
 
 ## Status
 
-This case remains open between 28 and 29. To close it exactly, one needs either:
+This case is closed in this repository.
 
-1. a valid 29-point configuration, proving `D_mono(19) = 29`; or
-2. a stronger upper certificate proving `D_mono(19) <= 28`.
+The closure record has two parts:
+
+1. a valid 29-point configuration in `config_29.json`;
+2. a rational upper certificate in `upper_certificate.json` proving that 30 points are impossible.
