@@ -29,6 +29,12 @@ The coordinate system is:
 0 <= x,y <= 16
 ```
 
+## Visualization
+
+The exact 26-point configurations for both color classes are shown below.
+
+![17×17 even and odd configurations](n17_configurations.svg)
+
 ## What is included
 
 This folder is meant to be easy to reproduce and check.
@@ -39,12 +45,14 @@ configurations.json
 certificates.json
 verify_n17.py
 boards.md
+n17_configurations.svg
 ```
 
 - `configurations.json` contains explicit configurations of 26 points for both color classes.
 - `certificates.json` contains exact rational upper-bound certificates.
 - `verify_n17.py` checks the configurations and certificates using only the Python standard library.
 - `boards.md` shows the two configurations as simple text boards.
+- `n17_configurations.svg` shows the two exact configurations as a repository-friendly SVG figure.
 
 ## How to verify
 
