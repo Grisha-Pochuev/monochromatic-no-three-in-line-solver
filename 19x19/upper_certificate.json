@@ -135,5 +135,5 @@
       }
     }
   },
-  "consequence": "D_mono(19, even) <= 29 and D_mono(19, odd) <= 29. Therefore D_mono(19) <= 29. Together with config_28.json this records 28 <= D_mono(19) <= 29."
+  "consequence": "D_mono(19, even) <= 29 and D_mono(19, odd) <= 29. Therefore D_mono(19) <= 29. Together with config_29.json this closes D_mono(19) = 29."
 }
