@@ -59,10 +59,13 @@ The repository records exact closed cases and active frontier packages separatel
 | `17×17` | `D_mono(17) = 26` | closed | `n17/` |
 | `18×18` | `D_mono(18) = 27` | closed | `18x18/`, `.github/workflows/n18-search.yml` |
 | `19×19` | `28 <= D_mono(19) <= 29` | active frontier | `19x19/`, `python 19x19/verify_19x19.py` |
+| `20×20` | `30 <= D_mono(20) <= 31` | active frontier | `20x20/`, `python 20x20/verify_20x20.py` |
 
 For the `18×18` case, the repository records a verified 27-point construction and the recalculation workflow used to rule out a 28-point configuration. The relevant working package is in `18x18/`, and the GitHub Actions workflow is `.github/workflows/n18-search.yml`.
 
 For the `19×19` case, the repository currently records a verified 28-point construction and a rational four-direction upper certificate proving that 30 points are impossible. This gives the reproducible bound `28 <= D_mono(19) <= 29`. The case is not marked as closed until either a valid 29-point configuration is verified or a stronger upper certificate proves `D_mono(19) <= 28`.
+
+For the `20×20` case, the repository now records a verified 30-point construction and a rational four-direction upper certificate proving that 32 points are impossible. This gives the reproducible bound `30 <= D_mono(20) <= 31`. The case is not marked as closed until either a valid 31-point configuration is verified or a stronger upper certificate proves `D_mono(20) <= 30`.
 
 ## A small example
 
