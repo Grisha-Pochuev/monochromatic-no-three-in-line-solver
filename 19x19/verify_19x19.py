@@ -4,7 +4,7 @@ from fractions import Fraction
 from pathlib import Path
 
 N = 19
-LOWER = 28
+VALUE = 29
 HERE = Path(__file__).resolve().parent
 
 
@@ -14,7 +14,7 @@ def canonical_line(p, q):
     A = y2 - y1
     B = x1 - x2
     C = -(A * x1 + B * y1)
-    g = math.gcd(math.gcd(abs(A), abs(B)), abs(C))
+    g = math.gcd(math.gcd(abs(A), abs(B)), abs(C)) or 1
     A //= g
     B //= g
     C //= g
@@ -31,12 +31,13 @@ def get_weight(table, key):
     return F(table.get(str(key), "0"))
 
 
-def verify_lower_config():
-    data = json.loads((HERE / "config_28.json").read_text(encoding="utf-8"))
+def verify_config_29():
+    data = json.loads((HERE / "config_29.json").read_text(encoding="utf-8"))
     points = [tuple(p) for p in data["points"]]
     assert data["N"] == N
-    assert len(points) == LOWER
-    assert len(set(points)) == LOWER
+    assert data["value"] == VALUE
+    assert len(points) == VALUE
+    assert len(set(points)) == VALUE
     for x, y in points:
         assert 0 <= x < N and 0 <= y < N
         assert (x + y) % 2 == data["parity"]
@@ -48,7 +49,7 @@ def verify_lower_config():
                 if canonical_line(points[i], points[k]) == line:
                     bad.append((points[i], points[j], points[k]))
     assert not bad, bad[:5]
-    print("lower bound verified: 28-point configuration has no three collinear points")
+    print("lower bound verified: 29-point configuration has no three collinear points")
 
 
 def verify_upper_one(name, cert):
@@ -88,6 +89,6 @@ def verify_upper_certificates():
 
 
 if __name__ == "__main__":
-    verify_lower_config()
+    verify_config_29()
     verify_upper_certificates()
-    print("verified bounds: 28 <= D_mono(19) <= 29")
+    print("Result verified: D_mono(19) = 29")
