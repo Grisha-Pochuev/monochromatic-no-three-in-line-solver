@@ -118,6 +118,53 @@ DFS-style column search: timed local run, no solution found in that slice
 
 These are search diagnostics only, not mathematical proof.
 
+## Round 7 / 8 proof-front status, 2026-07-09
+
+A later proof-front attack split the remaining 31-point impossibility attempt into `T`-families and applied LP leaf closing.
+
+Round 7 coarse frontier:
+
+```text
+total proof-front leaves: 19632
+closed after round 7: 15731
+open after round 7: 3901
+coverage after round 7: 80.1%
+```
+
+After additional LP branching from the same round7 state, round 8 reached:
+
+```text
+closed: 16198
+open:   3434
+coverage: 82.5081499592502%
+```
+
+Newly certified closed leaves relative to round7:
+
+```text
+T=2: 31 leaves closed by branch depth 4
+T=3: 436 leaves closed by branch depth 4
+T=0: no new closure
+T=1: no new closure
+T=4: not processed, because the explicit 753 hard-leaf list was not available in the round7 package
+```
+
+Remaining open mass after round 8:
+
+```text
+T=0: 1
+T=1: 42
+T=2: 688
+T=3: 1950
+T=4: 753
+
+Total open: 3434
+```
+
+A short local C++ min-conflicts run also searched for a valid 31-point configuration. It did not find one; the best observed near-configuration in that short run had violation cost 2. This is only search evidence, not a proof.
+
+See also: `ATTACK8_SUMMARY.md`.
+
 ## Certificate caution
 
 During the local continuation, the stored `upper_certificate_31.json` was re-inspected and appeared suspicious under the current verifier convention.
@@ -153,15 +200,20 @@ A. finding a rare, distant 31-point structure;
 B. proving globally that 31 is impossible, giving D_mono(20) = 30.
 ```
 
+Round 8 adds a more precise proof-front picture: the proof has reached about 82.5% coverage, but the remaining 17.5% is concentrated in hard branches, especially `T=3`, `T=4`, and the small but stubborn `T=0/T=1` cases.
+
 ## Recommended next work
 
 Most useful next steps:
 
-1. Fix or replace `upper_certificate_31.json` with the verifier-compatible all-line LP dual certificate.
-2. Keep collecting diverse near-31 candidates with low overlap against known basins.
-3. For each near-31 candidate, run exact CP-SAT neighborhood exclusions `overlap >= k` downward.
-4. Build a portfolio proof attempt using all proven dead-basin inequalities.
-5. If local search keeps returning `UNKNOWN`, move from ad hoc runs to a reproducible sharded infeasibility proof for `target = 31`.
+1. Recover or regenerate the explicit `T=4` hard-leaf list.
+2. Continue `T=3` with stronger branching / learned cuts.
+3. Try exact CP-SAT/PySAT leaf closers outside this limited web-chat environment.
+4. Fix or replace `upper_certificate_31.json` with the verifier-compatible all-line LP dual certificate.
+5. Keep collecting diverse near-31 candidates with low overlap against known basins.
+6. For each near-31 candidate, run exact CP-SAT neighborhood exclusions `overlap >= k` downward.
+7. Build a portfolio proof attempt using all proven dead-basin inequalities.
+8. If local search keeps returning `UNKNOWN`, move from ad hoc runs to a reproducible sharded infeasibility proof for `target = 31`.
 
 What not to do next:
 
