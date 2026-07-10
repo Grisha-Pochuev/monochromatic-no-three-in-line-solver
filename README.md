@@ -59,13 +59,13 @@ The repository records exact closed cases and active frontier packages separatel
 | `17×17` | `D_mono(17) = 26` | closed | `n17/` |
 | `18×18` | `D_mono(18) = 27` | closed | `18x18/`, `.github/workflows/n18-search.yml` |
 | `19×19` | `D_mono(19) = 29` | closed | `19x19/`, `python 19x19/verify_19x19.py` |
-| `20×20` | `30 <= D_mono(20) <= 31` | active frontier | `20x20/`, `python 20x20/verify_20x20.py` |
+| `20×20` | `D_mono(20) = 30` | closed | `20x20/`, `python 20x20/verify_20x20.py`, [final exact run](https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29103139466) |
 
 For the `18×18` case, the repository records a verified 27-point construction and the recalculation workflow used to rule out a 28-point configuration. The relevant working package is in `18x18/`, and the GitHub Actions workflow is `.github/workflows/n18-search.yml`.
 
 For the `19×19` case, the repository records a verified 29-point construction and a rational four-direction upper certificate proving that 30 points are impossible. Together these prove the exact value `D_mono(19) = 29`.
 
-For the `20×20` case, the repository now records a verified 30-point construction and a rational four-direction upper certificate proving that 32 points are impossible. This gives the reproducible bound `30 <= D_mono(20) <= 31`. The case is not marked as closed until either a valid 31-point configuration is verified or a stronger upper certificate proves `D_mono(20) <= 30`.
+For the `20×20` case, the repository records a verified 30-point construction and a complete exact exclusion of every possible 31-point configuration. The final 20-branch GitHub Actions run returned 20 `INFEASIBLE` results, with zero `UNKNOWN` branches and zero solutions. Together these prove the exact value `D_mono(20) = 30`. The human-readable and machine-readable final records are stored in `20x20/runs/2026-07-10-run-29103139466/`.
 
 ## A small example
 
@@ -129,7 +129,7 @@ The search program may find the configuration, but the final result should be ch
 
 ## What this repository is trying to do
 
-This repository is not meant to be only a one-case archive for the `17 × 17`, `18 × 18`, or `19 × 19` boards.
+This repository is not meant to be only a one-case archive for the `17 × 17`, `18 × 18`, `19 × 19`, or `20 × 20` boards.
 
 The long-term goal is to build a step-by-step exact solver and verification archive for the monochromatic no-three-in-line problem on checkerboard grids.
 
