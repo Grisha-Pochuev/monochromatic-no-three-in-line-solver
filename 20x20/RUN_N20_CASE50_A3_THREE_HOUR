@@ -1,0 +1,11 @@
+launch_date: 2026-07-10
+mode: exact A=3 profile proof
+seconds_per_profile: 10400
+workers_per_profile: 4
+profiles:
+  - [13, 15]
+  - [14, 14]
+  - [14, 15]
+  - [15, 15]
+
+This marker intentionally triggers .github/workflows/n20-case50-A3-three-hour.yml.
