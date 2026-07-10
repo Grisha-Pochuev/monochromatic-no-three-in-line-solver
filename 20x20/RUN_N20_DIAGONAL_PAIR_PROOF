@@ -1,0 +1,11 @@
+launch_date: 2026-07-10
+mode: full
+method: exact main-diagonal-pair partition
+canonical_cases: 100
+runners: 20
+workers_per_runner: 4
+seconds_per_case: 3300
+seed: 20260710
+
+Changing this file on main intentionally launches the one-shot workflow
+.github/workflows/n20-diagonal-pair-proof-autostart.yml.
