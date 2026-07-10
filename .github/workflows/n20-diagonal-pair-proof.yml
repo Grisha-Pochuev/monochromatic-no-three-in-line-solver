@@ -1,0 +1,164 @@
+name: n20 diagonal-pair proof
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "smoke checks one branch; full runs all 100 canonical diagonal-pair branches"
+        required: true
+        default: "smoke"
+        type: choice
+        options:
+          - smoke
+          - full
+      full_seconds_per_case:
+        description: "Full mode: seconds for each of the five cases on every runner"
+        required: true
+        default: "3300"
+      seed:
+        description: "Base CP-SAT seed"
+        required: true
+        default: "20260710"
+
+jobs:
+  verify:
+    name: Verify current 20x20 certificates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Verify lower and upper bounds
+        run: python 20x20/verify_20x20.py
+
+  smoke:
+    name: Smoke test one exact diagonal-pair branch
+    runs-on: ubuntu-latest
+    needs: verify
+    if: ${{ github.event.inputs.mode == 'smoke' }}
+    timeout-minutes: 15
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install OR-Tools
+        run: python -m pip install --upgrade ortools
+      - name: Run one short exact branch
+        run: |
+          mkdir -p results
+          python 20x20/search_20x20_diagonal_pairs.py \
+            --shard-index 0 \
+            --shard-count 20 \
+            --seconds-per-case 30 \
+            --workers 4 \
+            --seed "${{ github.event.inputs.seed }}" \
+            --max-cases 1 \
+            --output results/smoke.json
+      - name: Upload smoke result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n20-diagonal-pair-smoke
+          path: results/
+          retention-days: 14
+
+  proof_shards:
+    name: Exact pair shard ${{ matrix.shard }} of 20
+    runs-on: ubuntu-latest
+    needs: verify
+    if: ${{ github.event.inputs.mode == 'full' }}
+    timeout-minutes: 295
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Install OR-Tools
+        run: python -m pip install --upgrade ortools
+      - name: Run five exact diagonal-pair cases
+        run: |
+          mkdir -p results
+          python 20x20/search_20x20_diagonal_pairs.py \
+            --shard-index "${{ matrix.shard }}" \
+            --shard-count 20 \
+            --seconds-per-case "${{ github.event.inputs.full_seconds_per_case }}" \
+            --workers 4 \
+            --seed "${{ github.event.inputs.seed }}" \
+            --output "results/shard_${{ matrix.shard }}.json"
+      - name: Upload shard result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n20-diagonal-pair-shard-${{ matrix.shard }}
+          path: results/
+          retention-days: 14
+
+  collect:
+    name: Collect exact-pair frontier
+    runs-on: ubuntu-latest
+    needs: proof_shards
+    if: ${{ always() && github.event.inputs.mode == 'full' }}
+    steps:
+      - name: Download all shard results
+        uses: actions/download-artifact@v4
+        with:
+          pattern: n20-diagonal-pair-shard-*
+          path: gathered
+          merge-multiple: true
+      - name: Build overall summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path("gathered").glob("shard_*.json"))
+          summaries = [json.loads(path.read_text(encoding="utf-8")) for path in files]
+          cases = [case for summary in summaries for case in summary.get("cases", [])]
+          by_id = {case["case_id"]: case for case in cases}
+          solutions = [case for case in cases if case.get("solution")]
+          infeasible = sorted(case_id for case_id, case in by_id.items() if case["status"] == "INFEASIBLE")
+          unknown = sorted(case_id for case_id, case in by_id.items() if case["status"] == "UNKNOWN")
+          missing = sorted(set(range(100)) - set(by_id))
+
+          if solutions:
+              conclusion = "FOUND_31_POINT_CONFIGURATION"
+          elif len(infeasible) == 100 and not unknown and not missing:
+              conclusion = "PROVED_NO_31_BY_COMPLETE_PAIR_PARTITION"
+          else:
+              conclusion = "INCOMPLETE_FRONTIER"
+
+          overall = {
+              "conclusion": conclusion,
+              "shard_files_found": len(files),
+              "case_records_found": len(cases),
+              "unique_case_records": len(by_id),
+              "infeasible_case_count": len(infeasible),
+              "unknown_case_count": len(unknown),
+              "missing_case_count": len(missing),
+              "infeasible_case_ids": infeasible,
+              "unknown_case_ids": unknown,
+              "missing_case_ids": missing,
+              "solutions": solutions,
+          }
+          Path("overall.json").write_text(json.dumps(overall, indent=2) + "\n", encoding="utf-8")
+          Path("SUMMARY.md").write_text(
+              "# n20 diagonal-pair proof run\n\n"
+              f"Conclusion: `{conclusion}`\n\n"
+              f"- exact canonical cases: 100\n"
+              f"- proved infeasible: {len(infeasible)}\n"
+              f"- unknown: {len(unknown)}\n"
+              f"- missing: {len(missing)}\n"
+              f"- 31-point solutions found: {len(solutions)}\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(overall, indent=2))
+          PY
+      - name: Upload overall result
+        uses: actions/upload-artifact@v4
+        with:
+          name: n20-diagonal-pair-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
