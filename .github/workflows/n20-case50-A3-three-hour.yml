@@ -1,0 +1,119 @@
+name: n20 case50 A3 three-hour proof
+
+on:
+  push:
+    paths:
+      - '20x20/RUN_N20_CASE50_A3_THREE_HOUR'
+  workflow_dispatch:
+
+concurrency:
+  group: n20-case50-A3-three-hour
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify current 20x20 certificates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python 20x20/verify_20x20.py
+
+  profiles:
+    name: A3 profile L${{ matrix.L }} T${{ matrix.T }}
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 178
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include:
+          - L: 13
+            T: 15
+            seed: 20260711
+          - L: 14
+            T: 14
+            seed: 20260712
+          - L: 14
+            T: 15
+            seed: 20260713
+          - L: 15
+            T: 15
+            seed: 20260714
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OR-Tools
+        run: python -m pip install --upgrade ortools
+      - name: Solve exact profile for about three hours
+        run: |
+          mkdir -p results
+          python 20x20/search_case50_A3_profile.py \
+            --L "${{ matrix.L }}" \
+            --T "${{ matrix.T }}" \
+            --seconds 10400 \
+            --workers 4 \
+            --seed "${{ matrix.seed }}" \
+            --output "results/A3_L${{ matrix.L }}_T${{ matrix.T }}.json"
+      - name: Upload profile result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n20-case50-A3-L${{ matrix.L }}-T${{ matrix.T }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect A3 frontier
+    needs: profiles
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n20-case50-A3-*
+          path: gathered
+          merge-multiple: true
+      - name: Build summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path('gathered').glob('*.json'))
+          records = [json.loads(p.read_text(encoding='utf-8')) for p in files]
+          infeasible = [r for r in records if r.get('status') == 'INFEASIBLE']
+          unknown = [r for r in records if r.get('status') == 'UNKNOWN']
+          solutions = [r for r in records if r.get('solution')]
+          if solutions:
+              conclusion = 'FOUND_31_POINT_CONFIGURATION'
+          elif len(infeasible) == 4 and len(records) == 4:
+              conclusion = 'PROVED_A3_INFEASIBLE'
+          else:
+              conclusion = 'INCOMPLETE_A3_FRONTIER'
+          overall = {
+              'conclusion': conclusion,
+              'records_found': len(records),
+              'infeasible_count': len(infeasible),
+              'unknown_count': len(unknown),
+              'solutions': solutions,
+              'records': records,
+          }
+          Path('overall.json').write_text(json.dumps(overall, indent=2) + '\n', encoding='utf-8')
+          Path('SUMMARY.md').write_text(
+              '# n20 case50 A=3 three-hour run\n\n'
+              f'Conclusion: `{conclusion}`\n\n'
+              f'- records: {len(records)}\n'
+              f'- infeasible: {len(infeasible)}\n'
+              f'- unknown: {len(unknown)}\n'
+              f'- solutions: {len(solutions)}\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(overall, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n20-case50-A3-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
