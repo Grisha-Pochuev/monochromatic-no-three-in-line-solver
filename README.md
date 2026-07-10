@@ -1,5 +1,6 @@
-[README_monochromatic_no_three_in_line.md](https://github.com/user-attachments/files/29184016/README_monochromatic_no_three_in_line.md)
 # Exact Solutions for the Monochromatic No-Three-in-Line Problem on Checkerboard Grids
+
+> **Latest exact result:** `D_mono(20) = 30`. The `20×20` case is closed.
 
 This repository is part of my personal project **The Open Mathematics Project**.
 
