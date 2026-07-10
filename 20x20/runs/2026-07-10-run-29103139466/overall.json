@@ -1,0 +1,32 @@
+{
+  "conclusion": "PROVED_FINAL_A0_A2_INFEASIBLE_DMONO20_EQUALS_30",
+  "expected_disjoint_branches": 20,
+  "records_found": 20,
+  "infeasible_count": 20,
+  "unknown_count": 0,
+  "solution_count": 0,
+  "workflow_run": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29103139466",
+  "head_sha": "89f3b3f302ce1346f940ec89a2e38a16469daca2",
+  "records": [
+    {"branch_id":"A0_L11","A":0,"L":11,"T_min":11,"T_max":20,"Q_min":0,"Q_max":11,"status":"INFEASIBLE","elapsed_seconds":0.04528021812438965,"conflicts":4,"branches":1909,"workers":4,"seed":20260740},
+    {"branch_id":"A0_L12","A":0,"L":12,"T_min":12,"T_max":19,"Q_min":0,"Q_max":12,"status":"INFEASIBLE","elapsed_seconds":10.692518949508667,"conflicts":1514,"branches":76229,"workers":4,"seed":20260741},
+    {"branch_id":"A0_L13","A":0,"L":13,"T_min":13,"T_max":18,"Q_min":0,"Q_max":13,"status":"INFEASIBLE","elapsed_seconds":239.89447617530823,"conflicts":51259,"branches":3256420,"workers":4,"seed":20260742},
+    {"branch_id":"A0_L14","A":0,"L":14,"T_min":14,"T_max":17,"Q_min":0,"Q_max":14,"status":"INFEASIBLE","elapsed_seconds":948.1220171451569,"conflicts":13756493,"branches":18006144,"workers":4,"seed":20260743},
+    {"branch_id":"A0_L15","A":0,"L":15,"T_min":15,"T_max":16,"Q_min":0,"Q_max":15,"status":"INFEASIBLE","elapsed_seconds":1683.1625671386719,"conflicts":331645,"branches":10024501,"workers":4,"seed":20260744},
+    {"branch_id":"A1_L11","A":1,"L":11,"T_min":11,"T_max":20,"Q_min":0,"Q_max":11,"status":"INFEASIBLE","elapsed_seconds":0.7378854751586914,"conflicts":106,"branches":11389,"workers":4,"seed":20260745},
+    {"branch_id":"A1_L12","A":1,"L":12,"T_min":12,"T_max":19,"Q_min":0,"Q_max":12,"status":"INFEASIBLE","elapsed_seconds":136.45434498786926,"conflicts":30534,"branches":3685219,"workers":4,"seed":20260746},
+    {"branch_id":"A1_L13","A":1,"L":13,"T_min":13,"T_max":18,"Q_min":0,"Q_max":13,"status":"INFEASIBLE","elapsed_seconds":1058.3665857315063,"conflicts":164282,"branches":10651142,"workers":4,"seed":20260747},
+    {"branch_id":"A1_L14","A":1,"L":14,"T_min":14,"T_max":17,"Q_min":0,"Q_max":14,"status":"INFEASIBLE","elapsed_seconds":4388.08887219429,"conflicts":725604,"branches":22244928,"workers":4,"seed":20260748},
+    {"branch_id":"A1_L15","A":1,"L":15,"T_min":15,"T_max":16,"Q_min":0,"Q_max":15,"status":"INFEASIBLE","elapsed_seconds":6533.524313211441,"conflicts":1034532,"branches":35117811,"workers":4,"seed":20260749},
+    {"branch_id":"A2_L11_Q0_5","A":2,"L":11,"T_min":11,"T_max":20,"Q_min":0,"Q_max":5,"status":"INFEASIBLE","elapsed_seconds":0.7882111072540283,"conflicts":133,"branches":9254,"workers":4,"seed":20260750},
+    {"branch_id":"A2_L11_Q6_11","A":2,"L":11,"T_min":11,"T_max":20,"Q_min":6,"Q_max":11,"status":"INFEASIBLE","elapsed_seconds":0.11393880844116211,"conflicts":4,"branches":3319,"workers":4,"seed":20260751},
+    {"branch_id":"A2_L12_Q0_6","A":2,"L":12,"T_min":12,"T_max":19,"Q_min":0,"Q_max":6,"status":"INFEASIBLE","elapsed_seconds":89.79791188240051,"conflicts":15831,"branches":2373826,"workers":4,"seed":20260752},
+    {"branch_id":"A2_L12_Q7_12","A":2,"L":12,"T_min":12,"T_max":19,"Q_min":7,"Q_max":12,"status":"INFEASIBLE","elapsed_seconds":0.16474604606628418,"conflicts":9,"branches":3325,"workers":4,"seed":20260753},
+    {"branch_id":"A2_L13_Q0_6","A":2,"L":13,"T_min":13,"T_max":18,"Q_min":0,"Q_max":6,"status":"INFEASIBLE","elapsed_seconds":486.9338779449463,"conflicts":93268,"branches":8302455,"workers":4,"seed":20260754},
+    {"branch_id":"A2_L13_Q7_13","A":2,"L":13,"T_min":13,"T_max":18,"Q_min":7,"Q_max":13,"status":"INFEASIBLE","elapsed_seconds":216.39764857292175,"conflicts":38239,"branches":3927379,"workers":4,"seed":20260755},
+    {"branch_id":"A2_L14_Q0_7","A":2,"L":14,"T_min":14,"T_max":17,"Q_min":0,"Q_max":7,"status":"INFEASIBLE","elapsed_seconds":1174.0563156604767,"conflicts":165751,"branches":18909444,"workers":4,"seed":20260756},
+    {"branch_id":"A2_L14_Q8_14","A":2,"L":14,"T_min":14,"T_max":17,"Q_min":8,"Q_max":14,"status":"INFEASIBLE","elapsed_seconds":295.32120013237,"conflicts":49302,"branches":3665958,"workers":4,"seed":20260757},
+    {"branch_id":"A2_L15_Q0_7","A":2,"L":15,"T_min":15,"T_max":16,"Q_min":0,"Q_max":7,"status":"INFEASIBLE","elapsed_seconds":2260.635808467865,"conflicts":321222,"branches":22088106,"workers":4,"seed":20260758},
+    {"branch_id":"A2_L15_Q8_15","A":2,"L":15,"T_min":15,"T_max":16,"Q_min":8,"Q_max":15,"status":"INFEASIBLE","elapsed_seconds":1395.483666419983,"conflicts":213323,"branches":11759430,"workers":4,"seed":20260759}
+  ]
+}
