@@ -1,0 +1,10 @@
+launch_date: 2026-07-10
+mode: final exact A=0,1,2 complete partition
+jobs: 20
+max_parallel: 20
+seconds_per_job: 13800
+workers_per_job: 4
+symmetry_breaking: L<=T and L+T<=31
+expected_outcome: either a verified 31-point configuration or a proof that D_mono(20)=30
+
+This marker intentionally triggers .github/workflows/n20-case50-A012-20job-four-hour.yml.
