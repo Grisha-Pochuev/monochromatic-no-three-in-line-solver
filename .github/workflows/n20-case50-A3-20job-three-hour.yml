@@ -1,0 +1,145 @@
+name: n20 case50 A3 20-job three-hour proof
+
+on:
+  push:
+    paths:
+      - '20x20/RUN_N20_CASE50_A3_20JOB_THREE_HOUR'
+  workflow_dispatch:
+
+concurrency:
+  group: n20-case50-A3-20job-three-hour
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify current 20x20 certificates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python 20x20/verify_20x20.py
+
+  partitions:
+    name: A3 exact branch ${{ matrix.id }}
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include:
+          - {id: micro_b0_6,   L: 13, T: 15, qmin: 6,  qmax: 6,  C: 2,  bmin: 0, bmax: 6,  seed: 20260720}
+          - {id: micro_b7_13,  L: 13, T: 15, qmin: 6,  qmax: 6,  C: 2,  bmin: 7, bmax: 13, seed: 20260721}
+          - {id: p1414_q0_2,  L: 14, T: 14, qmin: 0,  qmax: 2,  C: -1, bmin: -1, bmax: -1, seed: 20260722}
+          - {id: p1414_q3_5,  L: 14, T: 14, qmin: 3,  qmax: 5,  C: -1, bmin: -1, bmax: -1, seed: 20260723}
+          - {id: p1414_q6_8,  L: 14, T: 14, qmin: 6,  qmax: 8,  C: -1, bmin: -1, bmax: -1, seed: 20260724}
+          - {id: p1414_q9_11, L: 14, T: 14, qmin: 9,  qmax: 11, C: -1, bmin: -1, bmax: -1, seed: 20260725}
+          - {id: p1414_q12_14,L: 14, T: 14, qmin: 12, qmax: 14, C: -1, bmin: -1, bmax: -1, seed: 20260726}
+          - {id: p1415_q0_2,  L: 14, T: 15, qmin: 0,  qmax: 2,  C: -1, bmin: -1, bmax: -1, seed: 20260727}
+          - {id: p1415_q3_5,  L: 14, T: 15, qmin: 3,  qmax: 5,  C: -1, bmin: -1, bmax: -1, seed: 20260728}
+          - {id: p1415_q6_8,  L: 14, T: 15, qmin: 6,  qmax: 8,  C: -1, bmin: -1, bmax: -1, seed: 20260729}
+          - {id: p1415_q9_11, L: 14, T: 15, qmin: 9,  qmax: 11, C: -1, bmin: -1, bmax: -1, seed: 20260730}
+          - {id: p1415_q12_14,L: 14, T: 15, qmin: 12, qmax: 14, C: -1, bmin: -1, bmax: -1, seed: 20260731}
+          - {id: p1515_q0_1,  L: 15, T: 15, qmin: 0,  qmax: 1,  C: -1, bmin: -1, bmax: -1, seed: 20260732}
+          - {id: p1515_q2_3,  L: 15, T: 15, qmin: 2,  qmax: 3,  C: -1, bmin: -1, bmax: -1, seed: 20260733}
+          - {id: p1515_q4_5,  L: 15, T: 15, qmin: 4,  qmax: 5,  C: -1, bmin: -1, bmax: -1, seed: 20260734}
+          - {id: p1515_q6_7,  L: 15, T: 15, qmin: 6,  qmax: 7,  C: -1, bmin: -1, bmax: -1, seed: 20260735}
+          - {id: p1515_q8_9,  L: 15, T: 15, qmin: 8,  qmax: 9,  C: -1, bmin: -1, bmax: -1, seed: 20260736}
+          - {id: p1515_q10_11,L: 15, T: 15, qmin: 10, qmax: 11, C: -1, bmin: -1, bmax: -1, seed: 20260737}
+          - {id: p1515_q12_13,L: 15, T: 15, qmin: 12, qmax: 13, C: -1, bmin: -1, bmax: -1, seed: 20260738}
+          - {id: p1515_q14_15,L: 15, T: 15, qmin: 14, qmax: 15, C: -1, bmin: -1, bmax: -1, seed: 20260739}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OR-Tools
+        run: python -m pip install --upgrade ortools
+      - name: Solve one exact disjoint branch for about three hours
+        shell: bash
+        run: |
+          mkdir -p results
+          args=(
+            --branch-id "${{ matrix.id }}"
+            --L "${{ matrix.L }}"
+            --T "${{ matrix.T }}"
+            --q-min "${{ matrix.qmin }}"
+            --q-max "${{ matrix.qmax }}"
+            --seconds 10400
+            --workers 4
+            --seed "${{ matrix.seed }}"
+            --output "results/${{ matrix.id }}.json"
+          )
+          if [ "${{ matrix.C }}" -ge 0 ]; then
+            args+=(--C "${{ matrix.C }}")
+          fi
+          if [ "${{ matrix.bmin }}" -ge 0 ]; then
+            args+=(--b-min "${{ matrix.bmin }}" --b-max "${{ matrix.bmax }}")
+          fi
+          python 20x20/search_case50_A3_partition.py "${args[@]}"
+      - name: Upload branch result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n20-case50-A3-20job-${{ matrix.id }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect 20-job A3 frontier
+    needs: partitions
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n20-case50-A3-20job-*
+          path: gathered
+          merge-multiple: true
+      - name: Build exact summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path('gathered').glob('*.json'))
+          records = [json.loads(p.read_text(encoding='utf-8')) for p in files]
+          infeasible = [r for r in records if r.get('status') == 'INFEASIBLE']
+          unknown = [r for r in records if r.get('status') == 'UNKNOWN']
+          solutions = [r for r in records if r.get('solution')]
+          found_ids = sorted(r.get('branch_id') for r in records)
+
+          if solutions:
+              conclusion = 'FOUND_31_POINT_CONFIGURATION'
+          elif len(records) == 20 and len(infeasible) == 20:
+              conclusion = 'PROVED_A3_INFEASIBLE'
+          else:
+              conclusion = 'INCOMPLETE_A3_FRONTIER'
+
+          overall = {
+              'conclusion': conclusion,
+              'expected_disjoint_branches': 20,
+              'records_found': len(records),
+              'infeasible_count': len(infeasible),
+              'unknown_count': len(unknown),
+              'solution_count': len(solutions),
+              'branch_ids_found': found_ids,
+              'records': records,
+          }
+          Path('overall.json').write_text(json.dumps(overall, indent=2) + '\n', encoding='utf-8')
+          Path('SUMMARY.md').write_text(
+              '# n20 case50 A=3 exact 20-job run\n\n'
+              f'Conclusion: `{conclusion}`\n\n'
+              f'- expected disjoint branches: 20\n'
+              f'- records found: {len(records)}\n'
+              f'- infeasible: {len(infeasible)}\n'
+              f'- unknown: {len(unknown)}\n'
+              f'- solutions: {len(solutions)}\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(overall, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n20-case50-A3-20job-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
