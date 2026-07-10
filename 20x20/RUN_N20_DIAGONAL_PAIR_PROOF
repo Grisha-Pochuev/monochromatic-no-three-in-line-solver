@@ -1,5 +1,5 @@
 launch_date: 2026-07-10
-launch_attempt: 2
+launch_attempt: 3
 mode: full
 method: exact main-diagonal-pair partition
 canonical_cases: 100
@@ -10,3 +10,4 @@ seed: 20260710
 
 This update intentionally launches the one-shot workflow
 .github/workflows/n20-diagonal-pair-proof-autostart.yml.
+The concurrency rule cancels older duplicate attempts.
