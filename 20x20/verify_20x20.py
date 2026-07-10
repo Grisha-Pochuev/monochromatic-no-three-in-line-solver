@@ -1,6 +1,5 @@
 import json
 import math
-from fractions import Fraction
 from pathlib import Path
 
 N = 20
@@ -46,26 +45,46 @@ def verify_upper_31():
     data = json.loads((HERE / "upper_certificate_31.json").read_text(encoding="utf-8"))
     assert data["N"] == N
     assert data["parity"] == 0
+    assert data["kind"] == "all_line_dual_lp_certificate_v2"
+
+    denominator = int(data["denominator"])
+    assert denominator > 0
     weights = data["weights"]
-    total = sum(Fraction(w["weight"]) for w in weights)
+    assert weights
+
+    total = 0
+    parsed = []
+    for entry in weights:
+        assert len(entry) == 4, entry
+        A, B, C, weight = map(int, entry)
+        assert (A, B) != (0, 0)
+        assert weight >= 0
+        total += weight
+        parsed.append((A, B, C, weight))
+
     min_cover = None
     min_point = None
     for x in range(N):
         for y in range(N):
             if (x + y) % 2 != data["parity"]:
                 continue
-            cover = Fraction(0)
-            for w in weights:
-                if w["A"] * x + w["B"] * y == w["C"]:
-                    cover += Fraction(w["weight"])
+            cover = sum(weight for A, B, C, weight in parsed if A * x + B * y == C)
             if min_cover is None or cover < min_cover:
                 min_cover = cover
                 min_point = (x, y)
-            assert cover >= 1, ((x, y), cover)
-    upper = 2 * total
-    assert upper == Fraction(data["upper_bound"]), (upper, data["upper_bound"])
-    assert upper < 32, upper
-    print(f"upper bound verified: D_mono(20) <= 31 via {upper} < 32; min cover {min_cover} at {min_point}")
+            assert cover >= denominator, ((x, y), cover, denominator)
+
+    upper_numerator = 2 * total
+    assert upper_numerator == int(data["upper_numerator"])
+    assert upper_numerator < 32 * denominator
+    assert min_cover == int(data["min_cover_numerator"])
+    assert list(min_point) == data["min_cover_point"]
+
+    print(
+        "upper bound verified: "
+        f"D_mono(20) <= 31 via {upper_numerator}/{denominator} < 32; "
+        f"min cover {min_cover}/{denominator} at {min_point}"
+    )
 
 
 if __name__ == "__main__":
