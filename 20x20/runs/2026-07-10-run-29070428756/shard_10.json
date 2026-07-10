@@ -1,0 +1,79 @@
+{
+  "N": 20,
+  "parity": 0,
+  "target": 31,
+  "method": "certificate-forced main-diagonal pair partition",
+  "certificate_upper_numerator": 31433544,
+  "certificate_denominator": 1000000,
+  "certificate_gap_numerator": 433544,
+  "canonical_case_count": 100,
+  "shard_index": 10,
+  "shard_count": 20,
+  "assigned_case_count": 5,
+  "completed_case_count": 5,
+  "infeasible_case_count": 4,
+  "unknown_case_count": 1,
+  "solution_found": false,
+  "cases": [
+    {
+      "case_id": 10,
+      "main_diagonal_pair": [
+        0,
+        11
+      ],
+      "status": "INFEASIBLE",
+      "elapsed_seconds": 0.004501819610595703,
+      "conflicts": 0,
+      "branches": 0,
+      "forced_certificate_lines": 13
+    },
+    {
+      "case_id": 30,
+      "main_diagonal_pair": [
+        1,
+        13
+      ],
+      "status": "INFEASIBLE",
+      "elapsed_seconds": 111.60920095443726,
+      "conflicts": 21521,
+      "branches": 2354017,
+      "forced_certificate_lines": 13
+    },
+    {
+      "case_id": 50,
+      "main_diagonal_pair": [
+        2,
+        17
+      ],
+      "status": "UNKNOWN",
+      "elapsed_seconds": 3301.1684172153473,
+      "conflicts": 492251,
+      "branches": 24664149,
+      "forced_certificate_lines": 13
+    },
+    {
+      "case_id": 70,
+      "main_diagonal_pair": [
+        4,
+        11
+      ],
+      "status": "INFEASIBLE",
+      "elapsed_seconds": 213.7372899055481,
+      "conflicts": 48099,
+      "branches": 3474256,
+      "forced_certificate_lines": 13
+    },
+    {
+      "case_id": 90,
+      "main_diagonal_pair": [
+        6,
+        13
+      ],
+      "status": "INFEASIBLE",
+      "elapsed_seconds": 134.12697386741638,
+      "conflicts": 26321,
+      "branches": 2801868,
+      "forced_certificate_lines": 13
+    }
+  ]
+}
