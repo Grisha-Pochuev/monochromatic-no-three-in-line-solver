@@ -1,0 +1,9 @@
+launch_date: 2026-07-10
+mode: exact A=3 complete 20-way partition
+jobs: 20
+max_parallel: 20
+seconds_per_job: 10400
+workers_per_job: 4
+method: disjoint partition by half-board and quadrant counts
+
+This marker intentionally triggers .github/workflows/n20-case50-A3-20job-three-hour.yml.
