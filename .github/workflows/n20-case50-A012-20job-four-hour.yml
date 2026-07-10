@@ -1,0 +1,138 @@
+name: n20 case50 final A0-A2 20-job four-hour proof
+
+on:
+  push:
+    paths:
+      - '20x20/RUN_N20_CASE50_A012_20JOB_FOUR_HOUR'
+  workflow_dispatch:
+
+concurrency:
+  group: n20-case50-A012-20job-four-hour
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify current 20x20 certificates
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python 20x20/verify_20x20.py
+
+  partitions:
+    name: Final exact branch ${{ matrix.id }}
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include:
+          - {id: A0_L11,       A: 0, L: 11, qmin: 0, qmax: 11, seed: 20260740}
+          - {id: A0_L12,       A: 0, L: 12, qmin: 0, qmax: 12, seed: 20260741}
+          - {id: A0_L13,       A: 0, L: 13, qmin: 0, qmax: 13, seed: 20260742}
+          - {id: A0_L14,       A: 0, L: 14, qmin: 0, qmax: 14, seed: 20260743}
+          - {id: A0_L15,       A: 0, L: 15, qmin: 0, qmax: 15, seed: 20260744}
+
+          - {id: A1_L11,       A: 1, L: 11, qmin: 0, qmax: 11, seed: 20260745}
+          - {id: A1_L12,       A: 1, L: 12, qmin: 0, qmax: 12, seed: 20260746}
+          - {id: A1_L13,       A: 1, L: 13, qmin: 0, qmax: 13, seed: 20260747}
+          - {id: A1_L14,       A: 1, L: 14, qmin: 0, qmax: 14, seed: 20260748}
+          - {id: A1_L15,       A: 1, L: 15, qmin: 0, qmax: 15, seed: 20260749}
+
+          - {id: A2_L11_Q0_5,  A: 2, L: 11, qmin: 0, qmax: 5,  seed: 20260750}
+          - {id: A2_L11_Q6_11, A: 2, L: 11, qmin: 6, qmax: 11, seed: 20260751}
+          - {id: A2_L12_Q0_6,  A: 2, L: 12, qmin: 0, qmax: 6,  seed: 20260752}
+          - {id: A2_L12_Q7_12, A: 2, L: 12, qmin: 7, qmax: 12, seed: 20260753}
+          - {id: A2_L13_Q0_6,  A: 2, L: 13, qmin: 0, qmax: 6,  seed: 20260754}
+          - {id: A2_L13_Q7_13, A: 2, L: 13, qmin: 7, qmax: 13, seed: 20260755}
+          - {id: A2_L14_Q0_7,  A: 2, L: 14, qmin: 0, qmax: 7,  seed: 20260756}
+          - {id: A2_L14_Q8_14, A: 2, L: 14, qmin: 8, qmax: 14, seed: 20260757}
+          - {id: A2_L15_Q0_7,  A: 2, L: 15, qmin: 0, qmax: 7,  seed: 20260758}
+          - {id: A2_L15_Q8_15, A: 2, L: 15, qmin: 8, qmax: 15, seed: 20260759}
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OR-Tools
+        run: python -m pip install --upgrade ortools
+      - name: Solve one exact disjoint branch for up to four hours
+        run: |
+          mkdir -p results
+          python 20x20/search_case50_A012_partition.py \
+            --branch-id "${{ matrix.id }}" \
+            --A "${{ matrix.A }}" \
+            --L "${{ matrix.L }}" \
+            --q-min "${{ matrix.qmin }}" \
+            --q-max "${{ matrix.qmax }}" \
+            --seconds 13800 \
+            --workers 4 \
+            --seed "${{ matrix.seed }}" \
+            --output "results/${{ matrix.id }}.json"
+      - name: Upload branch result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n20-case50-final-${{ matrix.id }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect final n20 frontier
+    needs: partitions
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n20-case50-final-*
+          path: gathered
+          merge-multiple: true
+      - name: Build final summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path('gathered').glob('*.json'))
+          records = [json.loads(p.read_text(encoding='utf-8')) for p in files]
+          infeasible = [r for r in records if r.get('status') == 'INFEASIBLE']
+          unknown = [r for r in records if r.get('status') == 'UNKNOWN']
+          solutions = [r for r in records if r.get('solution')]
+
+          if solutions:
+              conclusion = 'FOUND_31_POINT_CONFIGURATION_DMONO20_EQUALS_31'
+          elif len(records) == 20 and len(infeasible) == 20:
+              conclusion = 'PROVED_FINAL_A0_A2_INFEASIBLE_DMONO20_EQUALS_30'
+          else:
+              conclusion = 'INCOMPLETE_FINAL_FRONTIER'
+
+          overall = {
+              'conclusion': conclusion,
+              'expected_disjoint_branches': 20,
+              'records_found': len(records),
+              'infeasible_count': len(infeasible),
+              'unknown_count': len(unknown),
+              'solution_count': len(solutions),
+              'records': records,
+          }
+          Path('overall.json').write_text(json.dumps(overall, indent=2) + '\n', encoding='utf-8')
+          Path('SUMMARY.md').write_text(
+              '# Final n20 case50 A=0,1,2 run\n\n'
+              f'Conclusion: `{conclusion}`\n\n'
+              f'- expected disjoint branches: 20\n'
+              f'- records found: {len(records)}\n'
+              f'- infeasible: {len(infeasible)}\n'
+              f'- unknown: {len(unknown)}\n'
+              f'- solutions: {len(solutions)}\n\n'
+              'Together with the previously committed exclusions of the other 99 diagonal pairs, A>=5, A=4, and A=3, a complete A=0,1,2 exclusion proves D_mono(20)=30.\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(overall, indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n20-case50-final-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
