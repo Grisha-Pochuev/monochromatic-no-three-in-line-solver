@@ -1,0 +1,120 @@
+name: n21 four-direction exact proof
+
+on:
+  push:
+    paths:
+      - '21x21/RUN_N21_FOUR_DIRECTION_PROOF'
+  workflow_dispatch:
+
+concurrency:
+  group: n21-four-direction-proof
+  cancel-in-progress: false
+
+jobs:
+  verify-construction:
+    name: Verify 32-point construction
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python 21x21/verify_21x21.py
+
+  prove-upper:
+    name: Exclude 33 points, parity ${{ matrix.parity }}
+    needs: verify-construction
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {parity: 0, seed: 202607160}
+          - {parity: 1, seed: 202607161}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OR-Tools
+        run: python -m pip install --upgrade ortools
+      - name: Prove the four-direction relaxation infeasible at 33
+        run: |
+          mkdir -p results
+          python 21x21/prove_upper_21x21_four_direction.py \
+            --parity "${{ matrix.parity }}" \
+            --seconds 21000 \
+            --workers 4 \
+            --seed "${{ matrix.seed }}" \
+            --output "results/parity-${{ matrix.parity }}.json"
+      - name: Upload parity result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n21-four-direction-parity-${{ matrix.parity }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect n21 proof
+    needs: prove-upper
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n21-four-direction-parity-*
+          path: gathered
+          merge-multiple: true
+      - name: Build overall proof record
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path("gathered").glob("parity-*.json"))
+          records = [json.loads(path.read_text(encoding="utf-8")) for path in files]
+          infeasible = [record for record in records if record.get("status") == "INFEASIBLE"]
+          unknown = [record for record in records if record.get("status") == "UNKNOWN"]
+          feasible = [
+              record for record in records
+              if record.get("status") in {"FEASIBLE", "OPTIMAL"}
+          ]
+
+          if len(records) == 2 and len(infeasible) == 2:
+              conclusion = "PROVED_D_MONO_21_EQUALS_32"
+          elif feasible:
+              conclusion = "FOUND_33_POINT_COUNTEREXAMPLE"
+          else:
+              conclusion = "INCOMPLETE_N21_PROOF"
+
+          overall = {
+              "conclusion": conclusion,
+              "expected_parities": [0, 1],
+              "records_found": len(records),
+              "infeasible_count": len(infeasible),
+              "unknown_count": len(unknown),
+              "feasible_count": len(feasible),
+              "records": records,
+          }
+          Path("overall.json").write_text(
+              json.dumps(overall, indent=2) + "\n", encoding="utf-8"
+          )
+          Path("SUMMARY.md").write_text(
+              "# Exact 21x21 proof\n\n"
+              f"Conclusion: `{conclusion}`\n\n"
+              f"- parity records: {len(records)}/2\n"
+              f"- INFEASIBLE: {len(infeasible)}\n"
+              f"- UNKNOWN: {len(unknown)}\n"
+              f"- FEASIBLE/OPTIMAL at target 33: {len(feasible)}\n\n"
+              "A verified 32-point construction gives the lower bound. "
+              "The two exact four-direction integer searches exclude 33 points "
+              "for both checkerboard colors.\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(overall, indent=2))
+          if conclusion != "PROVED_D_MONO_21_EQUALS_32":
+              raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n21-four-direction-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
