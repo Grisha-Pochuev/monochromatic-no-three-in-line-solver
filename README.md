@@ -57,7 +57,7 @@ The repository records exact closed cases and active frontier packages separatel
 
 | Board size | Recorded result | Status | Verification record |
 |---:|---:|---|---|
-| `17×17` | `D_mono(17) = 26` | closed | `n17/` |
+| `17×17` | `D_mono(17) = 26` | closed | `17x17/` |
 | `18×18` | `D_mono(18) = 27` | closed | `18x18/`, `.github/workflows/n18-search.yml` |
 | `19×19` | `D_mono(19) = 29` | closed | `19x19/`, `python 19x19/verify_19x19.py` |
 | `20×20` | `D_mono(20) = 30` | closed | `20x20/`, `python 20x20/verify_20x20.py`, [final exact run](https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29103139466) |

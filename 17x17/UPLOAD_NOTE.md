@@ -5,13 +5,13 @@ This is a self-contained folder for the solved `17×17` case.
 Recommended repository placement:
 
 ```text
-n17/
+17x17/
 ```
 
 To verify after upload or after downloading the repository locally:
 
 ```bash
-cd n17
+cd 17x17
 python verify_n17.py
 ```
 
