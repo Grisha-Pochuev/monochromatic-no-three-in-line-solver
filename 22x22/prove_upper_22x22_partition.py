@@ -25,6 +25,7 @@ from ortools.sat.python import cp_model
 N = 22
 PARITY = 0
 TARGET = 34
+MAX_CP_SAT_SEED = 2_147_483_647
 
 def canonical_line(a: tuple[int, int], b: tuple[int, int]) -> tuple[int, int, int]:
     x1, y1 = a
@@ -77,10 +78,11 @@ def build_model(row_twos: int, column_twos: int):
 
 def solve(row_twos: int, column_twos: int, seconds: float, workers: int, seed: int) -> dict[str, object]:
     model, points, chosen, line_count = build_model(row_twos, column_twos)
+    effective_seed = seed % MAX_CP_SAT_SEED
     solver = cp_model.CpSolver()
     solver.parameters.max_time_in_seconds = seconds
     solver.parameters.num_search_workers = workers
-    solver.parameters.random_seed = seed
+    solver.parameters.random_seed = effective_seed
     solver.parameters.cp_model_presolve = True
     solver.parameters.symmetry_level = 2
     solver.parameters.linearization_level = 2
@@ -102,7 +104,8 @@ def solve(row_twos: int, column_twos: int, seconds: float, workers: int, seed: i
         "conflicts": solver.NumConflicts(),
         "branches": solver.NumBranches(),
         "workers": workers,
-        "seed": seed,
+        "requested_seed": seed,
+        "effective_seed": effective_seed,
         "parity_reduction": "parity 1 is the reflection x -> 21-x of parity 0",
         "transpose_reduction": "only row_twos <= column_twos is checked",
     }
