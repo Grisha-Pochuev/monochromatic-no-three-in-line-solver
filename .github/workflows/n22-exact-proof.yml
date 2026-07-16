@@ -1,0 +1,132 @@
+name: n22 full-line exact proof
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_EXACT_PROOF'
+  workflow_dispatch:
+
+concurrency:
+  group: n22-exact-proof
+  cancel-in-progress: false
+
+jobs:
+  verify-construction:
+    name: Verify 33-point construction
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python 22x22/verify_22x22.py
+
+  prove-upper:
+    name: Exclude 34, r2=${{ matrix.row_twos }}, c2=${{ matrix.column_twos }}
+    needs: verify-construction
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include:
+          - {row_twos: 12, column_twos: 12, seed: 202607161212}
+          - {row_twos: 12, column_twos: 13, seed: 202607161213}
+          - {row_twos: 12, column_twos: 14, seed: 202607161214}
+          - {row_twos: 12, column_twos: 15, seed: 202607161215}
+          - {row_twos: 12, column_twos: 16, seed: 202607161216}
+          - {row_twos: 12, column_twos: 17, seed: 202607161217}
+          - {row_twos: 13, column_twos: 13, seed: 202607161313}
+          - {row_twos: 13, column_twos: 14, seed: 202607161314}
+          - {row_twos: 13, column_twos: 15, seed: 202607161315}
+          - {row_twos: 13, column_twos: 16, seed: 202607161316}
+          - {row_twos: 13, column_twos: 17, seed: 202607161317}
+          - {row_twos: 14, column_twos: 14, seed: 202607161414}
+          - {row_twos: 14, column_twos: 15, seed: 202607161415}
+          - {row_twos: 14, column_twos: 16, seed: 202607161416}
+          - {row_twos: 14, column_twos: 17, seed: 202607161417}
+          - {row_twos: 15, column_twos: 15, seed: 202607161515}
+          - {row_twos: 15, column_twos: 16, seed: 202607161516}
+          - {row_twos: 15, column_twos: 17, seed: 202607161517}
+          - {row_twos: 16, column_twos: 16, seed: 202607161616}
+          - {row_twos: 16, column_twos: 17, seed: 202607161617}
+          - {row_twos: 17, column_twos: 17, seed: 202607161717}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install OR-Tools
+        run: python -m pip install --upgrade ortools
+      - name: Prove partition infeasible
+        run: |
+          mkdir -p results
+          python 22x22/prove_upper_22x22_partition.py \
+            --row-twos "${{ matrix.row_twos }}" \
+            --column-twos "${{ matrix.column_twos }}" \
+            --seconds 21000 \
+            --workers 4 \
+            --seed "${{ matrix.seed }}" \
+            --output "results/r${{ matrix.row_twos }}-c${{ matrix.column_twos }}.json"
+      - name: Upload partition result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-r${{ matrix.row_twos }}-c${{ matrix.column_twos }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect n22 proof
+    needs: prove-upper
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-r*-c*
+          path: gathered
+          merge-multiple: true
+      - name: Build overall proof record
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          files = sorted(Path("gathered").glob("r*-c*.json"))
+          records = [json.loads(path.read_text(encoding="utf-8")) for path in files]
+          infeasible = [r for r in records if r.get("status") == "INFEASIBLE"]
+          unknown = [r for r in records if r.get("status") == "UNKNOWN"]
+          feasible = [r for r in records if r.get("status") in {"FEASIBLE", "OPTIMAL"}]
+          if len(records) == 21 and len(infeasible) == 21:
+              conclusion = "PROVED_D_MONO_22_EQUALS_33"
+          elif feasible:
+              conclusion = "FOUND_34_POINT_COUNTEREXAMPLE"
+          else:
+              conclusion = "INCOMPLETE_N22_PROOF"
+          overall = {
+              "conclusion": conclusion,
+              "expected_partitions": 21,
+              "records_found": len(records),
+              "infeasible_count": len(infeasible),
+              "unknown_count": len(unknown),
+              "feasible_count": len(feasible),
+              "records": records,
+          }
+          Path("overall.json").write_text(json.dumps(overall, indent=2) + "\n", encoding="utf-8")
+          Path("SUMMARY.md").write_text(
+              "# Exact 22x22 proof\n\n"
+              f"Conclusion: `{conclusion}`\n\n"
+              f"- partition records: {len(records)}/21\n"
+              f"- INFEASIBLE: {len(infeasible)}\n"
+              f"- UNKNOWN: {len(unknown)}\n"
+              f"- FEASIBLE/OPTIMAL at target 34: {len(feasible)}\n\n"
+              "A verified 33-point construction gives the lower bound. "
+              "The partitioned full-line searches cover every possible 34-point case.\n",
+              encoding="utf-8",
+          )
+          print(json.dumps(overall, indent=2))
+          if conclusion != "PROVED_D_MONO_22_EQUALS_33":
+              raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n22-exact-proof-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
