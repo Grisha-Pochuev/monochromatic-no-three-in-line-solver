@@ -1,5 +1,7 @@
 Trigger the exact 22x22 proof workflow.
 Date: 2026-07-16
+Attempt: 2
+Fix: reduce requested random seeds to the valid CP-SAT 32-bit range.
 Target excluded: 34
 Lower construction: 33
 Partitions: 21 row/column saturation-count cases after transpose symmetry.
