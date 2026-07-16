@@ -1,0 +1,49 @@
+{
+  "conclusion": "PROVED_D_MONO_21_EQUALS_32",
+  "expected_parities": [
+    0,
+    1
+  ],
+  "records_found": 2,
+  "infeasible_count": 2,
+  "unknown_count": 0,
+  "feasible_count": 0,
+  "records": [
+    {
+      "board_size": 21,
+      "parity": 0,
+      "allowed_points": 221,
+      "target": 33,
+      "relaxation": [
+        "rows",
+        "columns",
+        "diagonals_slope_+1",
+        "diagonals_slope_-1"
+      ],
+      "status": "INFEASIBLE",
+      "elapsed_seconds": 37.30792546272278,
+      "conflicts": 510607,
+      "branches": 1078601,
+      "workers": 4,
+      "seed": 202607160
+    },
+    {
+      "board_size": 21,
+      "parity": 1,
+      "allowed_points": 220,
+      "target": 33,
+      "relaxation": [
+        "rows",
+        "columns",
+        "diagonals_slope_+1",
+        "diagonals_slope_-1"
+      ],
+      "status": "INFEASIBLE",
+      "elapsed_seconds": 0.384110689163208,
+      "conflicts": 288,
+      "branches": 3009,
+      "workers": 4,
+      "seed": 202607161
+    }
+  ]
+}
