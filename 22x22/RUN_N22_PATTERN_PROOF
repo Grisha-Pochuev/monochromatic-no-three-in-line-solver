@@ -1,6 +1,7 @@
 Trigger the stronger exact 22x22 proof workflow.
 Date: 2026-07-17
+Attempt: superseded
+Reason: the queued six-hour run is replaced by run 29561750178, a robust one-hour pattern smoke.
 Target excluded: 34
 Verified lower construction: 33
-Model: exact row/column/diagonal patterns plus every remaining grid line.
-Partitions: 21 row/column saturation-count cases after transpose symmetry.
+Model retained: exact row/column/diagonal patterns plus every remaining grid line.
