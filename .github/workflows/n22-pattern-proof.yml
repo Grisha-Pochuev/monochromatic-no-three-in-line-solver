@@ -8,13 +8,138 @@ on:
 
 concurrency:
   group: n22-pattern-proof
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
-  superseded:
-    name: Superseded by one-hour pattern smoke
+  verify-construction:
+    name: Verify 33-point construction
     runs-on: ubuntu-latest
     steps:
-      - run: |
-          echo "The queued six-hour run was superseded by the robust one-hour pattern smoke."
-          echo "The full workflow definition is restored in the following commit."
+      - uses: actions/checkout@v4
+      - run: python 22x22/verify_22x22.py
+
+  prove-upper:
+    name: Pattern proof r2=${{ matrix.row_twos }}, c2=${{ matrix.column_twos }}
+    needs: verify-construction
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        include:
+          - {row_twos: 12, column_twos: 12, seed: 202607171212}
+          - {row_twos: 12, column_twos: 13, seed: 202607171213}
+          - {row_twos: 12, column_twos: 14, seed: 202607171214}
+          - {row_twos: 12, column_twos: 15, seed: 202607171215}
+          - {row_twos: 12, column_twos: 16, seed: 202607171216}
+          - {row_twos: 12, column_twos: 17, seed: 202607171217}
+          - {row_twos: 13, column_twos: 13, seed: 202607171313}
+          - {row_twos: 13, column_twos: 14, seed: 202607171314}
+          - {row_twos: 13, column_twos: 15, seed: 202607171315}
+          - {row_twos: 13, column_twos: 16, seed: 202607171316}
+          - {row_twos: 13, column_twos: 17, seed: 202607171317}
+          - {row_twos: 14, column_twos: 14, seed: 202607171414}
+          - {row_twos: 14, column_twos: 15, seed: 202607171415}
+          - {row_twos: 14, column_twos: 16, seed: 202607171416}
+          - {row_twos: 14, column_twos: 17, seed: 202607171417}
+          - {row_twos: 15, column_twos: 15, seed: 202607171515}
+          - {row_twos: 15, column_twos: 16, seed: 202607171516}
+          - {row_twos: 15, column_twos: 17, seed: 202607171517}
+          - {row_twos: 16, column_twos: 16, seed: 202607171616}
+          - {row_twos: 16, column_twos: 17, seed: 202607171617}
+          - {row_twos: 17, column_twos: 17, seed: 202607171717}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+      - name: Run exact pattern model
+        run: |
+          mkdir -p results
+          python 22x22/prove_upper_22x22_pattern_model.py \
+            --row-twos "${{ matrix.row_twos }}" \
+            --column-twos "${{ matrix.column_twos }}" \
+            --seconds 21000 \
+            --workers 4 \
+            --seed "${{ matrix.seed }}" \
+            --output "results/r${{ matrix.row_twos }}-c${{ matrix.column_twos }}.json"
+      - name: Upload partition result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-pattern-r${{ matrix.row_twos }}-c${{ matrix.column_twos }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect stronger n22 proof
+    needs: prove-upper
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-pattern-r*-c*
+          path: gathered
+          merge-multiple: true
+      - name: Build overall proof record
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path('gathered').glob('r*-c*.json'))
+          records = [json.loads(path.read_text(encoding='utf-8')) for path in files]
+          infeasible = [record for record in records if record.get('status') == 'INFEASIBLE']
+          unknown = [record for record in records if record.get('status') == 'UNKNOWN']
+          feasible = [
+              record for record in records
+              if record.get('status') in {'FEASIBLE', 'OPTIMAL'}
+          ]
+
+          if len(records) == 21 and len(infeasible) == 21:
+              conclusion = 'PROVED_D_MONO_22_EQUALS_33'
+          elif feasible:
+              conclusion = 'FOUND_34_POINT_COUNTEREXAMPLE'
+          else:
+              conclusion = 'INCOMPLETE_N22_PATTERN_PROOF'
+
+          overall = {
+              'conclusion': conclusion,
+              'model': 'four_direction_exact_patterns_plus_all_remaining_lines',
+              'expected_partitions': 21,
+              'records_found': len(records),
+              'infeasible_count': len(infeasible),
+              'unknown_count': len(unknown),
+              'feasible_count': len(feasible),
+              'total_branches': sum(int(record.get('branches', 0)) for record in records),
+              'total_conflicts': sum(int(record.get('conflicts', 0)) for record in records),
+              'records': records,
+          }
+          Path('overall.json').write_text(
+              json.dumps(overall, indent=2) + '\n',
+              encoding='utf-8',
+          )
+          Path('SUMMARY.md').write_text(
+              '# Stronger exact 22x22 pattern proof\n\n'
+              f'Conclusion: `{conclusion}`\n\n'
+              f'- partition records: {len(records)}/21\n'
+              f'- INFEASIBLE: {len(infeasible)}\n'
+              f'- UNKNOWN: {len(unknown)}\n'
+              f'- FEASIBLE/OPTIMAL at target 34: {len(feasible)}\n\n'
+              'The verified 33-point construction supplies the lower bound. '
+              'Each partition uses exact row, column, and two diagonal pattern '
+              'families together with every remaining grid-line constraint.\n',
+              encoding='utf-8',
+          )
+          print(json.dumps(overall, indent=2))
+          if conclusion != 'PROVED_D_MONO_22_EQUALS_33':
+              raise SystemExit(1)
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n22-pattern-proof-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
