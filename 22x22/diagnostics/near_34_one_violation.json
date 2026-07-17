@@ -1,0 +1,28 @@
+{
+  "board_size": 22,
+  "parity": 0,
+  "point_count": 34,
+  "status": "diagnostic_not_a_valid_construction",
+  "search_seed": 303,
+  "violation_count": 1,
+  "violating_line": {
+    "equation": "y = 0",
+    "selected_points": [[8, 0], [12, 0], [14, 0]]
+  },
+  "exhaustive_local_repair": {
+    "single_swap": "none",
+    "two_swap": "none",
+    "three_swap": "none",
+    "four_swap": "none",
+    "five_swap": "none",
+    "meaning": "No valid 34-point configuration lies within Hamming distance 2k of this diagnostic configuration for k <= 5."
+  },
+  "points": [
+    [0, 6], [0, 10], [1, 15], [1, 17], [2, 14], [2, 18],
+    [3, 1], [3, 7], [4, 14], [4, 16], [5, 1], [5, 3],
+    [6, 20], [8, 0], [8, 4], [11, 15], [11, 19], [12, 0],
+    [12, 2], [13, 21], [14, 0], [14, 16], [15, 21], [16, 8],
+    [17, 5], [17, 11], [18, 18], [18, 20], [19, 13], [19, 19],
+    [20, 2], [20, 4], [21, 7], [21, 11]
+  ]
+}
