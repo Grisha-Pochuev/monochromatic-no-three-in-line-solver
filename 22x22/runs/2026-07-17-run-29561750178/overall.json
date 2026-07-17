@@ -1,0 +1,53 @@
+{
+  "run_id": 29561750178,
+  "run_url": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29561750178",
+  "run_head_sha": "3bce7f9995f3bcfb767c3cc3d6f754c7fd59ac65",
+  "date": "2026-07-17",
+  "conclusion": "ONE_HOUR_PATTERN_SMOKE_COMPLETE_BUT_PROOF_OPEN",
+  "board_size": 22,
+  "target": 34,
+  "verified_lower_bound": 33,
+  "model": "four_direction_exact_patterns_plus_all_remaining_lines",
+  "baseline_run_id": 29534667942,
+  "baseline_solver_job_hours": 116.66805437982083,
+  "expected_partitions": 21,
+  "records_found": 21,
+  "missing_partitions": [],
+  "status_counts": {
+    "INFEASIBLE": 0,
+    "UNKNOWN": 21,
+    "FEASIBLE_OR_OPTIMAL": 0,
+    "MODEL_INVALID": 0
+  },
+  "current_solver_job_hours": 19.44574013815986,
+  "current_total_branches": 171178946,
+  "current_total_conflicts": 20825701,
+  "partitions": [
+    {"row_twos":12,"column_twos":12,"status":"UNKNOWN","seconds":3500.017831802368,"branches":8314596,"conflicts":462641,"workers":4,"requested_seed":22071212,"effective_seed":22071212,"remaining_full_line_constraints":2372},
+    {"row_twos":12,"column_twos":13,"status":"UNKNOWN","seconds":3500.5084450244904,"branches":8882447,"conflicts":475514,"workers":4,"requested_seed":22071213,"effective_seed":22071213,"remaining_full_line_constraints":2372},
+    {"row_twos":12,"column_twos":14,"status":"UNKNOWN","seconds":3500.0213532447815,"branches":6253078,"conflicts":495137,"workers":4,"requested_seed":22071214,"effective_seed":22071214,"remaining_full_line_constraints":2372},
+    {"row_twos":12,"column_twos":15,"status":"UNKNOWN","seconds":3500.014074087143,"branches":9163998,"conflicts":291558,"workers":4,"requested_seed":22071215,"effective_seed":22071215,"remaining_full_line_constraints":2372},
+    {"row_twos":12,"column_twos":16,"status":"UNKNOWN","seconds":3500.0198464393616,"branches":6633460,"conflicts":222505,"workers":4,"requested_seed":22071216,"effective_seed":22071216,"remaining_full_line_constraints":2372},
+    {"row_twos":12,"column_twos":17,"status":"UNKNOWN","seconds":1750.021469593048,"branches":18875536,"conflicts":4879994,"workers":4,"requested_seed":22071217,"effective_seed":22071217,"remaining_full_line_constraints":2372},
+    {"row_twos":13,"column_twos":13,"status":"UNKNOWN","seconds":3500.4693830013275,"branches":8078884,"conflicts":720717,"workers":4,"requested_seed":22071313,"effective_seed":22071313,"remaining_full_line_constraints":2372},
+    {"row_twos":13,"column_twos":14,"status":"UNKNOWN","seconds":3500.021665096283,"branches":2333938,"conflicts":637019,"workers":4,"requested_seed":22071314,"effective_seed":22071314,"remaining_full_line_constraints":2372},
+    {"row_twos":13,"column_twos":15,"status":"UNKNOWN","seconds":3500.2052824497223,"branches":7443849,"conflicts":374681,"workers":4,"requested_seed":22071315,"effective_seed":22071315,"remaining_full_line_constraints":2372},
+    {"row_twos":13,"column_twos":16,"status":"UNKNOWN","seconds":3500.020040035248,"branches":5485646,"conflicts":308718,"workers":4,"requested_seed":22071316,"effective_seed":22071316,"remaining_full_line_constraints":2372},
+    {"row_twos":13,"column_twos":17,"status":"UNKNOWN","seconds":3500.015467643738,"branches":5805806,"conflicts":240553,"workers":4,"requested_seed":22071317,"effective_seed":22071317,"remaining_full_line_constraints":2372},
+    {"row_twos":14,"column_twos":14,"status":"UNKNOWN","seconds":3500.870372772217,"branches":30163405,"conflicts":9422937,"workers":4,"requested_seed":22071414,"effective_seed":22071414,"remaining_full_line_constraints":2372},
+    {"row_twos":14,"column_twos":15,"status":"UNKNOWN","seconds":3500.028557062149,"branches":5942658,"conflicts":351443,"workers":4,"requested_seed":22071415,"effective_seed":22071415,"remaining_full_line_constraints":2372},
+    {"row_twos":14,"column_twos":16,"status":"UNKNOWN","seconds":3500.0217554569244,"branches":6019176,"conflicts":276166,"workers":4,"requested_seed":22071416,"effective_seed":22071416,"remaining_full_line_constraints":2372},
+    {"row_twos":14,"column_twos":17,"status":"UNKNOWN","seconds":3500.020141363144,"branches":6397786,"conflicts":243355,"workers":4,"requested_seed":22071417,"effective_seed":22071417,"remaining_full_line_constraints":2372},
+    {"row_twos":15,"column_twos":15,"status":"UNKNOWN","seconds":3501.0938341617584,"branches":6562264,"conflicts":338980,"workers":4,"requested_seed":22071515,"effective_seed":22071515,"remaining_full_line_constraints":2372},
+    {"row_twos":15,"column_twos":16,"status":"UNKNOWN","seconds":3500.0204935073853,"branches":6031682,"conflicts":292159,"workers":4,"requested_seed":22071516,"effective_seed":22071516,"remaining_full_line_constraints":2372},
+    {"row_twos":15,"column_twos":17,"status":"UNKNOWN","seconds":3500.0193984508514,"branches":7222472,"conflicts":246410,"workers":4,"requested_seed":22071517,"effective_seed":22071517,"remaining_full_line_constraints":2372},
+    {"row_twos":16,"column_twos":16,"status":"UNKNOWN","seconds":3500.0202028751373,"branches":5074329,"conflicts":256375,"workers":4,"requested_seed":22071616,"effective_seed":22071616,"remaining_full_line_constraints":2372},
+    {"row_twos":16,"column_twos":17,"status":"UNKNOWN","seconds":3500.020028591156,"branches":6694039,"conflicts":198100,"workers":4,"requested_seed":22071617,"effective_seed":22071617,"remaining_full_line_constraints":2372},
+    {"row_twos":17,"column_twos":17,"status":"UNKNOWN","seconds":1751.2148547172546,"branches":3799897,"conflicts":90739,"workers":4,"requested_seed":22071717,"effective_seed":22071717,"remaining_full_line_constraints":2372}
+  ],
+  "artifact": {
+    "name": "n22-pattern-one-hour-overall",
+    "artifact_id": 8400755380,
+    "sha256": "e817a53985bed458bfc2f78a61b71c81d2008d9afcc9998f29679b193e236314"
+  }
+}
