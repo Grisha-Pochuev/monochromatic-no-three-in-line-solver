@@ -1,0 +1,7 @@
+Trigger the complete five-hour main-diagonal partition run.
+
+Prepared: 2026-07-17
+Engine: 22x22/prove_upper_22x22_main_diagonal.py
+Workflow: .github/workflows/n22-main-diagonal-five-hour.yml
+Partition: 133 canonical main-diagonal patterns, covering occupancies 0, 1, and 2 modulo 180-degree rotation.
+Resources: 20 parallel shards, 4 CP-SAT workers each, 2500 seconds per case, at most 7 cases per shard.
