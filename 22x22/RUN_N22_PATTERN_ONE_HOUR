@@ -1,0 +1,8 @@
+Trigger the robust one-hour 22x22 pattern smoke workflow.
+Date: 2026-07-17
+Baseline run: 29534667942 (20 UNKNOWN records, 116.67 solver job-hours)
+Target excluded: 34
+Verified lower construction: 33
+Model: exact row/column/diagonal patterns plus every remaining grid line.
+Budget: about one wall-clock hour across 20 parallel shards covering all 21 partitions.
+UNKNOWN is preserved as a normal incomplete mathematical result, not a technical job failure.
