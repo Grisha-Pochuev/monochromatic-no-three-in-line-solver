@@ -1,0 +1,170 @@
+name: n22 five-hour diagonal split
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_DIAG_SPLIT_5H'
+  workflow_dispatch:
+
+concurrency:
+  group: n22-diag-split-five-hour
+  cancel-in-progress: false
+
+jobs:
+  verify-construction:
+    name: Verify 33-point construction
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python 22x22/verify_22x22.py
+
+  diagonal-split:
+    name: Diagonal split shard ${{ matrix.shard }}
+    needs: verify-construction
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+      - name: Enumerate this shard
+        run: |
+          python - <<'PY'
+          import json
+          shard = int('${{ matrix.shard }}')
+          cases = [
+              (r, c, d)
+              for r in range(12, 18)
+              for c in range(r, 18)
+              for d in range(13, 18)
+          ]
+          mine = [case for i, case in enumerate(cases) if i % 20 == shard]
+          assert len(cases) == 105
+          with open('cases.json', 'w', encoding='utf-8') as f:
+              json.dump(mine, f)
+          print({'shard': shard, 'case_count': len(mine), 'cases': mine})
+          PY
+      - name: Run complete compact subcases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          count=$(python -c "import json; print(len(json.load(open('cases.json'))))")
+          budget_each=$((17400 / count))
+          python - <<'PY' > case-list.txt
+          import json
+          for r, c, d in json.load(open('cases.json')):
+              print(r, c, d)
+          PY
+          while read -r row_twos column_twos diag_twos; do
+            seed=$((22000000 + row_twos * 10000 + column_twos * 100 + diag_twos))
+            python 22x22/prove_upper_22x22_diag_split.py \
+              --row-twos "$row_twos" \
+              --column-twos "$column_twos" \
+              --diag-plus-twos "$diag_twos" \
+              --seconds "$budget_each" \
+              --workers 4 \
+              --seed "$seed" \
+              --output "results/r${row_twos}-c${column_twos}-d${diag_twos}.json"
+          done < case-list.txt
+      - name: Upload shard results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-diag-split-5h-${{ matrix.shard }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect n22 diagonal split
+    needs: diagonal-split
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-diag-split-5h-*
+          path: gathered
+          merge-multiple: true
+      - name: Build exact summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          expected = [(r,c,d) for r in range(12,18) for c in range(r,18) for d in range(13,18)]
+          files = sorted(Path('gathered').glob('r*-c*-d*.json'))
+          records = [json.loads(p.read_text(encoding='utf-8')) for p in files]
+          current = {(int(x['row_twos']), int(x['column_twos']), int(x['diag_plus_twos'])): x for x in records}
+          missing = [list(k) for k in expected if k not in current]
+          invalid = [x for x in records if x.get('status') == 'MODEL_INVALID']
+          infeasible = [x for x in records if x.get('status') == 'INFEASIBLE']
+          unknown = [x for x in records if x.get('status') == 'UNKNOWN']
+          feasible = [x for x in records if x.get('status') in {'FEASIBLE','OPTIMAL'}]
+
+          if feasible:
+              conclusion = 'FOUND_34_POINT_CONFIGURATION'
+          elif len(infeasible) == 105 and not missing:
+              conclusion = 'PROVED_D_MONO_22_EQUALS_33'
+          elif missing or invalid:
+              conclusion = 'TECHNICAL_FAILURE'
+          else:
+              conclusion = 'COMPLETE_RUN_BUT_PROOF_OPEN'
+
+          overall = {
+              'run_id': '${{ github.run_id }}',
+              'run_url': 'https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+              'head_sha': '${{ github.sha }}',
+              'board_size': 22,
+              'target': 34,
+              'verified_lower_bound': 33,
+              'partition': '21 row-column profiles x 5 slope-plus diagonal counts',
+              'expected_cases': 105,
+              'records_found': len(records),
+              'missing_cases': missing,
+              'status_counts': {
+                  'INFEASIBLE': len(infeasible),
+                  'UNKNOWN': len(unknown),
+                  'FEASIBLE_OR_OPTIMAL': len(feasible),
+                  'MODEL_INVALID': len(invalid),
+              },
+              'total_solver_hours': sum(float(x.get('elapsed_seconds',0)) for x in records)/3600,
+              'total_branches': sum(int(x.get('branches',0)) for x in records),
+              'total_conflicts': sum(int(x.get('conflicts',0)) for x in records),
+              'conclusion': conclusion,
+              'records': records,
+          }
+          Path('overall.json').write_text(json.dumps(overall, indent=2) + '\n', encoding='utf-8')
+          lines = [
+              '# Five-hour n22 diagonal-profile split', '',
+              f'Conclusion: `{conclusion}`', '',
+              f'- records: {len(records)}/105',
+              f'- INFEASIBLE: {len(infeasible)}',
+              f'- UNKNOWN: {len(unknown)}',
+              f'- FEASIBLE/OPTIMAL: {len(feasible)}',
+              f'- missing: {len(missing)}',
+              f'- solver hours: {overall["total_solver_hours"]:.2f}',
+              '',
+              'This is a complete disjoint partition of every target-34 configuration by',
+              'row_twos, column_twos, and the number of slope +1 diagonals containing two points.',
+          ]
+          Path('SUMMARY.md').write_text('\n'.join(lines) + '\n', encoding='utf-8')
+          print(json.dumps(overall, indent=2))
+          if missing or invalid:
+              raise SystemExit(1)
+          PY
+      - name: Upload overall summary
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-diag-split-5h-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
