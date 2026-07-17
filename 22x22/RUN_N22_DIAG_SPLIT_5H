@@ -1,0 +1,10 @@
+Trigger the complete five-hour 22x22 diagonal-profile split.
+
+Partition: 21 row/column saturation profiles x 5 possible counts of slope +1 diagonals containing exactly two selected points = 105 disjoint cases.
+
+Engine: 22x22/prove_upper_22x22_diag_split.py
+Workflow: .github/workflows/n22-diag-split-five-hour.yml
+OR-Tools: 9.15.6755
+Workers: 4 per job
+Parallel jobs: 20
+Wall-clock limit: 5 hours per shard, with 10 minutes reserved for JSON and artifact upload.
