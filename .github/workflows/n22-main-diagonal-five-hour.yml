@@ -1,0 +1,172 @@
+name: n22 five-hour main-diagonal partition
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_MAIN_DIAGONAL_FIVE_HOUR'
+  workflow_dispatch:
+
+concurrency:
+  group: n22-main-diagonal-five-hour
+  cancel-in-progress: false
+
+jobs:
+  verify-and-preflight:
+    name: Verify construction and preflight exact engine
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - run: python 22x22/verify_22x22.py
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+      - name: Check complete case list
+        run: |
+          python - <<'PY'
+          import importlib.util
+          path = '22x22/prove_upper_22x22_main_diagonal.py'
+          spec = importlib.util.spec_from_file_location('n22diag', path)
+          module = importlib.util.module_from_spec(spec)
+          spec.loader.exec_module(module)
+          cases = module.canonical_diagonal_patterns()
+          assert len(cases) == 133, len(cases)
+          assert cases[0] == ()
+          assert all(len(case) <= 2 for case in cases)
+          print('complete canonical cases:', len(cases))
+          PY
+      - name: Ten-second solver preflight
+        run: |
+          mkdir -p preflight
+          python 22x22/prove_upper_22x22_main_diagonal.py \
+            --case-id 0 --seconds 10 --workers 4 --seed 22170000 \
+            --output preflight/case-000.json
+          python - <<'PY'
+          import json
+          record = json.load(open('preflight/case-000.json'))
+          assert record['case_count'] == 133
+          assert record['status'] != 'MODEL_INVALID'
+          print(record['status'])
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n22-main-diagonal-preflight
+          path: preflight/
+          retention-days: 30
+
+  exact-shards:
+    name: Main-diagonal shard ${{ matrix.shard }}
+    needs: verify-and-preflight
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+      - name: Run complete assigned cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          shard=${{ matrix.shard }}
+          for ((case_id=shard; case_id<133; case_id+=20)); do
+            seed=$((22170000 + case_id))
+            python 22x22/prove_upper_22x22_main_diagonal.py \
+              --case-id "$case_id" \
+              --seconds 2500 \
+              --workers 4 \
+              --seed "$seed" \
+              --output "results/case-$(printf '%03d' "$case_id").json"
+          done
+      - name: Upload shard results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-main-diagonal-shard-${{ matrix.shard }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect five-hour main-diagonal proof
+    needs: exact-shards
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-main-diagonal-shard-*
+          path: gathered
+          merge-multiple: true
+      - name: Build proof summary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+
+          files = sorted(Path('gathered').glob('case-*.json'))
+          records = [json.loads(path.read_text(encoding='utf-8')) for path in files]
+          by_id = {int(r['case_id']): r for r in records}
+          missing = [i for i in range(133) if i not in by_id]
+          counts = {}
+          for r in records:
+              counts[r['status']] = counts.get(r['status'], 0) + 1
+
+          feasible = [r for r in records if r['status'] in {'FEASIBLE', 'OPTIMAL'}]
+          invalid = [r for r in records if r['status'] == 'MODEL_INVALID']
+          if feasible:
+              conclusion = 'FOUND_34_POINT_CONFIGURATION'
+          elif not missing and counts.get('INFEASIBLE', 0) == 133:
+              conclusion = 'PROVED_D_MONO_22_EQUALS_33'
+          elif missing or invalid:
+              conclusion = 'TECHNICAL_FAILURE_OR_MISSING_CASES'
+          else:
+              conclusion = 'COMPLETE_PARTITION_BUT_PROOF_OPEN'
+
+          overall = {
+              'conclusion': conclusion,
+              'board_size': 22,
+              'target': 34,
+              'verified_lower_bound': 33,
+              'partition': 'all main-diagonal subsets of size 0,1,2 modulo 180-degree rotation',
+              'expected_cases': 133,
+              'records_found': len(records),
+              'missing_case_ids': missing,
+              'status_counts': counts,
+              'total_solver_hours': sum(float(r.get('elapsed_seconds', 0)) for r in records) / 3600,
+              'total_branches': sum(int(r.get('branches', 0)) for r in records),
+              'total_conflicts': sum(int(r.get('conflicts', 0)) for r in records),
+              'records': records,
+          }
+          Path('overall.json').write_text(json.dumps(overall, indent=2) + '\n', encoding='utf-8')
+          summary = [
+              '# Five-hour 22x22 main-diagonal partition', '',
+              f'Conclusion: `{conclusion}`', '',
+              f'- records: {len(records)}/133',
+              f'- INFEASIBLE: {counts.get("INFEASIBLE", 0)}',
+              f'- UNKNOWN: {counts.get("UNKNOWN", 0)}',
+              f'- FEASIBLE/OPTIMAL: {len(feasible)}',
+              f'- missing: {len(missing)}',
+              f'- solver job-hours: {overall["total_solver_hours"]:.2f}', '',
+              'The partition is complete because every main diagonal contains at most two selected points,',
+              'and every size-0/1/2 pattern is represented up to 180-degree rotation.'
+          ]
+          Path('SUMMARY.md').write_text('\n'.join(summary) + '\n', encoding='utf-8')
+          print(json.dumps(overall, indent=2))
+          if missing or invalid:
+              raise SystemExit(1)
+          PY
+      - name: Upload overall result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-main-diagonal-five-hour-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
