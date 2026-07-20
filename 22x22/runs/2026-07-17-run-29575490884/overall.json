@@ -1,0 +1,29 @@
+{
+  "run_id": 29575490884,
+  "run_url": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29575490884",
+  "head_sha": "b880d58a6a23aa8ac0401abe9586ae217c7ec8fe",
+  "workflow": ".github/workflows/n22-main-diagonal-pairs-five-hour.yml",
+  "workflow_status": "failure_at_final_collection_step",
+  "recovered_mathematical_status": "INCOMPLETE_WITH_UNKNOWN_CASES",
+  "board_size": 22,
+  "target": 34,
+  "verified_lower_bound": 33,
+  "partition": "121 canonical selected pairs on x=y modulo 180-degree rotation",
+  "expected_cases": 121,
+  "records_found": 121,
+  "missing_case_indices": [],
+  "duplicate_case_indices": [],
+  "status_counts": {
+    "INFEASIBLE": 33,
+    "UNKNOWN": 88,
+    "FEASIBLE_OR_OPTIMAL": 0,
+    "MODEL_INVALID": 0
+  },
+  "total_solver_job_hours": 86.305868,
+  "total_branches": 4196533425,
+  "total_conflicts": 1185395482,
+  "infeasible_case_indices": [0, 1, 6, 7, 8, 9, 10, 11, 12, 13, 16, 19, 20, 27, 28, 29, 30, 31, 39, 98, 99, 106, 107, 108, 109, 112, 113, 114, 115, 117, 118, 119, 120],
+  "unknown_case_indices": [2, 3, 4, 5, 14, 15, 17, 18, 21, 22, 23, 24, 25, 26, 32, 33, 34, 35, 36, 37, 38, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97, 100, 101, 102, 103, 104, 105, 110, 111, 116],
+  "technical_note": "All 20 shard artifacts were recovered. The final collector imported the OR-Tools proof module but the collect job did not install OR-Tools. Raw per-case JSON remains in the GitHub Actions artifacts.",
+  "next_step": "Run only the 88 UNKNOWN pair cases, subdividing each by the complete slope-plus saturated-diagonal count range 13..17."
+}
