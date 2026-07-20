@@ -21,7 +21,8 @@ For even board size the two colors are congruent by reflection, so only parity 0
 - `upper_certificate_34_four_direction.json` — rational certificate with objective `6470/187`;
 - `prove_upper_22x22_main_diagonal_pair.py` — all-line model split by the forced pair on `x=y`;
 - `prove_upper_22x22_profile_child.py` — pair-conditional model split by both diagonal saturation counts;
-- `run_n22_profile_smoke_shard.py` and `collect_n22_profile_smoke.py` — complete profile smoke infrastructure.
+- `run_n22_profile_smoke_shard.py` and `collect_n22_profile_smoke.py` — complete profile smoke infrastructure;
+- `run_n22_profile_long_shard.py` and `collect_n22_profile_long.py` — memory-safe long-run infrastructure.
 
 ## Saved runs
 
@@ -56,32 +57,49 @@ The five-hour main-diagonal-pair run recovered all 121 canonical pair cases:
 
 No 34-point configuration was found, but the 88 `UNKNOWN` pairs mean the board is not closed. The 33 exact exclusions must not be recomputed.
 
-## Current pair/profile attack
+### Run 29766054707
 
-For every unresolved selected pair on `x=y`, the target-34 certificate leaves a pair-dependent residual slack between 53 and 112. This gives exact additional constraints:
+Archive: `22x22/runs/2026-07-20-run-29766054707/`
 
-- all certificate lines heavier than the residual are saturated;
-- off-diagonal selected points obey the residual excess budget and threshold cuts;
-- explicit 0/1/2 states on rows, columns and both diagonal families obey the weighted line-defect budget;
-- transposition gives a safe lexicographic symmetry break at the count-profile level.
+The complete pair/profile smoke finished successfully and collected all 2640 children:
 
-Every unresolved pair is partitioned completely by:
+- `INFEASIBLE`: 1864;
+- `UNKNOWN`: 776;
+- `FEASIBLE`/`OPTIMAL`: 0;
+- missing/duplicate/model-invalid: 0;
+- newly closed parent pairs: 0;
+- solver work: 4.77 job-hours;
+- total branches: 368,668,487;
+- total conflicts: 97,545,592.
+
+The 1864 exact exclusions are final and must not be recomputed. The remaining 776 children are listed in the balanced long schedule stored with this run.
+
+## Current 5h50 attack
+
+Workflow:
 
 ```text
-diag_plus_twos  = 13..17
-diag_minus_twos = 12..17
+.github/workflows/n22-profile-survivors-5h50.yml
 ```
 
-This gives 2640 formal children. An exact arithmetic defect calculation eliminates more than half before CP-SAT. Short local tests closed many additional children in seconds, including 41 of 81 admissible profile children among the nine smallest-residual pairs.
+It processes only the 776 `UNKNOWN` children from run `29766054707`.
 
-Prepared workflow:
+Resource layout:
 
-```text
-.github/workflows/n22-profile-children-smoke.yml
-```
+- 20 independent `ubuntu-latest` jobs;
+- 4 CP-SAT workers per active child, using all four virtual CPUs of each runner;
+- 38 or 39 children per job;
+- 21,000 seconds (5 hours 50 minutes) wall budget per shard;
+- workload balanced from the smoke-run score `branches + 2*conflicts`;
+- only one solver process at a time on each machine.
 
-It checks all 2640 formal children exactly once across 20 shards. Arithmetic exclusions finish immediately; the remaining children receive 20 seconds and four CP-SAT workers. The result will identify newly closed pairs and the exact list of surviving profile children.
+Memory safeguards:
 
-Detailed experiments and the exact-pattern symmetry warning are in `PROFILE_SPLIT_RESEARCH_2026-07-20.md`.
+- every child runs in a separate subprocess, so memory is returned after each case;
+- parent-side RSS guard at 13,000 MB, leaving headroom on a 16 GB runner;
+- a memory-stopped child can be retried with two workers;
+- `MALLOC_ARENA_MAX=2` and hidden numerical-library threads are disabled;
+- memory, CPU and disk snapshots are logged once per minute;
+- partial JSON is written after every child and artifacts upload with `if: always()`.
 
 The folder may be marked closed with value 33 only after every remaining child returns `INFEASIBLE`. `UNKNOWN` is not a proof.
