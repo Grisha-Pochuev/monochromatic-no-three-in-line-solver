@@ -1,0 +1,6 @@
+Trigger complete n22 pair/profile smoke.
+
+Date: 2026-07-20
+Partition: 88 unresolved main-diagonal pairs x diag_plus_twos 13..17 x diag_minus_twos 12..17.
+Formal children: 2640.
+Resources: 20 shards, 4 CP-SAT workers, 20 seconds per non-analytic child.
