@@ -49,14 +49,30 @@ The stronger exact-pattern workflow completed successfully and collected all 21 
 
 This run did not close 22x22. A long repeat of the unchanged pattern model is not recommended.
 
-## Current exact run: forced main-diagonal pair
+### Run 29575490884
+
+Archive: `22x22/runs/2026-07-17-run-29575490884/`
+
+The five-hour main-diagonal-pair run preserved all 20 shard artifacts. The final collection job failed technically, but the 121 case records were recovered and checked manually:
+
+- expected and recovered cases: 121/121;
+- `INFEASIBLE`: 33;
+- `UNKNOWN`: 88;
+- `FEASIBLE`/`OPTIMAL`: 0;
+- total solver work: 86.31 job-hours;
+- total branches: 4,196,533,425;
+- total conflicts: 1,185,395,482.
+
+No 34-point configuration was found, but the 88 `UNKNOWN` cases mean the board is not closed. The 33 exact exclusions are reusable and should not be recomputed.
+
+The red workflow status came from the collector: it imported the OR-Tools-based proof module while the collect job had not installed OR-Tools. The raw shard calculations were not lost.
+
+## Current exact frontier
 
 The rational four-direction certificate has denominator `187`, objective numerator `6470`, and only `112` units of slack at target 34. It forces the three diagonals `x-y=-2,0,2` to contain exactly two points. Therefore the selected pair on `x=y` gives a complete finite partition.
 
-There are 231 raw pairs and 121 canonical cases after 180-degree rotation. The new workflow checks every canonical case exactly once across 20 GitHub Actions jobs. Each job has a five-hour limit and preserves JSON for `INFEASIBLE`, `UNKNOWN`, and found solutions.
+There are 231 raw pairs and 121 canonical cases after 180-degree rotation. Run `29575490884` strictly excluded 33 of these cases. The next run must process only the 88 remaining cases and subdivide each by the complete saturated slope `+1` diagonal count range `13..17`.
 
 Detailed derivation: `MAIN_DIAGONAL_PAIR_PLAN.md`.
 
-If unknown pairs remain, only those pairs should be subdivided by the complete range of saturated slope `+1` diagonal counts, `13..17`.
-
-The folder may be marked closed with value 33 only after every one of the 121 canonical pair cases returns `INFEASIBLE`. `UNKNOWN` is not a proof.
+The folder may be marked closed with value 33 only after every remaining child case returns `INFEASIBLE`. `UNKNOWN` is not a proof.
