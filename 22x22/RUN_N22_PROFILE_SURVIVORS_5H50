@@ -1,0 +1,7 @@
+Trigger the memory-safe 5h50 run over the 776 UNKNOWN profile children.
+
+Source run: 29766054707
+Date: 2026-07-20
+Resources: 20 independent ubuntu-latest jobs, 4 CP-SAT workers each.
+Solver wall budget: 21000 seconds per shard.
+Memory guard: 13000 MB RSS, one solver subprocess at a time, two-worker fallback on memory failure.
