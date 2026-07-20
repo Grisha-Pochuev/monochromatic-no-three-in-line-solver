@@ -7,11 +7,12 @@ import json
 from collections import defaultdict
 from pathlib import Path
 
-from prove_upper_22x22_profile_child import decode_child, unresolved_pair_indices
+from prove_upper_22x22_profile_child import unresolved_pair_indices
 from prove_upper_22x22_main_diagonal_pair import validate_solution
 
 HERE = Path(__file__).resolve().parent
 SCHEDULE_PATH = HERE / "runs/2026-07-20-run-29766054707/long_profile_schedule.json"
+CHILDREN_PER_PAIR = 30
 
 
 def load_schedule() -> dict[str, object]:
@@ -84,20 +85,19 @@ def main() -> None:
 
     # Every child not scheduled here was already exact-INFEASIBLE in run 29766054707.
     current_status = {int(record["child_id"]): record.get("status") for record in ordered}
+    unresolved = unresolved_pair_indices()
     pair_remaining: dict[int, list[int]] = defaultdict(list)
-    for pair_index in unresolved_pair_indices():
-        for child_id in range(2640):
-            decoded_pair, _, _ = decode_child(child_id)
-            if decoded_pair != pair_index:
-                continue
-            if child_id in expected_set and current_status.get(child_id) != "INFEASIBLE":
-                pair_remaining[pair_index].append(child_id)
+    for child_id in expected_ids:
+        pair_position = child_id // CHILDREN_PER_PAIR
+        pair_index = unresolved[pair_position]
+        if current_status.get(child_id) != "INFEASIBLE":
+            pair_remaining[pair_index].append(child_id)
     newly_closed_pairs = sorted(
-        pair_index for pair_index in unresolved_pair_indices()
+        pair_index for pair_index in unresolved
         if not pair_remaining[pair_index]
     )
     remaining_pairs = sorted(
-        pair_index for pair_index in unresolved_pair_indices()
+        pair_index for pair_index in unresolved
         if pair_remaining[pair_index]
     )
     remaining_children = sorted(
