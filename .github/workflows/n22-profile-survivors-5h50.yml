@@ -1,0 +1,202 @@
+name: n22 profile survivors 5h50
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_PROFILE_SURVIVORS_5H50'
+  workflow_dispatch:
+
+concurrency:
+  group: n22-profile-survivors-5h50
+  cancel-in-progress: true
+
+jobs:
+  verify-and-smoke:
+    name: Verify long profile schedule
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Verify known 33-point construction
+        run: python 22x22/verify_22x22.py
+
+      - name: Verify source schedule and exact coverage
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path = Path('22x22/runs/2026-07-20-run-29766054707/long_profile_schedule.json')
+          data = json.loads(path.read_text(encoding='utf-8'))
+          assert data['source_run_id'] == 29766054707
+          assert data['prior_infeasible_count'] == 1864
+          assert data['unknown_child_count'] == 776
+          assert data['shards'] == 20
+          assert data['workers_per_solver'] == 4
+          assert data['total_seconds_per_shard'] == 21000
+          assert data['memory_guard_mb'] == 13000
+          assert len(data['assignments']) == 20
+          ids = [int(child_id) for item in data['assignments'] for child_id in item['ids']]
+          assert len(ids) == 776
+          assert len(set(ids)) == 776
+          assert sorted(item['count'] for item in data['assignments']) == [38] * 4 + [39] * 16
+          loads = [int(item['smoke_score_total']) for item in data['assignments']]
+          assert max(loads) / min(loads) < 1.04
+          print({'children': len(ids), 'load_ratio': max(loads) / min(loads)})
+          PY
+
+      - name: Show runner resources
+        run: |
+          nproc
+          free -h
+          df -h
+          grep -m1 'model name' /proc/cpuinfo || true
+
+      - name: Smoke-test subprocess runner and memory records
+        run: |
+          python 22x22/run_n22_profile_long_shard.py \
+            --shard 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --base-seconds 10 \
+            --max-seconds 15 \
+            --artifact-buffer-seconds 5 \
+            --max-children 1 \
+            --output-dir smoke-long
+          test -f smoke-long/shard-00-summary.json
+          test "$(find smoke-long -name 'child-*.json' ! -name '*-attempt-*' | wc -l)" -eq 1
+
+      - name: Upload verification records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-profile-5h50-verification
+          path: smoke-long/
+          retention-days: 30
+
+  long-shards:
+    name: Long profile shard ${{ matrix.shard }}
+    needs: verify-and-smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            echo "=== machine ==="
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.shard }}.log
+
+      - name: Run balanced 5h50 shard with memory guard
+        shell: bash
+        run: |
+          set -uo pipefail
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > "memory-${{ matrix.shard }}.log" 2>&1 &
+          monitor_pid=$!
+          python 22x22/run_n22_profile_long_shard.py \
+            --shard "${{ matrix.shard }}" \
+            --total-seconds 21000 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --base-seconds 180 \
+            --max-seconds 1800 \
+            --artifact-buffer-seconds 180 \
+            --seed-base 2026072000 \
+            --output-dir "results/shard-${{ matrix.shard }}"
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Final resource snapshot
+        if: always()
+        run: |
+          free -h
+          df -h
+
+      - name: Upload shard records and memory log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-profile-5h50-shard-${{ matrix.shard }}
+          path: |
+            results/
+            memory-${{ matrix.shard }}.log
+            machine-${{ matrix.shard }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect n22 profile 5h50
+    needs: long-shards
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pinned OR-Tools for collector imports
+        run: python -m pip install ortools==9.15.6755
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-profile-5h50-shard-*
+          path: gathered
+
+      - name: Collect and validate all 776 survivors
+        run: |
+          python 22x22/collect_n22_profile_long.py \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-id "${{ github.run_id }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --run-sha "${{ github.sha }}"
+
+      - name: Upload overall result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-profile-5h50-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
