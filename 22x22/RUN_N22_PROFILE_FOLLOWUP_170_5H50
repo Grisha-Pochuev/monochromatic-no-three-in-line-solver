@@ -1,0 +1,9 @@
+Trigger the exact 5h50 follow-up over the 170 UNKNOWN profile children from run 29770927206.
+
+Source run: 29770927206
+Source artifact: n22-profile-5h50-overall (8479986610)
+Date: 2026-07-21
+Resources: 20 independent ubuntu-latest jobs, 4 CP-SAT workers each.
+Schedule: 8 or 9 exact children per job, balanced by prior branches + 2*conflicts.
+Solver wall budget: 21000 seconds per shard, up to 2500 seconds per child.
+Memory guard: 13000 MB RSS, one solver subprocess at a time, two-worker fallback on technical memory failure.
