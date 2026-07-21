@@ -90,24 +90,23 @@ The memory-safe 5h50 rerun processed all 776 survivors from run `29766054707`:
 
 Together with the 1864 children closed by run `29766054707`, exactly 2470 of the 2640 profile children are now proved impossible. The remaining 170 children are the only exact frontier for a 34-point configuration. Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29770927206
 
+### Run 29795643015
+
+Archive: `22x22/runs/2026-07-21-run-29795643015/`
+
+The exact follow-up processed all 170 survivors from run `29770927206`:
+
+- `INFEASIBLE`: 114;
+- `UNKNOWN`: 56;
+- `FEASIBLE`/`OPTIMAL`: 0;
+- missing/duplicate/unexpected/model-invalid/technical: 0;
+- newly closed main-diagonal pairs: 23;
+- remaining main-diagonal pairs: 30;
+- cumulative exact exclusions: 2584 / 2640.
+
+Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29795643015
+
 ## Current follow-up attack
 
-Workflow:
+The next workflow processes only the 56 exact children still marked `UNKNOWN` after run `29795643015`. It uses 20 balanced jobs, four solver workers, one solver process per machine, a 13 GB RSS guard, and up to 5 hours 50 minutes per job. Previously proved children are not recomputed.
 
-```text
-.github/workflows/n22-profile-followup-170-5h50.yml
-```
-
-It downloads and independently validates the aggregate record from run `29770927206`, archives it in the `22x22` folder, then schedules only the 170 remaining exact children.
-
-Resource layout:
-
-- 20 independent `ubuntu-latest` jobs;
-- 4 CP-SAT workers per active child;
-- 8 or 9 children per job;
-- 21,000 seconds (5 hours 50 minutes) per shard;
-- up to 2,500 seconds per child, roughly four times the previous average allowance;
-- one solver subprocess at a time with a 13 GB RSS guard;
-- a different seed base to diversify the exact search.
-
-The board remains open until every surviving child is `INFEASIBLE` or a valid 34-point construction is found and independently checked.

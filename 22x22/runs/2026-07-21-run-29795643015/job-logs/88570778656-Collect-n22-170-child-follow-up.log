@@ -1,0 +1,375 @@
+﻿2026-07-21T07:30:20.8801965Z Current runner version: '2.335.1'
+2026-07-21T07:30:20.8835681Z ##[group]Runner Image Provisioner
+2026-07-21T07:30:20.8836909Z Hosted Compute Agent
+2026-07-21T07:30:20.8837768Z Version: 20260707.563
+2026-07-21T07:30:20.8838623Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+2026-07-21T07:30:20.8839722Z Build Date: 2026-07-07T19:33:50Z
+2026-07-21T07:30:20.8840707Z Worker ID: {a1efc424-80e2-4c44-8745-f1c72ff74c39}
+2026-07-21T07:30:20.8841782Z Azure Region: northcentralus
+2026-07-21T07:30:20.8842671Z ##[endgroup]
+2026-07-21T07:30:20.8844692Z ##[group]Operating System
+2026-07-21T07:30:20.8845618Z Ubuntu
+2026-07-21T07:30:20.8846351Z 24.04.4
+2026-07-21T07:30:20.8847018Z LTS
+2026-07-21T07:30:20.8847787Z ##[endgroup]
+2026-07-21T07:30:20.8848529Z ##[group]Runner Image
+2026-07-21T07:30:20.8849354Z Image: ubuntu-24.04
+2026-07-21T07:30:20.8850177Z Version: 20260714.240.1
+2026-07-21T07:30:20.8851954Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260714.240/images/ubuntu/Ubuntu2404-Readme.md
+2026-07-21T07:30:20.8854394Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260714.240
+2026-07-21T07:30:20.8856165Z ##[endgroup]
+2026-07-21T07:30:20.8857781Z ##[group]GITHUB_TOKEN Permissions
+2026-07-21T07:30:20.8860596Z Actions: read
+2026-07-21T07:30:20.8861419Z Contents: write
+2026-07-21T07:30:20.8862152Z Metadata: read
+2026-07-21T07:30:20.8863085Z ##[endgroup]
+2026-07-21T07:30:20.8866157Z Secret source: Actions
+2026-07-21T07:30:20.8867319Z Prepare workflow directory
+2026-07-21T07:30:20.9240970Z Prepare all required actions
+2026-07-21T07:30:20.9297958Z Getting action download info
+2026-07-21T07:30:21.1758380Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-07-21T07:30:21.5748662Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+2026-07-21T07:30:21.8832832Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-07-21T07:30:22.1298561Z Complete job name: Collect n22 170-child follow-up
+2026-07-21T07:30:22.1984790Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-21T07:30:22.1993718Z ##[group]Run actions/checkout@v4
+2026-07-21T07:30:22.1994475Z with:
+2026-07-21T07:30:22.1995039Z   ref: 43c006977c6dcc906968fe9b1a8d37e3ddd31309
+2026-07-21T07:30:22.1995902Z   repository: Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:22.1999865Z   token: ***
+2026-07-21T07:30:22.2000406Z   ssh-strict: true
+2026-07-21T07:30:22.2000912Z   ssh-user: git
+2026-07-21T07:30:22.2001413Z   persist-credentials: true
+2026-07-21T07:30:22.2001983Z   clean: true
+2026-07-21T07:30:22.2002485Z   sparse-checkout-cone-mode: true
+2026-07-21T07:30:22.2003201Z   fetch-depth: 1
+2026-07-21T07:30:22.2004047Z   fetch-tags: false
+2026-07-21T07:30:22.2004687Z   show-progress: true
+2026-07-21T07:30:22.2005226Z   lfs: false
+2026-07-21T07:30:22.2005697Z   submodules: false
+2026-07-21T07:30:22.2006216Z   set-safe-directory: true
+2026-07-21T07:30:22.2006776Z   allow-unsafe-pr-checkout: false
+2026-07-21T07:30:22.2007509Z ##[endgroup]
+2026-07-21T07:30:22.3063518Z Syncing repository: Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:22.3066764Z ##[group]Getting Git version info
+2026-07-21T07:30:22.3068442Z Working directory is '/home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver'
+2026-07-21T07:30:22.3070584Z [command]/usr/bin/git version
+2026-07-21T07:30:22.3085241Z git version 2.54.0
+2026-07-21T07:30:22.3104655Z ##[endgroup]
+2026-07-21T07:30:22.3117352Z Temporarily overriding HOME='/home/runner/work/_temp/e0e0c58a-8a6c-4a54-bc34-de4cf382179f' before making global git config changes
+2026-07-21T07:30:22.3119618Z Adding repository directory to the temporary git global config as a safe directory
+2026-07-21T07:30:22.3122570Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:22.3175199Z Deleting the contents of '/home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver'
+2026-07-21T07:30:22.3178300Z ##[group]Initializing the repository
+2026-07-21T07:30:22.3183358Z [command]/usr/bin/git init /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:22.3266079Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-07-21T07:30:22.3268030Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-07-21T07:30:22.3269431Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-07-21T07:30:22.3270314Z hint: call:
+2026-07-21T07:30:22.3271017Z hint:
+2026-07-21T07:30:22.3271812Z hint: 	git config --global init.defaultBranch <name>
+2026-07-21T07:30:22.3272800Z hint:
+2026-07-21T07:30:22.3273701Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-07-21T07:30:22.3274682Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-07-21T07:30:22.3275451Z hint:
+2026-07-21T07:30:22.3275928Z hint: 	git branch -m <name>
+2026-07-21T07:30:22.3276451Z hint:
+2026-07-21T07:30:22.3277102Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-07-21T07:30:22.3281867Z Initialized empty Git repository in /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/.git/
+2026-07-21T07:30:22.3290286Z [command]/usr/bin/git remote add origin https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:22.3324221Z ##[endgroup]
+2026-07-21T07:30:22.3325179Z ##[group]Disabling automatic garbage collection
+2026-07-21T07:30:22.3328718Z [command]/usr/bin/git config --local gc.auto 0
+2026-07-21T07:30:22.3357640Z ##[endgroup]
+2026-07-21T07:30:22.3358563Z ##[group]Setting up auth
+2026-07-21T07:30:22.3365352Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-07-21T07:30:22.3404909Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-07-21T07:30:22.3915580Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-07-21T07:30:22.3950100Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-07-21T07:30:22.4139006Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-07-21T07:30:22.4170046Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-07-21T07:30:22.4356895Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-07-21T07:30:22.4394061Z ##[endgroup]
+2026-07-21T07:30:22.4395541Z ##[group]Fetching the repository
+2026-07-21T07:30:22.4404888Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 43c006977c6dcc906968fe9b1a8d37e3ddd31309
+2026-07-21T07:30:22.8609549Z From https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:22.8611998Z  * branch            43c006977c6dcc906968fe9b1a8d37e3ddd31309 -> FETCH_HEAD
+2026-07-21T07:30:22.8644205Z ##[endgroup]
+2026-07-21T07:30:22.8646345Z ##[group]Determining the checkout info
+2026-07-21T07:30:22.8648897Z ##[endgroup]
+2026-07-21T07:30:22.8651909Z [command]/usr/bin/git sparse-checkout disable
+2026-07-21T07:30:22.8698947Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-07-21T07:30:22.8732763Z ##[group]Checking out the ref
+2026-07-21T07:30:22.8735727Z [command]/usr/bin/git checkout --progress --force 43c006977c6dcc906968fe9b1a8d37e3ddd31309
+2026-07-21T07:30:22.8868972Z Note: switching to '43c006977c6dcc906968fe9b1a8d37e3ddd31309'.
+2026-07-21T07:30:22.8870396Z 
+2026-07-21T07:30:22.8871694Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-07-21T07:30:22.8875306Z changes and commit them, and you can discard any commits you make in this
+2026-07-21T07:30:22.8878838Z state without impacting any branches by switching back to a branch.
+2026-07-21T07:30:22.8880897Z 
+2026-07-21T07:30:22.8882207Z If you want to create a new branch to retain commits you create, you may
+2026-07-21T07:30:22.8884930Z do so (now or later) by using -c with the switch command. Example:
+2026-07-21T07:30:22.8886697Z 
+2026-07-21T07:30:22.8887259Z   git switch -c <new-branch-name>
+2026-07-21T07:30:22.8888230Z 
+2026-07-21T07:30:22.8888736Z Or undo this operation with:
+2026-07-21T07:30:22.8889602Z 
+2026-07-21T07:30:22.8890114Z   git switch -
+2026-07-21T07:30:22.8890783Z 
+2026-07-21T07:30:22.8891848Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-07-21T07:30:22.8894139Z 
+2026-07-21T07:30:22.8895547Z HEAD is now at 43c0069 archive n22 run 29770927206 and schedule 170 survivors
+2026-07-21T07:30:22.8901276Z ##[endgroup]
+2026-07-21T07:30:22.8931842Z [command]/usr/bin/git log -1 --format=%H
+2026-07-21T07:30:22.8957722Z 43c006977c6dcc906968fe9b1a8d37e3ddd31309
+2026-07-21T07:30:22.9200499Z ##[group]Run python -m pip install ortools==9.15.6755
+2026-07-21T07:30:22.9202225Z [36;1mpython -m pip install ortools==9.15.6755[0m
+2026-07-21T07:30:22.9267469Z shell: /usr/bin/bash -e {0}
+2026-07-21T07:30:22.9268689Z ##[endgroup]
+2026-07-21T07:30:24.8674182Z Defaulting to user installation because normal site-packages is not writeable
+2026-07-21T07:30:25.9882732Z Collecting ortools==9.15.6755
+2026-07-21T07:30:26.0223226Z   Downloading ortools-9.15.6755-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+2026-07-21T07:30:26.0454605Z Collecting absl-py>=2.0.0 (from ortools==9.15.6755)
+2026-07-21T07:30:26.0480276Z   Downloading absl_py-2.5.0-py3-none-any.whl.metadata (3.3 kB)
+2026-07-21T07:30:26.2474574Z Collecting numpy>=2.0.2 (from ortools==9.15.6755)
+2026-07-21T07:30:26.2504930Z   Downloading numpy-2.5.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+2026-07-21T07:30:26.3754245Z Collecting pandas>=2.0.0 (from ortools==9.15.6755)
+2026-07-21T07:30:26.3784061Z   Downloading pandas-3.0.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+2026-07-21T07:30:26.3869047Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 11.2 MB/s eta 0:00:00
+2026-07-21T07:30:26.5564684Z Collecting protobuf<6.34,>=6.33.1 (from ortools==9.15.6755)
+2026-07-21T07:30:26.5595043Z   Downloading protobuf-6.33.6-cp39-abi3-manylinux2014_x86_64.whl.metadata (593 bytes)
+2026-07-21T07:30:26.5837292Z Collecting typing-extensions>=4.12 (from ortools==9.15.6755)
+2026-07-21T07:30:26.5867136Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-07-21T07:30:26.6056508Z Collecting immutabledict>=3.0.0 (from ortools==9.15.6755)
+2026-07-21T07:30:26.6087730Z   Downloading immutabledict-4.3.1-py3-none-any.whl.metadata (3.5 kB)
+2026-07-21T07:30:26.6951335Z Requirement already satisfied: python-dateutil>=2.8.2 in /usr/lib/python3/dist-packages (from pandas>=2.0.0->ortools==9.15.6755) (2.8.2)
+2026-07-21T07:30:26.7020481Z Downloading ortools-9.15.6755-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (29.8 MB)
+2026-07-21T07:30:27.0380101Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29.8/29.8 MB 42.9 MB/s eta 0:00:00
+2026-07-21T07:30:27.0416497Z Downloading absl_py-2.5.0-py3-none-any.whl (137 kB)
+2026-07-21T07:30:27.0774558Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.4/137.4 kB 3.8 MB/s eta 0:00:00
+2026-07-21T07:30:27.0807576Z Downloading immutabledict-4.3.1-py3-none-any.whl (5.0 kB)
+2026-07-21T07:30:27.0890577Z Downloading numpy-2.5.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+2026-07-21T07:30:27.2438596Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 77.9 MB/s eta 0:00:00
+2026-07-21T07:30:27.2473285Z Downloading pandas-3.0.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (10.9 MB)
+2026-07-21T07:30:27.3541867Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.9/10.9 MB 99.2 MB/s eta 0:00:00
+2026-07-21T07:30:27.3576506Z Downloading protobuf-6.33.6-cp39-abi3-manylinux2014_x86_64.whl (323 kB)
+2026-07-21T07:30:27.3639730Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 323.4/323.4 kB 71.1 MB/s eta 0:00:00
+2026-07-21T07:30:27.3671258Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-07-21T07:30:27.3713310Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 15.0 MB/s eta 0:00:00
+2026-07-21T07:30:27.7461732Z Installing collected packages: typing-extensions, protobuf, numpy, immutabledict, absl-py, pandas, ortools
+2026-07-21T07:30:34.1580872Z Successfully installed absl-py-2.5.0 immutabledict-4.3.1 numpy-2.5.1 ortools-9.15.6755 pandas-3.0.3 protobuf-6.33.6 typing-extensions-4.16.0
+2026-07-21T07:30:34.3182673Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-21T07:30:34.3184691Z ##[group]Run actions/download-artifact@v4
+2026-07-21T07:30:34.3185028Z with:
+2026-07-21T07:30:34.3185365Z   pattern: n22-profile-followup-shard-*
+2026-07-21T07:30:34.3185718Z   path: gathered
+2026-07-21T07:30:34.3186040Z   merge-multiple: false
+2026-07-21T07:30:34.3186463Z   repository: Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:34.3186903Z   run-id: 29795643015
+2026-07-21T07:30:34.3187202Z ##[endgroup]
+2026-07-21T07:30:34.4775219Z (node:2279) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-07-21T07:30:34.4776135Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-07-21T07:30:34.5880662Z Found 21 artifact(s)
+2026-07-21T07:30:34.5881876Z Filtering artifacts by pattern 'n22-profile-followup-shard-*'
+2026-07-21T07:30:34.5904183Z Preparing to download the following artifacts:
+2026-07-21T07:30:34.5905415Z - n22-profile-followup-shard-14 (ID: 8487273629, Size: 91016, Expected Digest: sha256:1dd15c7b714a313a34bae06e9ed0ffd325f5dd26883db0e31cfc1e269f185001)
+2026-07-21T07:30:34.5906973Z - n22-profile-followup-shard-7 (ID: 8487090142, Size: 89716, Expected Digest: sha256:a567b802b1acfb8ba5f52d44a798be77bd3f37af3931fb97d30400e4107c10e4)
+2026-07-21T07:30:34.5908727Z - n22-profile-followup-shard-15 (ID: 8486983118, Size: 90284, Expected Digest: sha256:c31f58122c390d4740529c1a85417638b165a3d43b9a2d08bff6b64d38a5abdb)
+2026-07-21T07:30:34.5910448Z - n22-profile-followup-shard-0 (ID: 8486709774, Size: 80564, Expected Digest: sha256:c6721d30e359bad734866210b26a3d2b3ab0262f382b35f08a85e8b01892a10a)
+2026-07-21T07:30:34.5911999Z - n22-profile-followup-shard-19 (ID: 8486622231, Size: 89869, Expected Digest: sha256:8005b67dd85fb51ca97f89dee357d7f9290a4cdc9bb1e851f3e2c7c38a7316dd)
+2026-07-21T07:30:34.5913955Z - n22-profile-followup-shard-13 (ID: 8486333326, Size: 88530, Expected Digest: sha256:c1a53e35bf74a69623093463cd091189214aa64182bc8fedd2a8c81319af0813)
+2026-07-21T07:30:34.5915556Z - n22-profile-followup-shard-1 (ID: 8486075959, Size: 80329, Expected Digest: sha256:602e497eeb6b7225651ab9a861154c360d6e7bed50cd4fb45b658e4addc54f3d)
+2026-07-21T07:30:34.5917325Z - n22-profile-followup-shard-17 (ID: 8486015800, Size: 88839, Expected Digest: sha256:9c7209346473b0a90cd96b3de96a99bd7804bd68294ac15b67db31eb17cb58cb)
+2026-07-21T07:30:34.5919018Z - n22-profile-followup-shard-16 (ID: 8485930162, Size: 89748, Expected Digest: sha256:0c85f630299fb886975d5aae49334631b89a694218c7b8973b71c9a9940c78e7)
+2026-07-21T07:30:34.5921251Z - n22-profile-followup-shard-11 (ID: 8485908435, Size: 88528, Expected Digest: sha256:bcf74acdc149d2edd5227dbf29fd6571487deff4fd3e6d68e11aedd2b43360c9)
+2026-07-21T07:30:34.5923160Z - n22-profile-followup-shard-4 (ID: 8485899786, Size: 80482, Expected Digest: sha256:38119a68c419ac3c458a27264fd5299f842dd39ca067b316b1926e3a77d33e3c)
+2026-07-21T07:30:34.5924646Z - n22-profile-followup-shard-3 (ID: 8485805704, Size: 80877, Expected Digest: sha256:53eab546d07d5d771e0228951e1c4e977489e6588a3d66c0fc5d9c8fa713bb04)
+2026-07-21T07:30:34.5926005Z - n22-profile-followup-shard-5 (ID: 8485791004, Size: 88196, Expected Digest: sha256:ae68a7d9af3966026d7cee628f344c4220c750ed07835758bf2c20a0bb6220b9)
+2026-07-21T07:30:34.5927625Z - n22-profile-followup-shard-10 (ID: 8485785911, Size: 79834, Expected Digest: sha256:aa632147eb6fa89cc1489992b5321aa3f956c7865cc20d746bef9dd3e8c4a972)
+2026-07-21T07:30:34.5929164Z - n22-profile-followup-shard-12 (ID: 8485435729, Size: 87816, Expected Digest: sha256:6b57f08780236a6a068dcb62ee00afe1b35aaeeae5eb2b5e296f5df154c544f1)
+2026-07-21T07:30:34.5931238Z - n22-profile-followup-shard-18 (ID: 8485221173, Size: 79097, Expected Digest: sha256:6adc4c565f33bd409addf8d9e3b5598f9f69179aacfa83bd6fb65072081bad72)
+2026-07-21T07:30:34.5933073Z - n22-profile-followup-shard-9 (ID: 8485106402, Size: 79656, Expected Digest: sha256:566c3b667bc74b4d019e4d023b95655847137ccbd70df1663518fde3fdbe723d)
+2026-07-21T07:30:34.5934710Z - n22-profile-followup-shard-2 (ID: 8485081196, Size: 78716, Expected Digest: sha256:f1207177178f66e4272047b5ff906032b4d2bef07bbbc14617fff432ec1d19d6)
+2026-07-21T07:30:34.5936491Z - n22-profile-followup-shard-8 (ID: 8484899350, Size: 79579, Expected Digest: sha256:4b62e67712a25241b083acb56e85c5f1e80b3502ad1a6b74cc48988adc2d0d28)
+2026-07-21T07:30:34.5938071Z - n22-profile-followup-shard-6 (ID: 8484745208, Size: 78751, Expected Digest: sha256:e852661679e538ed4d7379105de07f872c594afa126093e570ae0b7e5519782b)
+2026-07-21T07:30:34.7537130Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-465e67c2-df89-5937-b8c3-b06cda138627/artifacts/7eeb9626d4bdb5053b364ebf39f1d582b9c8d163f53d4bf73c225f24db3adac7.zip
+2026-07-21T07:30:34.7539717Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-14
+2026-07-21T07:30:34.7723367Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-6794c045-ec87-59a7-b3dc-e81373fb7f44/artifacts/fd8b87a89773f6ac4066e6480ea70c01846ff4fdb41f1777d830c6811a7277a6.zip
+2026-07-21T07:30:34.7725811Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-17
+2026-07-21T07:30:34.7818891Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-9822ac6c-bace-5073-901b-fecce657e995/artifacts/649a0fbac3c8ff4ffab4c7736bbc41b241b894bd324779fc81ffebb87551f5a6.zip
+2026-07-21T07:30:34.7824744Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-13
+2026-07-21T07:30:34.7842234Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-2259e6aa-c531-5e0c-9696-5fd45ef39872/artifacts/143edb4edcc741ccd737ca3f6f2ea063f1cff77e59aa0010c72c69a087791e40.zip
+2026-07-21T07:30:34.7845229Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-15
+2026-07-21T07:30:34.7866250Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-78c1fe26-0df2-538e-9590-12c8272d2ef7/artifacts/73f030020ea018dce4e72c811094648ab42a1c1974b112783f11b870f62d6564.zip
+2026-07-21T07:30:34.7868886Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-5
+2026-07-21T07:30:34.7872539Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-d7010205-de7f-5066-a2ab-327151fc1ca3/artifacts/373c5156132593081d597a30f1618a962d360d261e0d925d3dfab3cebb6abbf4.zip
+2026-07-21T07:30:34.7874405Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-1
+2026-07-21T07:30:34.7887272Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-ff1faf3e-ec07-5926-91fe-f99bc5d602db/artifacts/0e183c5b5381ee07c214b4205d152b108829920689debdd2dce7055519fe78ac.zip
+2026-07-21T07:30:34.7890409Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-10
+2026-07-21T07:30:34.7896064Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-7ac136d6-bc9a-527e-b914-cefe13656d31/artifacts/3685b09a5f0dd06ab9d2cd5ae31aae9c2705fab61aa949f66389dce89f7b3eaa.zip
+2026-07-21T07:30:34.7898733Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-19
+2026-07-21T07:30:34.7904715Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-e370f206-9781-5fc8-a83a-00f20094781e/artifacts/0d7ae962711f7fb3a1c7bf15a674737df377d6a432d5683dfcfd8a9eb130248e.zip
+2026-07-21T07:30:34.7906783Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-0
+2026-07-21T07:30:34.7943145Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-8db85df9-ce2a-5ac4-97be-0fafcca47651/artifacts/c9b4211988bb3e75175066df8b77971ff7a1b9d41197de4aea8b58627fe2a143.zip
+2026-07-21T07:30:34.7944771Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-16
+2026-07-21T07:30:34.7993583Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-1dde07d4-5aa3-5d25-93a4-590cd046bc75/artifacts/ac37add3cc1809341355441812a992dae73f62bd47971b42ccd0a4f6d2e7318d.zip
+2026-07-21T07:30:34.7995323Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-12
+2026-07-21T07:30:34.8014045Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-173d23b7-b2b1-5e18-8471-07389fbe5279/artifacts/856d37e9bc2cfad77e86c9983c270c1678037056e9c17d2645d78d6b17d5ac86.zip
+2026-07-21T07:30:34.8015679Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-18
+2026-07-21T07:30:34.8027561Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-d59a469e-bc21-516d-bd54-49ee530e9a7c/artifacts/6964b30fc6e1889750b0f8d24b607edbcb1dc49ce0c5f640e4203deb1b7e0a91.zip
+2026-07-21T07:30:34.8029390Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-4
+2026-07-21T07:30:34.8063424Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-71d1ea3c-c6d4-5ed2-a80f-8ca7921c3b99/artifacts/a6724f41282f2a408d9925e4534a1932a08351cc6f631cc4fc805f1d0384301b.zip
+2026-07-21T07:30:34.8065276Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-7
+2026-07-21T07:30:34.8085089Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-065d0935-dad7-52f8-8d12-a6c75c8cdb8f/artifacts/645dc243405fb1fd2b3af19b474eede1c8dcf71620ba6b40a288d7d1b47c102f.zip
+2026-07-21T07:30:34.8087266Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-9
+2026-07-21T07:30:34.8116420Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-344bb44d-b264-5e83-b08b-a227d60227ca/artifacts/184a82a13b19307bff44b3ae7bc38a5a9d74527b2606fb4f577da4713583a3ad.zip
+2026-07-21T07:30:34.8118669Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-8
+2026-07-21T07:30:34.8158700Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-5d046e8d-10c3-5c24-95d2-c008d60dfb61/artifacts/def4b7faa4ba5a195b9ad2d87c584dd4f5f8a295fa82f9306bc58e291fa8ca4c.zip
+2026-07-21T07:30:34.8160406Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-3
+2026-07-21T07:30:34.8331797Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-3bd61020-0e88-51cd-85ae-c353f63735de/artifacts/7da0b9a3f0aa8cd49b07a36b840f0424ef215fc7144aa8cd3fd0642dd771c8af.zip
+2026-07-21T07:30:34.8334092Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-6
+2026-07-21T07:30:34.8469608Z (node:2279) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+2026-07-21T07:30:34.8502285Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-e64e9430-d4e4-5d67-bf68-25b9de5b9d23/artifacts/9c0448a26a18e2bc0ac1ff6296bc4a5a225e86cc86abb0f48e58facf885a5bf4.zip
+2026-07-21T07:30:34.8504417Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-11
+2026-07-21T07:30:34.8699250Z Redirecting to blob download url: https://productionresultssa14.blob.core.windows.net/actions-results/93f5b758-b78f-4eb7-9226-d8bc96d2d6a8/workflow-job-run-b2fa3ea5-ccd9-55be-a12a-cddbeef34883/artifacts/61d034c8bac3d09d0c4aefd8b2d9d46e2700e56d66d23963326b5a0b0dccdd12.zip
+2026-07-21T07:30:34.8701077Z Starting download of artifact to: /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/gathered/n22-profile-followup-shard-2
+2026-07-21T07:30:35.1475307Z SHA256 digest of downloaded artifact is 1dd15c7b714a313a34bae06e9ed0ffd325f5dd26883db0e31cfc1e269f185001
+2026-07-21T07:30:35.1476588Z Artifact download completed successfully.
+2026-07-21T07:30:35.1477900Z SHA256 digest of downloaded artifact is 4b62e67712a25241b083acb56e85c5f1e80b3502ad1a6b74cc48988adc2d0d28
+2026-07-21T07:30:35.1478971Z Artifact download completed successfully.
+2026-07-21T07:30:35.1489900Z SHA256 digest of downloaded artifact is 9c7209346473b0a90cd96b3de96a99bd7804bd68294ac15b67db31eb17cb58cb
+2026-07-21T07:30:35.1491026Z Artifact download completed successfully.
+2026-07-21T07:30:35.1491839Z SHA256 digest of downloaded artifact is 566c3b667bc74b4d019e4d023b95655847137ccbd70df1663518fde3fdbe723d
+2026-07-21T07:30:35.1492644Z Artifact download completed successfully.
+2026-07-21T07:30:35.1498213Z SHA256 digest of downloaded artifact is e852661679e538ed4d7379105de07f872c594afa126093e570ae0b7e5519782b
+2026-07-21T07:30:35.1499613Z Artifact download completed successfully.
+2026-07-21T07:30:35.1500887Z SHA256 digest of downloaded artifact is 6b57f08780236a6a068dcb62ee00afe1b35aaeeae5eb2b5e296f5df154c544f1
+2026-07-21T07:30:35.1502116Z Artifact download completed successfully.
+2026-07-21T07:30:35.1534864Z SHA256 digest of downloaded artifact is 6adc4c565f33bd409addf8d9e3b5598f9f69179aacfa83bd6fb65072081bad72
+2026-07-21T07:30:35.1536077Z Artifact download completed successfully.
+2026-07-21T07:30:35.1539125Z SHA256 digest of downloaded artifact is aa632147eb6fa89cc1489992b5321aa3f956c7865cc20d746bef9dd3e8c4a972
+2026-07-21T07:30:35.1540345Z Artifact download completed successfully.
+2026-07-21T07:30:35.1547127Z SHA256 digest of downloaded artifact is 602e497eeb6b7225651ab9a861154c360d6e7bed50cd4fb45b658e4addc54f3d
+2026-07-21T07:30:35.1548264Z Artifact download completed successfully.
+2026-07-21T07:30:35.1552431Z SHA256 digest of downloaded artifact is f1207177178f66e4272047b5ff906032b4d2bef07bbbc14617fff432ec1d19d6
+2026-07-21T07:30:35.1553655Z Artifact download completed successfully.
+2026-07-21T07:30:35.1554699Z SHA256 digest of downloaded artifact is 0c85f630299fb886975d5aae49334631b89a694218c7b8973b71c9a9940c78e7
+2026-07-21T07:30:35.1555735Z Artifact download completed successfully.
+2026-07-21T07:30:35.1556760Z SHA256 digest of downloaded artifact is 38119a68c419ac3c458a27264fd5299f842dd39ca067b316b1926e3a77d33e3c
+2026-07-21T07:30:35.1557794Z Artifact download completed successfully.
+2026-07-21T07:30:35.1558937Z SHA256 digest of downloaded artifact is bcf74acdc149d2edd5227dbf29fd6571487deff4fd3e6d68e11aedd2b43360c9
+2026-07-21T07:30:35.1559730Z Artifact download completed successfully.
+2026-07-21T07:30:35.1564020Z SHA256 digest of downloaded artifact is c1a53e35bf74a69623093463cd091189214aa64182bc8fedd2a8c81319af0813
+2026-07-21T07:30:35.1565131Z Artifact download completed successfully.
+2026-07-21T07:30:35.1566203Z SHA256 digest of downloaded artifact is ae68a7d9af3966026d7cee628f344c4220c750ed07835758bf2c20a0bb6220b9
+2026-07-21T07:30:35.1567267Z Artifact download completed successfully.
+2026-07-21T07:30:35.1570124Z SHA256 digest of downloaded artifact is 53eab546d07d5d771e0228951e1c4e977489e6588a3d66c0fc5d9c8fa713bb04
+2026-07-21T07:30:35.1571355Z Artifact download completed successfully.
+2026-07-21T07:30:35.1572601Z SHA256 digest of downloaded artifact is c31f58122c390d4740529c1a85417638b165a3d43b9a2d08bff6b64d38a5abdb
+2026-07-21T07:30:35.1573958Z Artifact download completed successfully.
+2026-07-21T07:30:35.1575259Z SHA256 digest of downloaded artifact is c6721d30e359bad734866210b26a3d2b3ab0262f382b35f08a85e8b01892a10a
+2026-07-21T07:30:35.1576375Z Artifact download completed successfully.
+2026-07-21T07:30:35.1577920Z SHA256 digest of downloaded artifact is 8005b67dd85fb51ca97f89dee357d7f9290a4cdc9bb1e851f3e2c7c38a7316dd
+2026-07-21T07:30:35.1578849Z Artifact download completed successfully.
+2026-07-21T07:30:35.1579687Z SHA256 digest of downloaded artifact is a567b802b1acfb8ba5f52d44a798be77bd3f37af3931fb97d30400e4107c10e4
+2026-07-21T07:30:35.1580525Z Artifact download completed successfully.
+2026-07-21T07:30:35.1581204Z Total of 20 artifact(s) downloaded
+2026-07-21T07:30:35.1587446Z Download artifact has finished successfully
+2026-07-21T07:30:35.1771416Z ##[group]Run python 22x22/collect_n22_profile_followup.py \
+2026-07-21T07:30:35.1772235Z [36;1mpython 22x22/collect_n22_profile_followup.py \[0m
+2026-07-21T07:30:35.1773223Z [36;1m  --schedule 22x22/runs/2026-07-21-run-29770927206/remaining_schedule.json \[0m
+2026-07-21T07:30:35.1774045Z [36;1m  --prior-overall 22x22/runs/2026-07-21-run-29770927206/overall.json \[0m
+2026-07-21T07:30:35.1774731Z [36;1m  --input-dir gathered \[0m
+2026-07-21T07:30:35.1775311Z [36;1m  --overall overall.json \[0m
+2026-07-21T07:30:35.1775846Z [36;1m  --summary SUMMARY.md \[0m
+2026-07-21T07:30:35.1776403Z [36;1m  --run-id "29795643015" \[0m
+2026-07-21T07:30:35.1777274Z [36;1m  --run-url "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29795643015" \[0m
+2026-07-21T07:30:35.1778168Z [36;1m  --run-sha "43c006977c6dcc906968fe9b1a8d37e3ddd31309"[0m
+2026-07-21T07:30:35.1818625Z shell: /usr/bin/bash -e {0}
+2026-07-21T07:30:35.1819285Z ##[endgroup]
+2026-07-21T07:30:36.0474989Z {
+2026-07-21T07:30:36.0476336Z   "conclusion": "FOLLOWUP_RUN_INCOMPLETE",
+2026-07-21T07:30:36.0477761Z   "current_status_counts": {
+2026-07-21T07:30:36.0478828Z     "INFEASIBLE": 114,
+2026-07-21T07:30:36.0479857Z     "UNKNOWN": 56,
+2026-07-21T07:30:36.0480805Z     "FEASIBLE": 0,
+2026-07-21T07:30:36.0481755Z     "OPTIMAL": 0,
+2026-07-21T07:30:36.0482719Z     "MODEL_INVALID": 0
+2026-07-21T07:30:36.0483857Z   },
+2026-07-21T07:30:36.0484784Z   "cumulative_all_children_infeasible": 2584,
+2026-07-21T07:30:36.0485940Z   "missing": [],
+2026-07-21T07:30:36.0486806Z   "newly_closed_pairs": [
+2026-07-21T07:30:36.0487798Z     22,
+2026-07-21T07:30:36.0488601Z     23,
+2026-07-21T07:30:36.0489407Z     24,
+2026-07-21T07:30:36.0490239Z     35,
+2026-07-21T07:30:36.0491769Z     36,
+2026-07-21T07:30:36.0492619Z     37,
+2026-07-21T07:30:36.0493643Z     38,
+2026-07-21T07:30:36.0494481Z     44,
+2026-07-21T07:30:36.0495336Z     45,
+2026-07-21T07:30:36.0496154Z     50,
+2026-07-21T07:30:36.0496940Z     61,
+2026-07-21T07:30:36.0497817Z     62,
+2026-07-21T07:30:36.0498665Z     64,
+2026-07-21T07:30:36.0499482Z     65,
+2026-07-21T07:30:36.0500338Z     73,
+2026-07-21T07:30:36.0501163Z     74,
+2026-07-21T07:30:36.0502009Z     79,
+2026-07-21T07:30:36.0502568Z     85,
+2026-07-21T07:30:36.0503293Z     86,
+2026-07-21T07:30:36.0503896Z     91,
+2026-07-21T07:30:36.0504463Z     102,
+2026-07-21T07:30:36.0504992Z     103,
+2026-07-21T07:30:36.0505541Z     104
+2026-07-21T07:30:36.0506098Z   ],
+2026-07-21T07:30:36.0506705Z   "remaining_pairs": 30,
+2026-07-21T07:30:36.0507396Z   "remaining_children": 56,
+2026-07-21T07:30:36.0508072Z   "memory_guard_records": 0
+2026-07-21T07:30:36.0508764Z }
+2026-07-21T07:30:36.1099668Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-21T07:30:36.1101156Z ##[group]Run actions/upload-artifact@v4
+2026-07-21T07:30:36.1101771Z with:
+2026-07-21T07:30:36.1102387Z   name: n22-profile-followup-overall
+2026-07-21T07:30:36.1103236Z   path: overall.json
+SUMMARY.md
+
+2026-07-21T07:30:36.1103816Z   retention-days: 30
+2026-07-21T07:30:36.1104366Z   if-no-files-found: warn
+2026-07-21T07:30:36.1105029Z   compression-level: 6
+2026-07-21T07:30:36.1105584Z   overwrite: false
+2026-07-21T07:30:36.1106084Z   include-hidden-files: false
+2026-07-21T07:30:36.1106683Z ##[endgroup]
+2026-07-21T07:30:36.2733234Z (node:2301) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-07-21T07:30:36.2734929Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-07-21T07:30:36.2844676Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-07-21T07:30:36.2915423Z The least common ancestor is /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver. This will be the root directory of the artifact
+2026-07-21T07:30:36.2917721Z With the provided path, there will be 2 files uploaded
+2026-07-21T07:30:36.2919689Z Artifact name is valid!
+2026-07-21T07:30:36.2920586Z Root directory input is valid!
+2026-07-21T07:30:36.4651929Z Beginning upload of artifact content to blob storage
+2026-07-21T07:30:36.5008832Z (node:2301) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-07-21T07:30:36.6310628Z Uploaded bytes 79449
+2026-07-21T07:30:36.6662889Z Finished uploading artifact content to blob storage!
+2026-07-21T07:30:36.6664170Z SHA256 digest of uploaded artifact zip is 27ad3c719b58312573f0dbba1ec9b113b4d27437b06c8eb9e6d11d9538c12cb4
+2026-07-21T07:30:36.6665470Z Finalizing artifact upload
+2026-07-21T07:30:36.8383910Z Artifact n22-profile-followup-overall.zip successfully finalized. Artifact ID 8487282032
+2026-07-21T07:30:36.8385486Z Artifact n22-profile-followup-overall has been successfully uploaded! Final size is 79449 bytes. Artifact ID is 8487282032
+2026-07-21T07:30:36.8389428Z Artifact download URL: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29795643015/artifacts/8487282032
+2026-07-21T07:30:36.8579550Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-21T07:30:36.8581021Z Post job cleanup.
+2026-07-21T07:30:36.9391718Z [command]/usr/bin/git version
+2026-07-21T07:30:36.9430267Z git version 2.54.0
+2026-07-21T07:30:36.9474567Z Temporarily overriding HOME='/home/runner/work/_temp/07b68945-c5a9-4a36-a98f-46110471f045' before making global git config changes
+2026-07-21T07:30:36.9476424Z Adding repository directory to the temporary git global config as a safe directory
+2026-07-21T07:30:36.9478561Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver
+2026-07-21T07:30:36.9505677Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-07-21T07:30:36.9536473Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-07-21T07:30:36.9745533Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-07-21T07:30:36.9772679Z http.https://github.com/.extraheader
+2026-07-21T07:30:36.9783617Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-07-21T07:30:36.9814678Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-07-21T07:30:37.0020259Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-07-21T07:30:37.0050017Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-07-21T07:30:37.0408615Z Cleaning up orphan processes
+2026-07-21T07:30:37.0656876Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

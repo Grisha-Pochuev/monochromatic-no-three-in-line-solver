@@ -1,0 +1,71 @@
+{
+  "board_size": 22,
+  "parity_proved": 0,
+  "target": 34,
+  "child_id": 2457,
+  "child_count": 2640,
+  "partition": "unknown_pair_x_diag_plus_twos_x_diag_minus_twos",
+  "build_seconds": 0.07946395874023438,
+  "workers": 4,
+  "requested_seed": 2026074557,
+  "effective_seed": 2026074557,
+  "main_diagonal_pair": [
+    6,
+    13
+  ],
+  "pair_index": 102,
+  "diag_plus_twos": 17,
+  "diag_minus_twos": 15,
+  "pair_excess": 25,
+  "residual_certificate_slack": 87,
+  "analytic_minimum_line_defect": 22,
+  "analytic_defect_details": {
+    "row_costs": {
+      "12": 6,
+      "13": 3,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0
+    },
+    "column_costs": {
+      "12": 6,
+      "13": 3,
+      "14": 0,
+      "15": 0,
+      "16": 0,
+      "17": 0
+    },
+    "plus_cost": 0,
+    "minus_cost": 22,
+    "row_column_minimum": 0
+  },
+  "maximal_line_constraints": 2455,
+  "analytic_infeasible": false,
+  "allowed_points": 242,
+  "status": "INFEASIBLE",
+  "proof_method": "cp_sat_all_lines_with_certificate_profile_cuts",
+  "elapsed_seconds": 531.3483526706696,
+  "branches": 8726554,
+  "conflicts": 5730854,
+  "shard": 2,
+  "shard_position": 3,
+  "followup_source_run_id": 29770927206,
+  "attempts": [
+    {
+      "attempt": 1,
+      "workers": 4,
+      "allocated_seconds": 2500.0,
+      "wall_seconds": 532.1487234430006,
+      "peak_rss_mb": 213.94921875,
+      "memory_guard_mb": 13000,
+      "memory_guard_triggered": false,
+      "watchdog_triggered": false,
+      "return_code": 0,
+      "output_parsed": true,
+      "technical_status": null,
+      "log_file": "child-2457-attempt-1.log"
+    }
+  ],
+  "final_technical_status": null
+}
