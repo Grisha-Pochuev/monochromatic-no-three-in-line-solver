@@ -1,0 +1,214 @@
+name: n23 lower bound 35 5h50
+
+on:
+  push:
+    paths:
+      - '23x23/RUN_N23_LOWER_35_5H50'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: n23-lower-35-5h50
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Validate n23 all-lines search
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      run_sha: ${{ steps.record.outputs.run_sha }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Compile and smoke-test exact model
+        run: |
+          python -m py_compile 23x23/search_n23_target35.py
+          python 23x23/search_n23_target35.py \
+            --parity 0 \
+            --seconds 5 \
+            --workers 4 \
+            --seed 2026072300 \
+            --output smoke-n23.json
+          test -f smoke-n23.json
+
+      - name: Record current n23 run
+        id: record
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cat > 23x23/CURRENT_N23_RUN.md <<EOF
+          # Current n23 run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Trigger SHA: ${GITHUB_SHA}
+          Goal: independently find a valid 35-point construction on either checkerboard color.
+          EOF
+          git add 23x23/CURRENT_N23_RUN.md
+          if ! git diff --cached --quiet; then
+            git commit -m "record n23 target-35 run ${GITHUB_RUN_ID}"
+            git push origin HEAD:main
+          fi
+          echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload smoke record
+        uses: actions/upload-artifact@v4
+        with:
+          name: n23-lower-35-preparation
+          path: smoke-n23.json
+          retention-days: 30
+
+  search:
+    name: n23 target 35 attempt ${{ matrix.attempt }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        attempt: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.attempt }}.log
+
+      - name: Search exact all-lines model
+        shell: bash
+        run: |
+          set -uo pipefail
+          parity=$(( ${{ matrix.attempt }} % 2 ))
+          seed=$(( 2026072300 + ${{ matrix.attempt }} * 100003 ))
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > memory-${{ matrix.attempt }}.log 2>&1 &
+          monitor_pid=$!
+          python 23x23/search_n23_target35.py \
+            --parity "$parity" \
+            --seconds 20700 \
+            --workers 4 \
+            --seed "$seed" \
+            --output result-${{ matrix.attempt }}.json
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Upload attempt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n23-lower-35-attempt-${{ matrix.attempt }}
+          path: |
+            result-${{ matrix.attempt }}.json
+            machine-${{ matrix.attempt }}.log
+            memory-${{ matrix.attempt }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect n23 target-35 search
+    needs: [prepare, search]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n23-lower-35-attempt-*
+          path: gathered
+
+      - name: Validate and collect
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          import sys
+          sys.path.insert(0, '23x23')
+          from search_n23_target35 import validate
+
+          paths = sorted(Path('gathered').rglob('result-*.json'))
+          records = [json.loads(path.read_text()) for path in paths]
+          feasible = []
+          for record in records:
+              if record.get('status') in {'FEASIBLE', 'OPTIMAL'}:
+                  points = [tuple(point) for point in record['solution']]
+                  validate(points, int(record['parity']))
+                  feasible.append(record)
+          counts = {status: sum(r.get('status') == status for r in records) for status in ('INFEASIBLE', 'UNKNOWN', 'FEASIBLE', 'OPTIMAL', 'MODEL_INVALID')}
+          conclusion = 'FOUND_VALID_35_POINT_CONFIGURATION' if feasible else 'NO_35_POINT_CONFIGURATION_FOUND_WITHIN_BUDGET'
+          overall = {
+              'run_id': '${{ github.run_id }}',
+              'run_url': '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}',
+              'run_head_sha': '${{ needs.prepare.outputs.run_sha }}',
+              'conclusion': conclusion,
+              'records_found': len(records),
+              'status_counts': counts,
+              'validated_solutions': feasible,
+              'records': records,
+          }
+          Path('overall.json').write_text(json.dumps(overall, indent=2) + '\n')
+          lines = [
+              '# n23 target-35 construction search', '',
+              f"Conclusion: `{conclusion}`", '',
+              f"- records found: {len(records)} / 20",
+              f"- INFEASIBLE: {counts['INFEASIBLE']}",
+              f"- UNKNOWN: {counts['UNKNOWN']}",
+              f"- FEASIBLE/OPTIMAL: {counts['FEASIBLE'] + counts['OPTIMAL']}",
+              '',
+              'A found solution is independently checked against every collinear triple.',
+              'An all-UNKNOWN result is not an upper-bound proof.',
+          ]
+          Path('SUMMARY.md').write_text('\n'.join(lines) + '\n')
+          print(json.dumps({'conclusion': conclusion, 'counts': counts, 'records': len(records)}, indent=2))
+          if len(records) != 20 or counts['MODEL_INVALID']:
+              raise SystemExit(1)
+          PY
+
+      - name: Upload overall n23 result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n23-lower-35-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
