@@ -122,7 +122,23 @@ The exact follow-up processed all 56 survivors from run `29795643015`:
 
 Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29815441947
 
+### Run 29842033980
+
+Archive: `22x22/runs/2026-07-21-run-29842033980/`
+
+The exact follow-up processed all 10 survivors from run `29815441947`:
+
+- `INFEASIBLE`: 8;
+- `UNKNOWN`: 2;
+- `FEASIBLE`/`OPTIMAL`: 0;
+- missing/duplicate/unexpected/model-invalid/technical: 0;
+- newly closed main-diagonal pairs: 8;
+- remaining main-diagonal pairs: 2;
+- cumulative exact exclusions: 2638 / 2640;
+- solver work: 43.02 job-hours.
+
+Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29842033980
+
 ## Current follow-up attack
 
-The next workflow processes only the 10 exact children still marked `UNKNOWN` after run `29815441947`. It uses 20 jobs (ten active and ten empty), four solver workers, one solver process per machine, a 13 GB RSS guard, and up to 5 hours 50 minutes per job. Previously proved children are not recomputed.
-
+Only two exact profile children remain `UNKNOWN` after run `29842033980`: child ids `652` and `1132`, belonging to main-diagonal pair indices `40` and `56`. All other 2638 children are strictly `INFEASIBLE`. The certified status remains `33 <= D_mono(22) <= 34`; the board is not closed until both remaining cases are resolved or a valid 34-point construction is found.
