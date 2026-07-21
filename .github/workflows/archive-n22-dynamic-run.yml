@@ -1,0 +1,279 @@
+name: archive n22 dynamic run
+
+on:
+  push:
+    paths:
+      - '22x22/ARCHIVE_N22_DYNAMIC_RUN'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: archive-n22-dynamic-run
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Read source run
+        id: source
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id="$(sed -n 's/^run_id=//p' 22x22/ARCHIVE_N22_DYNAMIC_RUN | tail -n1)"
+          test -n "$run_id"
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"
+          echo "run_url=https://github.com/${GITHUB_REPOSITORY}/actions/runs/$run_id" >> "$GITHUB_OUTPUT"
+
+      - name: Download all artifacts and job logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          run_id='${{ steps.source.outputs.run_id }}'
+          rm -rf downloaded job-logs regenerated
+          mkdir -p downloaded job-logs regenerated
+          gh run download "$run_id" --repo "$GITHUB_REPOSITORY" --pattern 'n22-profile-dynamic-*' --dir downloaded
+          gh api --paginate "/repos/$GITHUB_REPOSITORY/actions/runs/$run_id/jobs?per_page=100" --jq '.jobs[].id' > job-ids.txt
+          while read -r job_id; do
+            test -n "$job_id" || continue
+            curl --fail --silent --show-error --location \
+              -H "Authorization: Bearer $GH_TOKEN" \
+              -H 'X-GitHub-Api-Version: 2022-11-28' \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/jobs/$job_id/logs" \
+              -o "job-logs/$job_id.log"
+          done < job-ids.txt
+          test "$(find downloaded -maxdepth 1 -type d -name 'n22-profile-dynamic-shard-*' | wc -l)" -eq 20
+          test -f downloaded/n22-profile-dynamic-overall/overall.json
+          test -f downloaded/n22-profile-dynamic-overall/SUMMARY.md
+
+      - name: Independently collect and validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install ortools==9.15.6755
+          run_id='${{ steps.source.outputs.run_id }}'
+          run_url='${{ steps.source.outputs.run_url }}'
+          python 22x22/collect_n22_profile_followup.py \
+            --schedule 22x22/current_remaining_schedule.json \
+            --prior-overall 22x22/current_prior_overall.json \
+            --input-dir downloaded \
+            --overall regenerated/overall.json \
+            --summary regenerated/SUMMARY.md \
+            --run-id "$run_id" \
+            --run-url "$run_url" \
+            --run-sha "$(gh run view "$run_id" --repo "$GITHUB_REPOSITORY" --json headSha --jq .headSha)"
+          cmp downloaded/n22-profile-dynamic-overall/overall.json regenerated/overall.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          overall = json.loads(Path('regenerated/overall.json').read_text())
+          assert overall['expected_followup_children'] == 56
+          assert overall['records_found'] == 56
+          assert overall['missing_child_ids'] == []
+          assert overall['duplicate_child_ids'] == []
+          assert overall['unexpected_child_ids'] == []
+          assert overall['current_status_counts']['MODEL_INVALID'] == 0
+          assert overall['technical_record_count'] == 0
+          assert overall['current_status_counts']['FEASIBLE'] == 0
+          assert overall['current_status_counts']['OPTIMAL'] == 0
+          assert overall['current_status_counts']['INFEASIBLE'] == 46
+          assert overall['current_status_counts']['UNKNOWN'] == 10
+          assert overall['cumulative_all_children_infeasible'] == 2630
+          assert len(overall['remaining_child_ids']) == 10
+          assert len(overall['remaining_pair_indices']) == 10
+          machine = list(Path('downloaded').rglob('machine-*.log'))
+          memory = list(Path('downloaded').rglob('memory-*.log'))
+          assert len(machine) == 20, len(machine)
+          assert len(memory) == 20, len(memory)
+          print(json.dumps({
+              'infeasible': 46,
+              'unknown': 10,
+              'cumulative': 2630,
+              'remaining_pairs': 10,
+              'job_logs': len(list(Path('job-logs').glob('*.log'))),
+          }, indent=2))
+          PY
+
+      - name: Archive records and prepare next exact frontier
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, shutil
+          from pathlib import Path
+
+          run_id = 29815441947
+          run_url = f'https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/{run_id}'
+          artifact_id = 8498787371
+          artifact_sha = 'ba5d3c22821d096167f23b0d365c7a3ecabe612f9d2090a9a15527e91c6963bf'
+          archive = Path(f'22x22/runs/2026-07-21-run-{run_id}')
+          if archive.exists():
+              shutil.rmtree(archive)
+          archive.mkdir(parents=True)
+          shutil.copy2('regenerated/overall.json', archive / 'overall.json')
+          shutil.copy2('regenerated/SUMMARY.md', archive / 'SUMMARY.md')
+          shutil.copytree('downloaded', archive / 'artifacts')
+          shutil.copytree('job-logs', archive / 'job-logs')
+
+          overall = json.loads(Path('regenerated/overall.json').read_text())
+          counts = overall['current_status_counts']
+          remaining = [int(x) for x in overall['remaining_child_ids']]
+          records = {int(r['child_id']): r for r in overall['records']}
+          archive_readme = f'''# GitHub Actions run {run_id}
+
+Source: {run_url}
+
+Overall artifact: `n22-profile-dynamic-overall`, id `{artifact_id}`, SHA-256 `{artifact_sha}`.
+
+This run processed exactly the 56 exact profile children left by run `29795643015`.
+
+- `INFEASIBLE`: {counts['INFEASIBLE']}
+- `UNKNOWN`: {counts['UNKNOWN']}
+- `FEASIBLE`/`OPTIMAL`: 0
+- missing/duplicate/unexpected/model-invalid: 0
+- technical records: 0
+- memory-guard records: {overall['memory_guard_record_count']}
+- newly closed main-diagonal pairs: {len(overall['newly_closed_pair_indices'])}
+- remaining main-diagonal pairs: {len(overall['remaining_pair_indices'])}
+- remaining exact children: {len(remaining)}
+- cumulative exact exclusions: {overall['cumulative_all_children_infeasible']} / 2640
+
+Files:
+
+- `overall.json` — independently regenerated complete aggregate;
+- `SUMMARY.md` — collector summary;
+- `artifacts/` — all 20 shard artifacts plus the overall artifact;
+- `job-logs/` — downloaded GitHub Actions logs.
+
+Independent lower-bound check:
+
+```bash
+python 22x22/verify_22x22.py
+```
+
+`UNKNOWN` records are not treated as a proof.
+'''
+          (archive / 'README.md').write_text(archive_readme)
+
+          bins = [{'shard': i, 'ids': [], 'prior_score_total': 0} for i in range(20)]
+          ranked = []
+          for child_id in remaining:
+              r = records[child_id]
+              score = int(r.get('branches', 0)) + 2 * int(r.get('conflicts', 0))
+              ranked.append((score, child_id))
+          for score, child_id in sorted(ranked, reverse=True):
+              b = min(bins, key=lambda x: (len(x['ids']), x['prior_score_total'], x['shard']))
+              b['ids'].append(child_id)
+              b['prior_score_total'] += score
+          for b in bins:
+              b['count'] = len(b['ids'])
+          schedule = {
+              'board_size': 22,
+              'target': 34,
+              'source_run_id': run_id,
+              'source_run_url': run_url,
+              'prior_smoke_infeasible_count': 1864,
+              'cumulative_infeasible_count': overall['cumulative_all_children_infeasible'],
+              'unknown_child_count': len(remaining),
+              'shards': 20,
+              'workers_per_solver': 4,
+              'fallback_workers': 2,
+              'total_seconds_per_shard': 21000,
+              'memory_guard_mb': 13000,
+              'max_seconds_per_child': 20700,
+              'seed_base': 2026072200,
+              'balance_score': 'latest branches + 2*conflicts; count-first greedy distribution',
+              'assignments': bins,
+          }
+          Path('22x22/current_prior_overall.json').write_text(json.dumps(overall, indent=2) + '\n')
+          Path('22x22/current_remaining_schedule.json').write_text(json.dumps(schedule, indent=2) + '\n')
+
+          start = Path('START_HERE.md').read_text()
+          start = start.replace('Последнее существенное обновление: **21 июля 2026 года**, после разбора прогона `29795643015`.', 'Последнее существенное обновление: **21 июля 2026 года**, после разбора прогона `29815441947`.')
+          marker = '\n---\n\n## 6. Рациональный сертификат'
+          block = f'''\n### 29815441947 — повтор по 56 остаткам
+
+Ссылка:
+
+```text
+{run_url}
+```
+
+Архив:
+
+```text
+{archive.as_posix()}/
+```
+
+Итог технически полный и независимо пересобран:
+
+```text
+INFEASIBLE: 46
+UNKNOWN:    10
+FEASIBLE/OPTIMAL: 0
+missing/duplicate/unexpected/MODEL_INVALID: 0
+technical records: 0
+```
+
+Суммарно строго исключены 2630 из 2640 дочерних случаев; осталось 10 случаев в 10 парах. Доска пока не закрыта.
+'''
+          if '### 29815441947 — повтор по 56 остаткам' not in start:
+              start = start.replace(marker, block + marker)
+          Path('START_HERE.md').write_text(start)
+
+          root = Path('README.md').read_text()
+          root = root.replace('actions/runs/29795643015', 'actions/runs/29815441947')
+          old = 'Run `29795643015` processed the complete 170-child frontier, strictly excluded 114 more children, and left 56 exact children unresolved. In total 2584 of all 2640 children are now closed; therefore the certified status remains `33 ≤ D_mono(22) ≤ 34`.'
+          new = 'Run `29815441947` processed the complete 56-child frontier, strictly excluded 46 more children, and left 10 exact children unresolved. In total 2630 of all 2640 children are now closed; therefore the certified status remains `33 ≤ D_mono(22) ≤ 34`.'
+          root = root.replace(old, new)
+          Path('README.md').write_text(root)
+
+          n22 = Path('22x22/README.md').read_text()
+          block2 = f'''\n### Run 29815441947
+
+Archive: `{archive.as_posix()}/`
+
+The exact follow-up processed all 56 survivors from run `29795643015`:
+
+- `INFEASIBLE`: 46;
+- `UNKNOWN`: 10;
+- `FEASIBLE`/`OPTIMAL`: 0;
+- missing/duplicate/unexpected/model-invalid/technical: 0;
+- newly closed main-diagonal pairs: 20;
+- remaining main-diagonal pairs: 10;
+- cumulative exact exclusions: 2630 / 2640.
+
+Source run: {run_url}
+'''
+          if '### Run 29815441947' not in n22:
+              n22 = n22.replace('\n## Current follow-up attack', block2 + '\n## Current follow-up attack')
+          pos = n22.find('## Current follow-up attack')
+          if pos >= 0:
+              n22 = n22[:pos] + '''## Current follow-up attack
+
+The next workflow processes only the 10 exact children still marked `UNKNOWN` after run `29815441947`. It uses 20 jobs (ten active and ten empty), four solver workers, one solver process per machine, a 13 GB RSS guard, and up to 5 hours 50 minutes per job. Previously proved children are not recomputed.
+'''
+          Path('22x22/README.md').write_text(n22)
+          PY
+
+      - name: Commit the archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add START_HERE.md README.md 22x22
+          git commit -m 'archive n22 run 29815441947 and prepare final 10 cases'
+          git push origin HEAD:main
