@@ -1,0 +1,245 @@
+name: n22 profile follow-up 170 5h50
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_PROFILE_FOLLOWUP_170_5H50'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: n22-profile-followup-170-5h50
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Archive prior run and prepare 170 survivors
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      archive_sha: ${{ steps.archive.outputs.archive_sha }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Record this follow-up run immediately
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cat > 22x22/CURRENT_N22_FOLLOWUP_RUN.md <<EOF
+          # Current n22 follow-up run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Trigger SHA: ${GITHUB_SHA}
+          Source exact run: 29770927206
+          Frontier at launch: 170 profile children.
+          EOF
+          git add 22x22/CURRENT_N22_FOLLOWUP_RUN.md
+          if ! git diff --cached --quiet; then
+            git commit -m "record n22 170-child follow-up run ${GITHUB_RUN_ID}"
+            git push origin HEAD:main
+          fi
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download aggregate from run 29770927206
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-profile-5h50-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29770927206
+
+      - name: Verify lower construction and prepare exact frontier
+        run: |
+          python 22x22/verify_22x22.py
+          python 22x22/prepare_n22_profile_followup.py \
+            --prior-overall prior/overall.json \
+            --prior-summary prior/SUMMARY.md \
+            --archive-dir 22x22/runs/2026-07-21-run-29770927206 \
+            --source-url https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29770927206 \
+            --artifact-id 8479986610
+
+      - name: Validate schedule and smoke-test changed runner
+        run: |
+          python -m py_compile \
+            22x22/prepare_n22_profile_followup.py \
+            22x22/run_n22_profile_followup_shard.py \
+            22x22/collect_n22_profile_followup.py
+          python 22x22/run_n22_profile_followup_shard.py \
+            --schedule 22x22/runs/2026-07-21-run-29770927206/remaining_schedule.json \
+            --shard 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --max-seconds 15 \
+            --artifact-buffer-seconds 5 \
+            --seed-base 2026072100 \
+            --max-children 1 \
+            --output-dir smoke-followup
+          test -f smoke-followup/shard-00-summary.json
+          test "$(find smoke-followup -name 'child-*.json' ! -name '*-attempt-*' | wc -l)" -eq 1
+
+      - name: Commit verified archive and 170-child schedule
+        id: archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            README.md \
+            START_HERE.md \
+            22x22/README.md \
+            22x22/runs/2026-07-21-run-29770927206
+          if ! git diff --cached --quiet; then
+            git commit -m "archive n22 run 29770927206 and schedule 170 survivors"
+            git push origin HEAD:main
+          fi
+          echo "archive_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload preparation and smoke records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-followup-170-preparation
+          path: |
+            22x22/runs/2026-07-21-run-29770927206/
+            smoke-followup/
+          retention-days: 30
+
+  long-shards:
+    name: Follow-up shard ${{ matrix.shard }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.archive_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            echo "=== machine ==="
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.shard }}.log
+
+      - name: Run balanced 5h50 follow-up with memory guard
+        shell: bash
+        run: |
+          set -uo pipefail
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > "memory-${{ matrix.shard }}.log" 2>&1 &
+          monitor_pid=$!
+          python 22x22/run_n22_profile_followup_shard.py \
+            --schedule 22x22/runs/2026-07-21-run-29770927206/remaining_schedule.json \
+            --shard "${{ matrix.shard }}" \
+            --total-seconds 21000 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --max-seconds 2500 \
+            --artifact-buffer-seconds 180 \
+            --seed-base 2026072100 \
+            --output-dir "results/shard-${{ matrix.shard }}"
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Final resource snapshot
+        if: always()
+        run: |
+          free -h
+          df -h
+
+      - name: Upload shard records and memory log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-profile-followup-shard-${{ matrix.shard }}
+          path: |
+            results/
+            memory-${{ matrix.shard }}.log
+            machine-${{ matrix.shard }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect n22 170-child follow-up
+    needs: [prepare, long-shards]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.archive_sha }}
+
+      - name: Install pinned OR-Tools for collector imports
+        run: python -m pip install ortools==9.15.6755
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-profile-followup-shard-*
+          path: gathered
+
+      - name: Collect and independently validate the exact frontier
+        run: |
+          python 22x22/collect_n22_profile_followup.py \
+            --schedule 22x22/runs/2026-07-21-run-29770927206/remaining_schedule.json \
+            --prior-overall 22x22/runs/2026-07-21-run-29770927206/overall.json \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-id "${{ github.run_id }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --run-sha "${{ needs.prepare.outputs.archive_sha }}"
+
+      - name: Upload overall follow-up result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-profile-followup-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
