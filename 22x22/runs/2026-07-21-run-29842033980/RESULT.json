@@ -1,0 +1,33 @@
+{
+  "run_id": 29842033980,
+  "run_url": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29842033980",
+  "run_head_sha": "b279ac3dcb23957ec48065a73418455309daa0c5",
+  "prior_run_id": 29815441947,
+  "conclusion": "FOLLOWUP_RUN_INCOMPLETE",
+  "expected_followup_children": 10,
+  "records_found": 10,
+  "status_counts": {
+    "INFEASIBLE": 8,
+    "UNKNOWN": 2,
+    "FEASIBLE": 0,
+    "OPTIMAL": 0,
+    "MODEL_INVALID": 0
+  },
+  "missing_child_ids": [],
+  "duplicate_child_ids": [],
+  "unexpected_child_ids": [],
+  "technical_record_count": 0,
+  "memory_guard_record_count": 0,
+  "maximum_peak_rss_mb": 357.3984375,
+  "newly_closed_pair_indices": [42, 53, 54, 55, 57, 58, 70, 71],
+  "remaining_pair_indices": [40, 56],
+  "remaining_child_ids": [652, 1132],
+  "cumulative_all_children_infeasible": 2638,
+  "total_children": 2640,
+  "current_solver_job_hours": 43.02369381315178,
+  "artifact": {
+    "name": "n22-profile-dynamic-overall",
+    "id": 8509730057,
+    "sha256": "0909d0197fce1b6454fef8333cf500d9733c1755ce3a2d7964bfbcfedd2cd78f"
+  }
+}
