@@ -1,0 +1,43 @@
+name: record actions state
+
+on:
+  push:
+    paths:
+      - '22x22/QUERY_ACTIONS_STATE'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - name: Record recent runs
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/$GITHUB_REPOSITORY/actions/runs?per_page=30" > all-runs.json
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          data=json.loads(Path('all-runs.json').read_text())
+          keep=[]
+          for r in data.get('workflow_runs',[]):
+              if r.get('name') in {'archive n22 dynamic run','archive n22 dynamic run v2','record actions state','n22 dynamic residual frontier 5h50'}:
+                  keep.append({k:r.get(k) for k in ['id','name','event','status','conclusion','head_sha','html_url','created_at','updated_at','run_number']})
+          Path('22x22/ACTIONS_STATE.json').write_text(json.dumps(keep,indent=2)+'\n')
+          print(json.dumps(keep,indent=2))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 22x22/ACTIONS_STATE.json
+          git commit -m 'record recent Actions state' || exit 0
+          git push origin HEAD:main
