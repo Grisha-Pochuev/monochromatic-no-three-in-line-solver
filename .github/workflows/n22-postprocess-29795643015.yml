@@ -1,0 +1,116 @@
+name: postprocess n22 run 29795643015
+
+on:
+  push:
+    paths:
+      - '22x22/PROCESS_RUN_29795643015'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: postprocess-n22-29795643015
+  cancel-in-progress: false
+
+jobs:
+  archive-and-continue:
+    name: Archive, verify, and continue n22
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download aggregate and every shard artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-profile-followup-overall
+          path: downloaded-overall
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29795643015
+
+      - name: Download all shard records and resource logs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: n22-profile-followup-shard-*
+          path: gathered
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29795643015
+
+      - name: Download GitHub Actions job logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p job-logs
+          gh api --paginate repos/${GITHUB_REPOSITORY}/actions/runs/29795643015/jobs > jobs.json
+          python - <<'PY' > job-list.tsv
+          import json, re
+          data = json.load(open('jobs.json'))
+          for job in data.get('jobs', []):
+              name = re.sub(r'[^A-Za-z0-9_.-]+', '-', job['name']).strip('-')
+              print(f"{job['id']}\t{name}")
+          PY
+          while IFS=$'\t' read -r job_id job_name; do
+            gh api repos/${GITHUB_REPOSITORY}/actions/jobs/${job_id}/logs > "job-logs/${job_id}-${job_name}.log" || true
+          done < job-list.tsv
+          test "$(find job-logs -type f | wc -l)" -ge 22
+
+      - name: Independently verify and archive the completed run
+        run: |
+          python 22x22/verify_22x22.py
+          python 22x22/postprocess_n22_followup.py \
+            --overall downloaded-overall/overall.json \
+            --summary downloaded-overall/SUMMARY.md \
+            --shards-dir gathered \
+            --job-logs-dir job-logs \
+            --run-id 29795643015 \
+            --run-url https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29795643015 \
+            --artifact-id 8487282032 \
+            --artifact-sha256 27ad3c719b58312573f0dbba1ec9b113b4d27437b06c8eb9e6d11d9538c12cb4 \
+            --archive-dir 22x22/runs/2026-07-21-run-29795643015 \
+            --seed-base 2026072200
+
+      - name: Commit archive, documentation, and next exact step
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add \
+            README.md \
+            START_HERE.md \
+            22x22 \
+            23x23
+          if ! git diff --cached --quiet; then
+            git commit -m "archive n22 run 29795643015 and continue exact frontier"
+            git push origin HEAD:main
+          fi
+          echo "archive_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload postprocessing record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-run-29795643015-postprocessing
+          path: |
+            downloaded-overall/
+            jobs.json
+            job-list.tsv
+          retention-days: 30
