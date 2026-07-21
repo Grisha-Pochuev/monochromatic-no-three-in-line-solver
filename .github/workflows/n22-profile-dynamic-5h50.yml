@@ -44,6 +44,7 @@ jobs:
           python 22x22/verify_22x22.py
           python - <<'PY'
           import json
+          import os
           from pathlib import Path
           schedule = json.loads(Path('22x22/current_remaining_schedule.json').read_text())
           prior = json.loads(Path('22x22/current_prior_overall.json').read_text())
@@ -56,34 +57,23 @@ jobs:
           assert not prior['duplicate_child_ids']
           assert not prior['unexpected_child_ids']
           assert prior['current_status_counts']['MODEL_INVALID'] == 0
-          print(json.dumps({'remaining': len(ids), 'source_run_id': schedule['source_run_id'], 'seed_base': schedule['seed_base']}, indent=2))
-          with open(Path(__import__('os').environ['GITHUB_OUTPUT']), 'a', encoding='utf-8') as out:
+          assert prior['technical_record_count'] == 0
+          print(json.dumps({
+              'remaining': len(ids),
+              'source_run_id': schedule['source_run_id'],
+              'seed_base': schedule['seed_base'],
+          }, indent=2))
+          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
               out.write(f"seed_base={int(schedule['seed_base'])}\n")
           PY
-          python -m py_compile \
-            22x22/run_n22_profile_followup_shard.py \
-            22x22/collect_n22_profile_followup.py
-          python 22x22/run_n22_profile_followup_shard.py \
-            --schedule 22x22/current_remaining_schedule.json \
-            --shard 0 \
-            --total-seconds 45 \
-            --workers 4 \
-            --fallback-workers 2 \
-            --memory-guard-mb 13000 \
-            --max-seconds 15 \
-            --artifact-buffer-seconds 5 \
-            --seed-base "$(python -c "import json; print(json.load(open('22x22/current_remaining_schedule.json'))['seed_base'])")" \
-            --max-children 1 \
-            --output-dir smoke-dynamic
-          test -f smoke-dynamic/shard-00-summary.json
 
       - name: Record this exact continuation run
         id: record
         shell: bash
         run: |
           set -euo pipefail
-          source_run="$(python -c "import json; print(json.load(open('22x22/current_remaining_schedule.json'))['source_run_id'])")"
-          remaining="$(python -c "import json; print(json.load(open('22x22/current_remaining_schedule.json'))['unknown_child_count'])")"
+          source_run="$(python -c 'import json; print(json.load(open("22x22/current_remaining_schedule.json"))["source_run_id"])')"
+          remaining="$(python -c 'import json; print(json.load(open("22x22/current_remaining_schedule.json"))["unknown_child_count"])')"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           cat > 22x22/CURRENT_N22_FOLLOWUP_RUN.md <<EOF
@@ -102,6 +92,29 @@ jobs:
             git push origin HEAD:main
           fi
           echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Compile and smoke-test the changed schedule
+        shell: bash
+        run: |
+          set -euo pipefail
+          seed_base="$(python -c 'import json; print(json.load(open("22x22/current_remaining_schedule.json"))["seed_base"])')"
+          python -m py_compile \
+            22x22/run_n22_profile_followup_shard.py \
+            22x22/collect_n22_profile_followup.py
+          python 22x22/run_n22_profile_followup_shard.py \
+            --schedule 22x22/current_remaining_schedule.json \
+            --shard 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --max-seconds 15 \
+            --artifact-buffer-seconds 5 \
+            --seed-base "$seed_base" \
+            --max-children 1 \
+            --output-dir smoke-dynamic
+          test -f smoke-dynamic/shard-00-summary.json
+          test "$(find smoke-dynamic -name 'child-*.json' ! -name '*-attempt-*' | wc -l)" -eq 1
 
       - name: Upload validation records
         if: always()
