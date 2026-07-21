@@ -1,0 +1,237 @@
+name: n22 dynamic residual frontier 5h50
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_PROFILE_DYNAMIC_5H50'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: n22-profile-dynamic-5h50
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Validate current n22 frontier
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      run_sha: ${{ steps.record.outputs.run_sha }}
+      seed_base: ${{ steps.schedule.outputs.seed_base }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Validate lower construction, schedule, and prior aggregate
+        id: schedule
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          schedule = json.loads(Path('22x22/current_remaining_schedule.json').read_text())
+          prior = json.loads(Path('22x22/current_prior_overall.json').read_text())
+          ids = [int(v) for item in schedule['assignments'] for v in item['ids']]
+          assert schedule['board_size'] == 22 and schedule['target'] == 34
+          assert schedule['shards'] == 20 and len(schedule['assignments']) == 20
+          assert len(ids) == schedule['unknown_child_count'] == len(set(ids))
+          assert sorted(ids) == sorted(int(v) for v in prior['remaining_child_ids'])
+          assert not prior['missing_child_ids']
+          assert not prior['duplicate_child_ids']
+          assert not prior['unexpected_child_ids']
+          assert prior['current_status_counts']['MODEL_INVALID'] == 0
+          print(json.dumps({'remaining': len(ids), 'source_run_id': schedule['source_run_id'], 'seed_base': schedule['seed_base']}, indent=2))
+          with open(Path(__import__('os').environ['GITHUB_OUTPUT']), 'a', encoding='utf-8') as out:
+              out.write(f"seed_base={int(schedule['seed_base'])}\n")
+          PY
+          python -m py_compile \
+            22x22/run_n22_profile_followup_shard.py \
+            22x22/collect_n22_profile_followup.py
+          python 22x22/run_n22_profile_followup_shard.py \
+            --schedule 22x22/current_remaining_schedule.json \
+            --shard 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --max-seconds 15 \
+            --artifact-buffer-seconds 5 \
+            --seed-base "$(python -c "import json; print(json.load(open('22x22/current_remaining_schedule.json'))['seed_base'])")" \
+            --max-children 1 \
+            --output-dir smoke-dynamic
+          test -f smoke-dynamic/shard-00-summary.json
+
+      - name: Record this exact continuation run
+        id: record
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_run="$(python -c "import json; print(json.load(open('22x22/current_remaining_schedule.json'))['source_run_id'])")"
+          remaining="$(python -c "import json; print(json.load(open('22x22/current_remaining_schedule.json'))['unknown_child_count'])")"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cat > 22x22/CURRENT_N22_FOLLOWUP_RUN.md <<EOF
+          # Current n22 follow-up run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Trigger SHA: ${GITHUB_SHA}
+          Source exact run: ${source_run}
+          Frontier at launch: ${remaining} profile children.
+          Workflow: n22 dynamic residual frontier 5h50
+          EOF
+          git add 22x22/CURRENT_N22_FOLLOWUP_RUN.md
+          if ! git diff --cached --quiet; then
+            git commit -m "record n22 residual-frontier run ${GITHUB_RUN_ID}"
+            git push origin HEAD:main
+          fi
+          echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload validation records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-dynamic-preparation
+          path: |
+            22x22/current_remaining_schedule.json
+            22x22/current_prior_overall.json
+            smoke-dynamic/
+          retention-days: 30
+
+  long-shards:
+    name: Residual shard ${{ matrix.shard }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            echo "=== machine ==="
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.shard }}.log
+
+      - name: Run exact residual shard with memory guard
+        shell: bash
+        run: |
+          set -uo pipefail
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > "memory-${{ matrix.shard }}.log" 2>&1 &
+          monitor_pid=$!
+          python 22x22/run_n22_profile_followup_shard.py \
+            --schedule 22x22/current_remaining_schedule.json \
+            --shard "${{ matrix.shard }}" \
+            --total-seconds 21000 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --max-seconds 20700 \
+            --artifact-buffer-seconds 180 \
+            --seed-base "${{ needs.prepare.outputs.seed_base }}" \
+            --output-dir "results/shard-${{ matrix.shard }}"
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Final resource snapshot
+        if: always()
+        run: |
+          free -h
+          df -h
+
+      - name: Upload shard records and memory log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-profile-dynamic-shard-${{ matrix.shard }}
+          path: |
+            results/
+            memory-${{ matrix.shard }}.log
+            machine-${{ matrix.shard }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect n22 dynamic residual run
+    needs: [prepare, long-shards]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools for collector imports
+        run: python -m pip install ortools==9.15.6755
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-profile-dynamic-shard-*
+          path: gathered
+
+      - name: Collect and independently validate the exact frontier
+        run: |
+          python 22x22/collect_n22_profile_followup.py \
+            --schedule 22x22/current_remaining_schedule.json \
+            --prior-overall 22x22/current_prior_overall.json \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-id "${{ github.run_id }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --run-sha "${{ needs.prepare.outputs.run_sha }}"
+
+      - name: Upload overall result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-profile-dynamic-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
