@@ -62,6 +62,7 @@ The repository records exact closed cases and active frontier packages separatel
 | `19×19` | `D_mono(19) = 29` | closed | `19x19/`, `python 19x19/verify_19x19.py` |
 | `20×20` | `D_mono(20) = 30` | closed | `20x20/`, `python 20x20/verify_20x20.py`, [final exact run](https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29103139466) |
 | `21×21` | `D_mono(21) = 32` | closed | `21x21/`, `python 21x21/verify_21x21.py`, [final exact run](https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29531523646) |
+| `22×22` | `33 ≤ D_mono(22) ≤ 34` | active frontier | `22x22/`, [latest exact run](https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29770927206) |
 
 For the `18×18` case, the repository records a verified 27-point construction and the recalculation workflow used to rule out a 28-point configuration. The relevant working package is in `18x18/`, and the GitHub Actions workflow is `.github/workflows/n18-search.yml`.
 
@@ -70,6 +71,8 @@ For the `19×19` case, the repository records a verified 29-point construction a
 For the `20×20` case, the repository records a verified 30-point construction and a complete exact exclusion of every possible 31-point configuration. The final 20-branch GitHub Actions run returned 20 `INFEASIBLE` results, with zero `UNKNOWN` branches and zero solutions. Together these prove the exact value `D_mono(20) = 30`. The human-readable and machine-readable final records are stored in `20x20/runs/2026-07-10-run-29103139466/`.
 
 For the `21×21` case, the repository records a verified rotationally symmetric 32-point construction. The four-direction integer relaxation using rows, columns, and the two diagonal families excludes 33 points for both checkerboard colors. The final GitHub Actions run returned two `INFEASIBLE` results and zero `UNKNOWN` results. Together these prove `D_mono(21) = 32`. The final records are stored in `21x21/runs/2026-07-16-run-29531523646/`.
+
+For the `22×22` case, the repository records a verified 33-point construction and an exact all-lines exclusion search for a possible 34th point. Run `29770927206` proved 606 of the 776 profile children infeasible, found no 34-point configuration, and left 170 exact children unresolved. Together with 1864 earlier exclusions, 2470 of all 2640 children are now closed; therefore the certified status remains `33 ≤ D_mono(22) ≤ 34`.
 
 ## A small example
 

@@ -74,32 +74,40 @@ The complete pair/profile smoke finished successfully and collected all 2640 chi
 
 The 1864 exact exclusions are final and must not be recomputed. The remaining 776 children are listed in the balanced long schedule stored with this run.
 
-## Current 5h50 attack
+### Run 29770927206
+
+Archive: `22x22/runs/2026-07-21-run-29770927206/`
+
+The memory-safe 5h50 rerun processed all 776 survivors from run `29766054707`:
+
+- `INFEASIBLE`: 606;
+- `UNKNOWN`: 170;
+- `FEASIBLE`/`OPTIMAL`: 0;
+- missing/duplicate/model-invalid: 0;
+- newly closed main-diagonal pairs: 35;
+- remaining main-diagonal pairs: 53;
+- memory-guard records: 0.
+
+Together with the 1864 children closed by run `29766054707`, exactly 2470 of the 2640 profile children are now proved impossible. The remaining 170 children are the only exact frontier for a 34-point configuration. Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29770927206
+
+## Current follow-up attack
 
 Workflow:
 
 ```text
-.github/workflows/n22-profile-survivors-5h50.yml
+.github/workflows/n22-profile-followup-170-5h50.yml
 ```
 
-It processes only the 776 `UNKNOWN` children from run `29766054707`.
+It downloads and independently validates the aggregate record from run `29770927206`, archives it in the `22x22` folder, then schedules only the 170 remaining exact children.
 
 Resource layout:
 
 - 20 independent `ubuntu-latest` jobs;
-- 4 CP-SAT workers per active child, using all four virtual CPUs of each runner;
-- 38 or 39 children per job;
-- 21,000 seconds (5 hours 50 minutes) wall budget per shard;
-- workload balanced from the smoke-run score `branches + 2*conflicts`;
-- only one solver process at a time on each machine.
+- 4 CP-SAT workers per active child;
+- 8 or 9 children per job;
+- 21,000 seconds (5 hours 50 minutes) per shard;
+- up to 2,500 seconds per child, roughly four times the previous average allowance;
+- one solver subprocess at a time with a 13 GB RSS guard;
+- a different seed base to diversify the exact search.
 
-Memory safeguards:
-
-- every child runs in a separate subprocess, so memory is returned after each case;
-- parent-side RSS guard at 13,000 MB, leaving headroom on a 16 GB runner;
-- a memory-stopped child can be retried with two workers;
-- `MALLOC_ARENA_MAX=2` and hidden numerical-library threads are disabled;
-- memory, CPU and disk snapshots are logged once per minute;
-- partial JSON is written after every child and artifacts upload with `if: always()`.
-
-The folder may be marked closed with value 33 only after every remaining child returns `INFEASIBLE`. `UNKNOWN` is not a proof.
+The board remains open until every surviving child is `INFEASIBLE` or a valid 34-point construction is found and independently checked.

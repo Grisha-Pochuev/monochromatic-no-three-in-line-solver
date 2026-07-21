@@ -1,0 +1,331 @@
+{
+  "board_size": 22,
+  "target": 34,
+  "source_run_id": 29770927206,
+  "source_run_url": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29770927206",
+  "source_run_head_sha": "ee20dc85b457ee4db457fcdc06f9ed3c1eee4269",
+  "prior_smoke_infeasible_count": 1864,
+  "prior_long_infeasible_count": 606,
+  "cumulative_infeasible_count": 2470,
+  "unknown_child_count": 170,
+  "shards": 20,
+  "workers_per_solver": 4,
+  "fallback_workers": 2,
+  "total_seconds_per_shard": 21000,
+  "memory_guard_mb": 13000,
+  "max_seconds_per_child": 2500,
+  "seed_base": 2026072100,
+  "balance_score": "prior branches + 2*conflicts; count-first greedy distribution",
+  "assignments": [
+    {
+      "shard": 0,
+      "ids": [
+        1912,
+        681,
+        652,
+        1888,
+        2308,
+        1041,
+        292,
+        1198
+      ],
+      "prior_score_total": 123119855,
+      "count": 8
+    },
+    {
+      "shard": 1,
+      "ids": [
+        1941,
+        987,
+        1042,
+        1497,
+        2512,
+        1558,
+        772,
+        2266
+      ],
+      "prior_score_total": 119470773,
+      "count": 8
+    },
+    {
+      "shard": 2,
+      "ids": [
+        1882,
+        2001,
+        1252,
+        2457,
+        1461,
+        1648,
+        2002,
+        2482
+      ],
+      "prior_score_total": 114226891,
+      "count": 8
+    },
+    {
+      "shard": 3,
+      "ids": [
+        2301,
+        1251,
+        1491,
+        1077,
+        1546,
+        1193,
+        717,
+        1935
+      ],
+      "prior_score_total": 109462254,
+      "count": 8
+    },
+    {
+      "shard": 4,
+      "ids": [
+        1942,
+        2211,
+        1581,
+        1167,
+        2277,
+        1858,
+        1162,
+        1108
+      ],
+      "prior_score_total": 109512882,
+      "count": 8
+    },
+    {
+      "shard": 5,
+      "ids": [
+        1126,
+        1155,
+        1576,
+        1073,
+        2212,
+        1936,
+        1431,
+        2008,
+        1618
+      ],
+      "prior_score_total": 111846957,
+      "count": 9
+    },
+    {
+      "shard": 6,
+      "ids": [
+        2272,
+        771,
+        1521,
+        1131,
+        622,
+        1516,
+        1965,
+        658
+      ],
+      "prior_score_total": 108972892,
+      "count": 8
+    },
+    {
+      "shard": 7,
+      "ids": [
+        1048,
+        1456,
+        1072,
+        1522,
+        1486,
+        1642,
+        1138,
+        2296,
+        2458
+      ],
+      "prior_score_total": 111973754,
+      "count": 9
+    },
+    {
+      "shard": 8,
+      "ids": [
+        682,
+        688,
+        568,
+        1312,
+        958,
+        592,
+        1617,
+        687
+      ],
+      "prior_score_total": 111827206,
+      "count": 8
+    },
+    {
+      "shard": 9,
+      "ids": [
+        706,
+        1228,
+        1137,
+        2278,
+        952,
+        1006,
+        538,
+        778
+      ],
+      "prior_score_total": 110079243,
+      "count": 8
+    },
+    {
+      "shard": 10,
+      "ids": [
+        1612,
+        2271,
+        1948,
+        1966,
+        1372,
+        1186,
+        2247,
+        1426
+      ],
+      "prior_score_total": 108244357,
+      "count": 8
+    },
+    {
+      "shard": 11,
+      "ids": [
+        1528,
+        1582,
+        1043,
+        1947,
+        1102,
+        1972,
+        567,
+        297,
+        1906
+      ],
+      "prior_score_total": 111844108,
+      "count": 9
+    },
+    {
+      "shard": 12,
+      "ids": [
+        2302,
+        1822,
+        1887,
+        1222,
+        676,
+        1917,
+        1258,
+        1438,
+        777
+      ],
+      "prior_score_total": 111903674,
+      "count": 9
+    },
+    {
+      "shard": 13,
+      "ids": [
+        1852,
+        711,
+        321,
+        1432,
+        1492,
+        2518,
+        1671,
+        651,
+        351
+      ],
+      "prior_score_total": 111807820,
+      "count": 9
+    },
+    {
+      "shard": 14,
+      "ids": [
+        741,
+        1012,
+        1498,
+        1588,
+        982,
+        1402,
+        1161,
+        2248,
+        1282
+      ],
+      "prior_score_total": 112018450,
+      "count": 9
+    },
+    {
+      "shard": 15,
+      "ids": [
+        1462,
+        1971,
+        1551,
+        1071,
+        1606,
+        1557,
+        2242,
+        2038,
+        1156
+      ],
+      "prior_score_total": 111897260,
+      "count": 9
+    },
+    {
+      "shard": 16,
+      "ids": [
+        1552,
+        1876,
+        1132,
+        1587,
+        1036,
+        2218,
+        2217,
+        981,
+        1078
+      ],
+      "prior_score_total": 111840947,
+      "count": 9
+    },
+    {
+      "shard": 17,
+      "ids": [
+        2452,
+        1168,
+        1978,
+        742,
+        1918,
+        1192,
+        2517,
+        1223,
+        748
+      ],
+      "prior_score_total": 111735251,
+      "count": 9
+    },
+    {
+      "shard": 18,
+      "ids": [
+        1101,
+        802,
+        322,
+        1191,
+        1437,
+        1611,
+        646,
+        1246
+      ],
+      "prior_score_total": 108234576,
+      "count": 8
+    },
+    {
+      "shard": 19,
+      "ids": [
+        1066,
+        657,
+        1103,
+        712,
+        2182,
+        1096,
+        2511,
+        1221,
+        718
+      ],
+      "prior_score_total": 111938978,
+      "count": 9
+    }
+  ]
+}
