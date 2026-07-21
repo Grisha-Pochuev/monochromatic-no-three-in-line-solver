@@ -1,0 +1,155 @@
+name: postprocess n22 run 29815441947
+
+on:
+  push:
+    paths:
+      - '22x22/PROCESS_RUN_29815441947'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: postprocess-n22-29815441947
+  cancel-in-progress: false
+
+jobs:
+  archive-and-continue:
+    name: Archive, verify, and prepare final n22 frontier
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Record this postprocessing run
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cat > 22x22/CURRENT_N22_POSTPROCESS_RUN.md <<EOF
+          # Current n22 postprocessing run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Source exact run: 29815441947
+          EOF
+          git add 22x22/CURRENT_N22_POSTPROCESS_RUN.md
+          if ! git diff --cached --quiet; then
+            git commit -m "record postprocessing for n22 run 29815441947"
+            git push origin HEAD:main
+          fi
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download aggregate
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-profile-dynamic-overall
+          path: downloaded-overall
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29815441947
+
+      - name: Download all shard records and resource logs
+        uses: actions/download-artifact@v4
+        with:
+          pattern: n22-profile-dynamic-shard-*
+          path: gathered
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29815441947
+
+      - name: Download GitHub Actions job logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p job-logs
+          gh api --paginate repos/${GITHUB_REPOSITORY}/actions/runs/29815441947/jobs > jobs.json
+          python - <<'PY' > job-list.tsv
+          import json
+          import re
+          data = json.load(open('jobs.json', encoding='utf-8'))
+          for job in data.get('jobs', []):
+              name = re.sub(r'[^A-Za-z0-9_.-]+', '-', job['name']).strip('-')
+              print(f"{job['id']}\t{name}")
+          PY
+          while IFS=$'\t' read -r job_id job_name; do
+            gh api repos/${GITHUB_REPOSITORY}/actions/jobs/${job_id}/logs > "job-logs/${job_id}-${job_name}.log" || true
+          done < job-list.tsv
+          test "$(find job-logs -type f | wc -l)" -ge 22
+
+      - name: Independently rebuild the aggregate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python 22x22/collect_n22_profile_followup.py \
+            --schedule 22x22/current_remaining_schedule.json \
+            --prior-overall 22x22/current_prior_overall.json \
+            --input-dir gathered \
+            --overall regenerated-overall.json \
+            --summary regenerated-SUMMARY.md \
+            --run-id 29815441947 \
+            --run-url https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29815441947 \
+            --run-sha 0fa82b4e804d862e087a6058f2b933a614415bf3
+          python - <<'PY'
+          import json
+          expected = json.load(open('downloaded-overall/overall.json', encoding='utf-8'))
+          rebuilt = json.load(open('regenerated-overall.json', encoding='utf-8'))
+          assert rebuilt == expected, 'independently rebuilt aggregate differs from uploaded aggregate'
+          PY
+
+      - name: Validate, archive, and prepare only the final ten cases
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/postprocess_n22_run_29815441947.py \
+            --overall regenerated-overall.json \
+            --summary regenerated-SUMMARY.md \
+            --shards-dir gathered \
+            --job-logs-dir job-logs \
+            --archive-dir 22x22/runs/2026-07-21-run-29815441947 \
+            --artifact-id 8498787371 \
+            --artifact-sha256 ba5d3c22821d096167f23b0d365c7a3ecabe612f9d2090a9a15527e91c6963bf \
+            --seed-base 2026072300
+
+      - name: Commit archive, documentation, and exact remainder
+        id: commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git add \
+            README.md \
+            START_HERE.md \
+            22x22
+          if ! git diff --cached --quiet; then
+            git commit -m "archive n22 run 29815441947 and prepare final 10 cases"
+            git push origin HEAD:main
+          fi
+          echo "archive_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload postprocessing record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-run-29815441947-postprocessing
+          path: |
+            downloaded-overall/
+            regenerated-overall.json
+            regenerated-SUMMARY.md
+            jobs.json
+            job-list.tsv
+          retention-days: 30
