@@ -1,5 +1,4 @@
-source_run_id=29795643015
-remaining=56
-seed_base=2026072200
+source_run_id=29815441947
+remaining=10
+seed_base=2026072300
 triggered_by=assistant_after_verified_archive
-retry_after_workflow_fix=1
