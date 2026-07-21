@@ -1,0 +1,44 @@
+name: cleanup temporary n22 automation helpers
+
+on:
+  push:
+    paths:
+      - '22x22/CLEANUP_N22_TEMPORARY_AUTOMATION'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Remove temporary helpers in one commit
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          for path in \
+            .github/workflows/archive-n22-dynamic-run.yml \
+            .github/workflows/archive-n22-dynamic-run-v2.yml \
+            .github/workflows/record-actions-state.yml \
+            .github/workflows/cleanup-n22-temporary-automation.yml \
+            22x22/ARCHIVE_N22_DYNAMIC_RUN \
+            22x22/ARCHIVE_N22_DYNAMIC_RUN_V2 \
+            22x22/QUERY_ACTIONS_STATE \
+            22x22/ACTIONS_STATE.json \
+            22x22/CLEANUP_N22_TEMPORARY_AUTOMATION
+          do
+            if test -e "$path"; then
+              git rm -f "$path"
+            fi
+          done
+          git commit -m "remove temporary n22 automation helpers"
+          git pull --rebase origin main
+          git push origin HEAD:main
