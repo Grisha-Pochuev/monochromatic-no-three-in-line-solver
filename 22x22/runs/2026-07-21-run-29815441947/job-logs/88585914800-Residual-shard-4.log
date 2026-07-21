@@ -1,0 +1,313 @@
+﻿2026-07-21T08:45:49.7743597Z Current runner version: '2.335.1'
+2026-07-21T08:45:49.7764559Z ##[group]Runner Image Provisioner
+2026-07-21T08:45:49.7765281Z Hosted Compute Agent
+2026-07-21T08:45:49.7765827Z Version: 20260707.563
+2026-07-21T08:45:49.7766336Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+2026-07-21T08:45:49.7766943Z Build Date: 2026-07-07T19:33:50Z
+2026-07-21T08:45:49.7767529Z Worker ID: {a35b700e-3766-41f9-bc26-54dc9472d1f7}
+2026-07-21T08:45:49.7768196Z Azure Region: centralus
+2026-07-21T08:45:49.7768696Z ##[endgroup]
+2026-07-21T08:45:49.7770080Z ##[group]Operating System
+2026-07-21T08:45:49.7770592Z Ubuntu
+2026-07-21T08:45:49.7771053Z 24.04.4
+2026-07-21T08:45:49.7771481Z LTS
+2026-07-21T08:45:49.7771957Z ##[endgroup]
+2026-07-21T08:45:49.7772449Z ##[group]Runner Image
+2026-07-21T08:45:49.7772954Z Image: ubuntu-24.04
+2026-07-21T08:45:49.7773460Z Version: 20260714.240.1
+2026-07-21T08:45:49.7774462Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260714.240/images/ubuntu/Ubuntu2404-Readme.md
+2026-07-21T08:45:49.7776070Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260714.240
+2026-07-21T08:45:49.7776840Z ##[endgroup]
+2026-07-21T08:45:49.7777828Z ##[group]GITHUB_TOKEN Permissions
+2026-07-21T08:45:49.7779916Z Actions: read
+2026-07-21T08:45:49.7780441Z Contents: write
+2026-07-21T08:45:49.7780893Z Metadata: read
+2026-07-21T08:45:49.7781320Z ##[endgroup]
+2026-07-21T08:45:49.7783054Z Secret source: Actions
+2026-07-21T08:45:49.7783635Z Prepare workflow directory
+2026-07-21T08:45:49.8104230Z Prepare all required actions
+2026-07-21T08:45:49.8136166Z Getting action download info
+2026-07-21T08:45:50.1157088Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-07-21T08:45:50.5219253Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-07-21T08:45:50.7372048Z Complete job name: Residual shard 4
+2026-07-21T08:45:50.7932928Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-21T08:45:50.7940156Z ##[group]Run actions/checkout@v4
+2026-07-21T08:45:50.7940867Z with:
+2026-07-21T08:45:50.7941323Z   ref: 0fa82b4e804d862e087a6058f2b933a614415bf3
+2026-07-21T08:45:50.7942061Z   repository: Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T08:45:50.7945645Z   token: ***
+2026-07-21T08:45:50.7946054Z   ssh-strict: true
+2026-07-21T08:45:50.7946508Z   ssh-user: git
+2026-07-21T08:45:50.7946939Z   persist-credentials: true
+2026-07-21T08:45:50.7947432Z   clean: true
+2026-07-21T08:45:50.7947874Z   sparse-checkout-cone-mode: true
+2026-07-21T08:45:50.7948369Z   fetch-depth: 1
+2026-07-21T08:45:50.7948831Z   fetch-tags: false
+2026-07-21T08:45:50.7949332Z   show-progress: true
+2026-07-21T08:45:50.7949976Z   lfs: false
+2026-07-21T08:45:50.7950412Z   submodules: false
+2026-07-21T08:45:50.7950851Z   set-safe-directory: true
+2026-07-21T08:45:50.7951353Z   allow-unsafe-pr-checkout: false
+2026-07-21T08:45:50.7951972Z env:
+2026-07-21T08:45:50.7952372Z   PYTHONUNBUFFERED: 1
+2026-07-21T08:45:50.7952840Z   MALLOC_ARENA_MAX: 2
+2026-07-21T08:45:50.7953269Z   OMP_NUM_THREADS: 1
+2026-07-21T08:45:50.7953757Z   OPENBLAS_NUM_THREADS: 1
+2026-07-21T08:45:50.7954198Z   MKL_NUM_THREADS: 1
+2026-07-21T08:45:50.7954605Z ##[endgroup]
+2026-07-21T08:45:50.8863606Z Syncing repository: Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T08:45:50.8866144Z ##[group]Getting Git version info
+2026-07-21T08:45:50.8867622Z Working directory is '/home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver'
+2026-07-21T08:45:50.8869677Z [command]/usr/bin/git version
+2026-07-21T08:45:50.8870439Z git version 2.54.0
+2026-07-21T08:45:50.8878884Z ##[endgroup]
+2026-07-21T08:45:50.8890701Z Temporarily overriding HOME='/home/runner/work/_temp/c28c7948-1fa0-4b44-b1f8-d3aaa7c8e30f' before making global git config changes
+2026-07-21T08:45:50.8892875Z Adding repository directory to the temporary git global config as a safe directory
+2026-07-21T08:45:50.8894972Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver
+2026-07-21T08:45:50.8924885Z Deleting the contents of '/home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver'
+2026-07-21T08:45:50.8927390Z ##[group]Initializing the repository
+2026-07-21T08:45:50.8931264Z [command]/usr/bin/git init /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver
+2026-07-21T08:45:50.9007195Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-07-21T08:45:50.9008726Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-07-21T08:45:50.9010471Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-07-21T08:45:50.9011743Z hint: call:
+2026-07-21T08:45:50.9012576Z hint:
+2026-07-21T08:45:50.9013415Z hint: 	git config --global init.defaultBranch <name>
+2026-07-21T08:45:50.9014436Z hint:
+2026-07-21T08:45:50.9016040Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-07-21T08:45:50.9017245Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-07-21T08:45:50.9018257Z hint:
+2026-07-21T08:45:50.9018791Z hint: 	git branch -m <name>
+2026-07-21T08:45:50.9019830Z hint:
+2026-07-21T08:45:50.9020980Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-07-21T08:45:50.9022608Z Initialized empty Git repository in /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver/.git/
+2026-07-21T08:45:50.9024921Z [command]/usr/bin/git remote add origin https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T08:45:50.9058370Z ##[endgroup]
+2026-07-21T08:45:50.9071961Z ##[group]Disabling automatic garbage collection
+2026-07-21T08:45:50.9073200Z [command]/usr/bin/git config --local gc.auto 0
+2026-07-21T08:45:50.9078295Z ##[endgroup]
+2026-07-21T08:45:50.9079405Z ##[group]Setting up auth
+2026-07-21T08:45:50.9084093Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-07-21T08:45:50.9107814Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-07-21T08:45:50.9343593Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-07-21T08:45:50.9372173Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-07-21T08:45:50.9548797Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-07-21T08:45:50.9576087Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-07-21T08:45:50.9742024Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-07-21T08:45:50.9769973Z ##[endgroup]
+2026-07-21T08:45:50.9770738Z ##[group]Fetching the repository
+2026-07-21T08:45:50.9777853Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 0fa82b4e804d862e087a6058f2b933a614415bf3
+2026-07-21T08:45:51.5721564Z From https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver
+2026-07-21T08:45:51.5723366Z  * branch            0fa82b4e804d862e087a6058f2b933a614415bf3 -> FETCH_HEAD
+2026-07-21T08:45:51.5741933Z ##[endgroup]
+2026-07-21T08:45:51.5743570Z ##[group]Determining the checkout info
+2026-07-21T08:45:51.5745242Z ##[endgroup]
+2026-07-21T08:45:51.5749716Z [command]/usr/bin/git sparse-checkout disable
+2026-07-21T08:45:51.5786395Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-07-21T08:45:51.5810020Z ##[group]Checking out the ref
+2026-07-21T08:45:51.5814054Z [command]/usr/bin/git checkout --progress --force 0fa82b4e804d862e087a6058f2b933a614415bf3
+2026-07-21T08:45:51.6304631Z Note: switching to '0fa82b4e804d862e087a6058f2b933a614415bf3'.
+2026-07-21T08:45:51.6306126Z 
+2026-07-21T08:45:51.6306971Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-07-21T08:45:51.6308905Z changes and commit them, and you can discard any commits you make in this
+2026-07-21T08:45:51.6311139Z state without impacting any branches by switching back to a branch.
+2026-07-21T08:45:51.6312202Z 
+2026-07-21T08:45:51.6313022Z If you want to create a new branch to retain commits you create, you may
+2026-07-21T08:45:51.6314848Z do so (now or later) by using -c with the switch command. Example:
+2026-07-21T08:45:51.6315929Z 
+2026-07-21T08:45:51.6316503Z   git switch -c <new-branch-name>
+2026-07-21T08:45:51.6317079Z 
+2026-07-21T08:45:51.6317557Z Or undo this operation with:
+2026-07-21T08:45:51.6318293Z 
+2026-07-21T08:45:51.6318704Z   git switch -
+2026-07-21T08:45:51.6319317Z 
+2026-07-21T08:45:51.6320224Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-07-21T08:45:51.6321203Z 
+2026-07-21T08:45:51.6321814Z HEAD is now at 0fa82b4 record n22 residual-frontier run 29815441947
+2026-07-21T08:45:51.6325116Z ##[endgroup]
+2026-07-21T08:45:51.6348452Z [command]/usr/bin/git log -1 --format=%H
+2026-07-21T08:45:51.6368035Z 0fa82b4e804d862e087a6058f2b933a614415bf3
+2026-07-21T08:45:51.6565209Z ##[group]Run python -m pip install ortools==9.15.6755
+2026-07-21T08:45:51.6566853Z [36;1mpython -m pip install ortools==9.15.6755[0m
+2026-07-21T08:45:51.6615192Z shell: /usr/bin/bash -e {0}
+2026-07-21T08:45:51.6616479Z env:
+2026-07-21T08:45:51.6617474Z   PYTHONUNBUFFERED: 1
+2026-07-21T08:45:51.6618615Z   MALLOC_ARENA_MAX: 2
+2026-07-21T08:45:51.6620019Z   OMP_NUM_THREADS: 1
+2026-07-21T08:45:51.6621183Z   OPENBLAS_NUM_THREADS: 1
+2026-07-21T08:45:51.6622330Z   MKL_NUM_THREADS: 1
+2026-07-21T08:45:51.6623377Z ##[endgroup]
+2026-07-21T08:45:52.9308480Z Defaulting to user installation because normal site-packages is not writeable
+2026-07-21T08:45:54.2685858Z Collecting ortools==9.15.6755
+2026-07-21T08:45:54.3322109Z   Downloading ortools-9.15.6755-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (3.3 kB)
+2026-07-21T08:45:54.3649052Z Collecting absl-py>=2.0.0 (from ortools==9.15.6755)
+2026-07-21T08:45:54.3756830Z   Downloading absl_py-2.5.0-py3-none-any.whl.metadata (3.3 kB)
+2026-07-21T08:45:54.5942119Z Collecting numpy>=2.0.2 (from ortools==9.15.6755)
+2026-07-21T08:45:54.6047695Z   Downloading numpy-2.5.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl.metadata (6.6 kB)
+2026-07-21T08:45:54.7298432Z Collecting pandas>=2.0.0 (from ortools==9.15.6755)
+2026-07-21T08:45:54.7404299Z   Downloading pandas-3.0.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl.metadata (79 kB)
+2026-07-21T08:45:54.7553278Z      ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 79.5/79.5 kB 5.8 MB/s eta 0:00:00
+2026-07-21T08:45:54.9103795Z Collecting protobuf<6.34,>=6.33.1 (from ortools==9.15.6755)
+2026-07-21T08:45:54.9205731Z   Downloading protobuf-6.33.6-cp39-abi3-manylinux2014_x86_64.whl.metadata (593 bytes)
+2026-07-21T08:45:54.9539133Z Collecting typing-extensions>=4.12 (from ortools==9.15.6755)
+2026-07-21T08:45:54.9644190Z   Downloading typing_extensions-4.16.0-py3-none-any.whl.metadata (3.3 kB)
+2026-07-21T08:45:55.1011649Z Collecting immutabledict>=3.0.0 (from ortools==9.15.6755)
+2026-07-21T08:45:55.1116576Z   Downloading immutabledict-4.3.1-py3-none-any.whl.metadata (3.5 kB)
+2026-07-21T08:45:55.2120819Z Requirement already satisfied: python-dateutil>=2.8.2 in /usr/lib/python3/dist-packages (from pandas>=2.0.0->ortools==9.15.6755) (2.8.2)
+2026-07-21T08:45:55.2255921Z Downloading ortools-9.15.6755-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (29.8 MB)
+2026-07-21T08:45:55.5372037Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 29.8/29.8 MB 54.3 MB/s eta 0:00:00
+2026-07-21T08:45:55.5476600Z Downloading absl_py-2.5.0-py3-none-any.whl (137 kB)
+2026-07-21T08:45:55.6114645Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 137.4/137.4 kB 2.1 MB/s eta 0:00:00
+2026-07-21T08:45:55.6218975Z Downloading immutabledict-4.3.1-py3-none-any.whl (5.0 kB)
+2026-07-21T08:45:55.6344218Z Downloading numpy-2.5.1-cp312-cp312-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl (16.7 MB)
+2026-07-21T08:45:55.7639861Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 16.7/16.7 MB 88.9 MB/s eta 0:00:00
+2026-07-21T08:45:55.7745995Z Downloading pandas-3.0.3-cp312-cp312-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl (10.9 MB)
+2026-07-21T08:45:55.8858370Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 10.9/10.9 MB 94.8 MB/s eta 0:00:00
+2026-07-21T08:45:55.8963579Z Downloading protobuf-6.33.6-cp39-abi3-manylinux2014_x86_64.whl (323 kB)
+2026-07-21T08:45:55.9020978Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 323.4/323.4 kB 75.6 MB/s eta 0:00:00
+2026-07-21T08:45:55.9122730Z Downloading typing_extensions-4.16.0-py3-none-any.whl (45 kB)
+2026-07-21T08:45:55.9158836Z    ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 45.6/45.6 kB 16.8 MB/s eta 0:00:00
+2026-07-21T08:45:56.2400667Z Installing collected packages: typing-extensions, protobuf, numpy, immutabledict, absl-py, pandas, ortools
+2026-07-21T08:46:01.6075780Z Successfully installed absl-py-2.5.0 immutabledict-4.3.1 numpy-2.5.1 ortools-9.15.6755 pandas-3.0.3 protobuf-6.33.6 typing-extensions-4.16.0
+2026-07-21T08:46:01.7302541Z ##[group]Run {
+2026-07-21T08:46:01.7302827Z [36;1m{[0m
+2026-07-21T08:46:01.7303081Z [36;1m  echo "=== machine ==="[0m
+2026-07-21T08:46:01.7303386Z [36;1m  date -u[0m
+2026-07-21T08:46:01.7303654Z [36;1m  echo "nproc=$(nproc)"[0m
+2026-07-21T08:46:01.7303939Z [36;1m  free -h[0m
+2026-07-21T08:46:01.7304167Z [36;1m  df -h[0m
+2026-07-21T08:46:01.7304449Z [36;1m  grep -m1 'model name' /proc/cpuinfo || true[0m
+2026-07-21T08:46:01.7304797Z [36;1m} | tee machine-4.log[0m
+2026-07-21T08:46:01.7340295Z shell: /usr/bin/bash -e {0}
+2026-07-21T08:46:01.7340604Z env:
+2026-07-21T08:46:01.7340876Z   PYTHONUNBUFFERED: 1
+2026-07-21T08:46:01.7341180Z   MALLOC_ARENA_MAX: 2
+2026-07-21T08:46:01.7341441Z   OMP_NUM_THREADS: 1
+2026-07-21T08:46:01.7341727Z   OPENBLAS_NUM_THREADS: 1
+2026-07-21T08:46:01.7341994Z   MKL_NUM_THREADS: 1
+2026-07-21T08:46:01.7342232Z ##[endgroup]
+2026-07-21T08:46:01.7404037Z === machine ===
+2026-07-21T08:46:01.7405149Z Tue Jul 21 08:46:01 UTC 2026
+2026-07-21T08:46:01.7417566Z nproc=1
+2026-07-21T08:46:01.7428766Z                total        used        free      shared  buff/cache   available
+2026-07-21T08:46:01.7429329Z Mem:            15Gi       1.1Gi        11Gi        43Mi       3.2Gi        14Gi
+2026-07-21T08:46:01.7429895Z Swap:          3.0Gi          0B       3.0Gi
+2026-07-21T08:46:01.7504889Z Filesystem       Size  Used Avail Use% Mounted on
+2026-07-21T08:46:01.7505338Z /dev/root        145G   58G   87G  40% /
+2026-07-21T08:46:01.7505810Z tmpfs            7.9G   84K  7.9G   1% /dev/shm
+2026-07-21T08:46:01.7506246Z tmpfs            3.2G 1012K  3.2G   1% /run
+2026-07-21T08:46:01.7506647Z tmpfs            5.0M     0  5.0M   0% /run/lock
+2026-07-21T08:46:01.7507142Z /dev/nvme0n1p16  881M   64M  756M   8% /boot
+2026-07-21T08:46:01.7507511Z /dev/nvme0n1p15  105M  6.2M   99M   6% /boot/efi
+2026-07-21T08:46:01.7507922Z tmpfs            1.6G   12K  1.6G   1% /run/user/1001
+2026-07-21T08:46:01.7516030Z model name	: INTEL(R) XEON(R) PLATINUM 8573C
+2026-07-21T08:46:01.7548053Z ##[group]Run set -uo pipefail
+2026-07-21T08:46:01.7548391Z [36;1mset -uo pipefail[0m
+2026-07-21T08:46:01.7548690Z [36;1m([0m
+2026-07-21T08:46:01.7548954Z [36;1m  while true; do[0m
+2026-07-21T08:46:01.7549230Z [36;1m    echo "=== $(date -u +%FT%TZ) ==="[0m
+2026-07-21T08:46:01.7549783Z [36;1m    free -h[0m
+2026-07-21T08:46:01.7550129Z [36;1m    ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15[0m
+2026-07-21T08:46:01.7550507Z [36;1m    sleep 60[0m
+2026-07-21T08:46:01.7550911Z [36;1m  done[0m
+2026-07-21T08:46:01.7551172Z [36;1m) > "memory-4.log" 2>&1 &[0m
+2026-07-21T08:46:01.7551476Z [36;1mmonitor_pid=$![0m
+2026-07-21T08:46:01.7551791Z [36;1mpython 22x22/run_n22_profile_followup_shard.py \[0m
+2026-07-21T08:46:01.7552209Z [36;1m  --schedule 22x22/current_remaining_schedule.json \[0m
+2026-07-21T08:46:01.7552597Z [36;1m  --shard "4" \[0m
+2026-07-21T08:46:01.7552872Z [36;1m  --total-seconds 21000 \[0m
+2026-07-21T08:46:01.7553267Z [36;1m  --workers 4 \[0m
+2026-07-21T08:46:01.7553541Z [36;1m  --fallback-workers 2 \[0m
+2026-07-21T08:46:01.7553845Z [36;1m  --memory-guard-mb 13000 \[0m
+2026-07-21T08:46:01.7554165Z [36;1m  --max-seconds 20700 \[0m
+2026-07-21T08:46:01.7554466Z [36;1m  --artifact-buffer-seconds 180 \[0m
+2026-07-21T08:46:01.7554803Z [36;1m  --seed-base "2026072200" \[0m
+2026-07-21T08:46:01.7555107Z [36;1m  --output-dir "results/shard-4"[0m
+2026-07-21T08:46:01.7555388Z [36;1mrc=$?[0m
+2026-07-21T08:46:01.7555715Z [36;1mkill "$monitor_pid" 2>/dev/null || true[0m
+2026-07-21T08:46:01.7556049Z [36;1mwait "$monitor_pid" 2>/dev/null || true[0m
+2026-07-21T08:46:01.7556353Z [36;1mexit "$rc"[0m
+2026-07-21T08:46:01.7588297Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-07-21T08:46:01.7588760Z env:
+2026-07-21T08:46:01.7589024Z   PYTHONUNBUFFERED: 1
+2026-07-21T08:46:01.7589298Z   MALLOC_ARENA_MAX: 2
+2026-07-21T08:46:01.7589689Z   OMP_NUM_THREADS: 1
+2026-07-21T08:46:01.7589957Z   OPENBLAS_NUM_THREADS: 1
+2026-07-21T08:46:01.7590298Z   MKL_NUM_THREADS: 1
+2026-07-21T08:46:01.7590600Z ##[endgroup]
+2026-07-21T11:12:22.2404018Z ##[group]Run free -h
+2026-07-21T11:12:22.2404269Z [36;1mfree -h[0m
+2026-07-21T11:12:22.2404453Z [36;1mdf -h[0m
+2026-07-21T11:12:22.2437132Z shell: /usr/bin/bash -e {0}
+2026-07-21T11:12:22.2437374Z env:
+2026-07-21T11:12:22.2437561Z   PYTHONUNBUFFERED: 1
+2026-07-21T11:12:22.2437763Z   MALLOC_ARENA_MAX: 2
+2026-07-21T11:12:22.2437956Z   OMP_NUM_THREADS: 1
+2026-07-21T11:12:22.2438166Z   OPENBLAS_NUM_THREADS: 1
+2026-07-21T11:12:22.2438365Z   MKL_NUM_THREADS: 1
+2026-07-21T11:12:22.2438558Z ##[endgroup]
+2026-07-21T11:12:22.2497429Z                total        used        free      shared  buff/cache   available
+2026-07-21T11:12:22.2498027Z Mem:            15Gi       1.0Gi        11Gi        48Mi       3.2Gi        14Gi
+2026-07-21T11:12:22.2498324Z Swap:          3.0Gi          0B       3.0Gi
+2026-07-21T11:12:22.2508490Z Filesystem       Size  Used Avail Use% Mounted on
+2026-07-21T11:12:22.2508861Z /dev/root        145G   58G   87G  40% /
+2026-07-21T11:12:22.2509226Z tmpfs            7.9G   84K  7.9G   1% /dev/shm
+2026-07-21T11:12:22.2509695Z tmpfs            3.2G 1012K  3.2G   1% /run
+2026-07-21T11:12:22.2509981Z tmpfs            5.0M     0  5.0M   0% /run/lock
+2026-07-21T11:12:22.2510230Z /dev/nvme0n1p16  881M   64M  756M   8% /boot
+2026-07-21T11:12:22.2510770Z /dev/nvme0n1p15  105M  6.2M   99M   6% /boot/efi
+2026-07-21T11:12:22.2511171Z tmpfs            1.6G   12K  1.6G   1% /run/user/1001
+2026-07-21T11:12:22.2554031Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-21T11:12:22.2555661Z ##[group]Run actions/upload-artifact@v4
+2026-07-21T11:12:22.2555894Z with:
+2026-07-21T11:12:22.2556091Z   name: n22-profile-dynamic-shard-4
+2026-07-21T11:12:22.2556343Z   path: results/
+memory-4.log
+machine-4.log
+
+2026-07-21T11:12:22.2556582Z   retention-days: 30
+2026-07-21T11:12:22.2556772Z   if-no-files-found: warn
+2026-07-21T11:12:22.2556968Z   compression-level: 6
+2026-07-21T11:12:22.2557153Z   overwrite: false
+2026-07-21T11:12:22.2557335Z   include-hidden-files: false
+2026-07-21T11:12:22.2557529Z env:
+2026-07-21T11:12:22.2557690Z   PYTHONUNBUFFERED: 1
+2026-07-21T11:12:22.2557870Z   MALLOC_ARENA_MAX: 2
+2026-07-21T11:12:22.2558247Z   OMP_NUM_THREADS: 1
+2026-07-21T11:12:22.2558435Z   OPENBLAS_NUM_THREADS: 1
+2026-07-21T11:12:22.2558627Z   MKL_NUM_THREADS: 1
+2026-07-21T11:12:22.2558801Z ##[endgroup]
+2026-07-21T11:12:22.4014548Z (node:3934) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-07-21T11:12:22.4015101Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-07-21T11:12:22.4106372Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-07-21T11:12:22.4108544Z The least common ancestor is /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver. This will be the root directory of the artifact
+2026-07-21T11:12:22.4109722Z With the provided path, there will be 12 files uploaded
+2026-07-21T11:12:22.4113470Z Artifact name is valid!
+2026-07-21T11:12:22.4114002Z Root directory input is valid!
+2026-07-21T11:12:22.6217765Z Beginning upload of artifact content to blob storage
+2026-07-21T11:12:22.6529953Z (node:3934) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-07-21T11:12:22.8202338Z Uploaded bytes 34389
+2026-07-21T11:12:22.8650140Z Finished uploading artifact content to blob storage!
+2026-07-21T11:12:22.8650786Z SHA256 digest of uploaded artifact zip is d7b7574dbde6957056c0db9c227c134894b933e4231ed28dcb2363c98e075d38
+2026-07-21T11:12:22.8652991Z Finalizing artifact upload
+2026-07-21T11:12:23.0436552Z Artifact n22-profile-dynamic-shard-4.zip successfully finalized. Artifact ID 8492983763
+2026-07-21T11:12:23.0437549Z Artifact n22-profile-dynamic-shard-4 has been successfully uploaded! Final size is 34389 bytes. Artifact ID is 8492983763
+2026-07-21T11:12:23.0443617Z Artifact download URL: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29815441947/artifacts/8492983763
+2026-07-21T11:12:23.0603950Z Node 20 is being deprecated. This workflow is running with Node 24 by default. If you need to temporarily use Node 20, you can set the ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION=true environment variable. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
+2026-07-21T11:12:23.0604893Z Post job cleanup.
+2026-07-21T11:12:23.1305911Z [command]/usr/bin/git version
+2026-07-21T11:12:23.1338471Z git version 2.54.0
+2026-07-21T11:12:23.1367647Z Temporarily overriding HOME='/home/runner/work/_temp/b94339f3-09f1-4c15-ab99-d0864052b42d' before making global git config changes
+2026-07-21T11:12:23.1368592Z Adding repository directory to the temporary git global config as a safe directory
+2026-07-21T11:12:23.1373106Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/monochromatic-no-three-in-line-solver/monochromatic-no-three-in-line-solver
+2026-07-21T11:12:23.1405601Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-07-21T11:12:23.1434291Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-07-21T11:12:23.1634838Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-07-21T11:12:23.1654350Z http.https://github.com/.extraheader
+2026-07-21T11:12:23.1663800Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-07-21T11:12:23.1689808Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-07-21T11:12:23.1869187Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-07-21T11:12:23.1891182Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-07-21T11:12:23.2222720Z Cleaning up orphan processes
+2026-07-21T11:12:23.2402962Z Terminate orphan process: pid (3928) (sleep)
+2026-07-21T11:12:23.2418984Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

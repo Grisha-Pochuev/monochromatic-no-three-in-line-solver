@@ -106,7 +106,23 @@ The exact follow-up processed all 170 survivors from run `29770927206`:
 
 Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29795643015
 
+### Run 29815441947
+
+Archive: `22x22/runs/2026-07-21-run-29815441947/`
+
+The exact follow-up processed all 56 survivors from run `29795643015`:
+
+- `INFEASIBLE`: 46;
+- `UNKNOWN`: 10;
+- `FEASIBLE`/`OPTIMAL`: 0;
+- missing/duplicate/unexpected/model-invalid/technical: 0;
+- newly closed main-diagonal pairs: 20;
+- remaining main-diagonal pairs: 10;
+- cumulative exact exclusions: 2630 / 2640.
+
+Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29815441947
+
 ## Current follow-up attack
 
-The next workflow processes only the 56 exact children still marked `UNKNOWN` after run `29795643015`. It uses 20 balanced jobs, four solver workers, one solver process per machine, a 13 GB RSS guard, and up to 5 hours 50 minutes per job. Previously proved children are not recomputed.
+The next workflow processes only the 10 exact children still marked `UNKNOWN` after run `29815441947`. It uses 20 jobs (ten active and ten empty), four solver workers, one solver process per machine, a 13 GB RSS guard, and up to 5 hours 50 minutes per job. Previously proved children are not recomputed.
 
