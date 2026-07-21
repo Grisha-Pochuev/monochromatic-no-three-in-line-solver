@@ -1,0 +1,276 @@
+name: n22 final two replicated 5h50
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_FINAL_TWO_5H50'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: n22-final-two-replicated-5h50
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Validate final two n22 cases
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      run_sha: ${{ steps.record.outputs.run_sha }}
+      seed_base: ${{ steps.schedule.outputs.seed_base }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download independently collected prior aggregate
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-profile-dynamic-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29842033980
+
+      - name: Validate lower construction, prior aggregate, and replicated schedule
+        id: schedule
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python - <<'PY'
+          import json, os
+          from collections import Counter
+          from pathlib import Path
+
+          schedule=json.loads(Path('22x22/final_two_schedule.json').read_text())
+          prior=json.loads(Path('prior/overall.json').read_text())
+          assert schedule['board_size']==22 and schedule['target']==34
+          assert schedule['source_run_id']==29842033980
+          assert schedule['remaining_child_ids']==[652,1132]
+          assert schedule['remaining_pair_indices']==[40,56]
+          assert schedule['shards']==20 and len(schedule['assignments'])==20
+          pairs=[(int(x['child_id']),int(x['replica'])) for x in schedule['assignments']]
+          assert len(pairs)==len(set(pairs))==20
+          assert Counter(child for child,_ in pairs)==Counter({652:10,1132:10})
+          assert sorted(int(v) for v in prior['remaining_child_ids'])==[652,1132]
+          assert sorted(int(v) for v in prior['remaining_pair_indices'])==[40,56]
+          assert prior['cumulative_all_children_infeasible']==2638
+          assert prior['current_status_counts']=={
+              'INFEASIBLE':8,'UNKNOWN':2,'FEASIBLE':0,'OPTIMAL':0,'MODEL_INVALID':0
+          }
+          assert not prior['missing_child_ids']
+          assert not prior['duplicate_child_ids']
+          assert not prior['unexpected_child_ids']
+          assert prior['technical_record_count']==0
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as out:
+              out.write(f"seed_base={int(schedule['seed_base'])}\n")
+          print(json.dumps({
+              'remaining_child_ids':schedule['remaining_child_ids'],
+              'replicas_per_child':schedule['replicas_per_child'],
+              'seed_base':schedule['seed_base'],
+          },indent=2))
+          PY
+
+      - name: Record this exact continuation run
+        id: record
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          cat > 22x22/CURRENT_N22_FINAL_TWO_RUN.md <<EOF
+          # Current n22 final-two run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Trigger SHA: ${GITHUB_SHA}
+          Source exact run: 29842033980
+          Frontier at launch: child ids 652 and 1132.
+          Replication: 10 full-budget jobs per child.
+          Workflow: n22 final two replicated 5h50
+          EOF
+          git add 22x22/CURRENT_N22_FINAL_TWO_RUN.md
+          if ! git diff --cached --quiet; then
+            git commit -m "record n22 final-two run ${GITHUB_RUN_ID}"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
+          echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Compile and smoke-test final-two runner
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m py_compile \
+            22x22/run_n22_final_two_shard.py \
+            22x22/collect_n22_final_two.py
+          python 22x22/run_n22_final_two_shard.py \
+            --schedule 22x22/final_two_schedule.json \
+            --shard 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --max-seconds 15 \
+            --artifact-buffer-seconds 5 \
+            --seed-base "${{ steps.schedule.outputs.seed_base }}" \
+            --output-dir smoke-final-two
+          test "$(find smoke-final-two -name 'child-*-replica-*-shard-*.json' | wc -l)" -eq 1
+
+      - name: Upload validation records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-final-two-preparation
+          path: |
+            22x22/final_two_schedule.json
+            prior/overall.json
+            prior/SUMMARY.md
+            smoke-final-two/
+          retention-days: 30
+
+  replicas:
+    name: Final child replica ${{ matrix.shard }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            echo "=== machine ==="
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.shard }}.log
+
+      - name: Run one full-budget independent replica
+        shell: bash
+        run: |
+          set -uo pipefail
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > "memory-${{ matrix.shard }}.log" 2>&1 &
+          monitor_pid=$!
+          python 22x22/run_n22_final_two_shard.py \
+            --schedule 22x22/final_two_schedule.json \
+            --shard "${{ matrix.shard }}" \
+            --total-seconds 21000 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --max-seconds 20700 \
+            --artifact-buffer-seconds 180 \
+            --seed-base "${{ needs.prepare.outputs.seed_base }}" \
+            --output-dir "results/shard-${{ matrix.shard }}"
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Final resource snapshot
+        if: always()
+        run: |
+          free -h
+          df -h
+
+      - name: Upload replica record and resource logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-final-two-shard-${{ matrix.shard }}
+          path: |
+            results/
+            memory-${{ matrix.shard }}.log
+            machine-${{ matrix.shard }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect n22 final-two replicated run
+    needs: [prepare, replicas]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools for collector imports
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download independently collected prior aggregate
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-profile-dynamic-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29842033980
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-final-two-shard-*
+          path: gathered
+
+      - name: Collect and independently validate all replicas
+        run: |
+          python 22x22/collect_n22_final_two.py \
+            --schedule 22x22/final_two_schedule.json \
+            --prior-overall prior/overall.json \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-id "${{ github.run_id }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --run-sha "${{ needs.prepare.outputs.run_sha }}"
+
+      - name: Upload overall result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-final-two-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
