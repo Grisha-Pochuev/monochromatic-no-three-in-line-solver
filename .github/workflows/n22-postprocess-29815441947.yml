@@ -48,6 +48,7 @@ jobs:
           git add 22x22/CURRENT_N22_POSTPROCESS_RUN.md
           if ! git diff --cached --quiet; then
             git commit -m "record postprocessing for n22 run 29815441947"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
 
@@ -137,6 +138,7 @@ jobs:
             22x22
           if ! git diff --cached --quiet; then
             git commit -m "archive n22 run 29815441947 and prepare final 10 cases"
+            git pull --rebase origin main
             git push origin HEAD:main
           fi
           echo "archive_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
