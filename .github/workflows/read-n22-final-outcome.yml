@@ -1,0 +1,60 @@
+name: read n22 final outcome
+
+on:
+  push:
+    paths:
+      - '22x22/READ_N22_FINAL_OUTCOME'
+
+permissions:
+  contents: write
+  actions: read
+
+jobs:
+  read:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Download overall artifact
+        run: |
+          gh run download 29868888706 --repo "$GITHUB_REPOSITORY" --name n22-final-two-overall --dir outcome
+          test -f outcome/overall.json
+          test -f outcome/SUMMARY.md
+      - name: Record exact outcome
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          o=json.load(open('outcome/overall.json',encoding='utf-8'))
+          text=f'''# Outcome of run 29868888706
+
+Conclusion: `{o['conclusion']}`
+
+- replica records: {o['records_found']} / {o['expected_replica_records']}
+- complete replica set: {o['complete_replica_set']}
+- child 652: `{o['replica_status_counts'].get('652',{})}`
+- child 1132: `{o['replica_status_counts'].get('1132',{})}`
+- selected final statuses: `{o['selected_final_statuses']}`
+- remaining child ids: `{o['remaining_child_ids']}`
+- cumulative exact exclusions: {o['cumulative_all_children_infeasible']} / 2640
+- missing assignments: `{o['missing_replica_assignments']}`
+- duplicate assignments: `{o['duplicate_replica_assignments']}`
+- unexpected assignments: `{o['unexpected_replica_assignments']}`
+- contradictory child ids: `{o['contradictory_child_ids']}`
+- technical records: {o['technical_record_count']}
+- memory-guard records: {o['memory_guard_record_count']}
+- solver work: {o['current_solver_job_hours']:.2f} job-hours
+'''
+          Path('22x22/FINAL_OUTCOME_29868888706.md').write_text(text,encoding='utf-8')
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add 22x22/FINAL_OUTCOME_29868888706.md
+          git commit -m 'record exact outcome of n22 run 29868888706'
+          git pull --rebase origin main
+          git push origin HEAD:main
