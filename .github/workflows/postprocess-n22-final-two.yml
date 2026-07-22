@@ -1,0 +1,265 @@
+name: postprocess n22 final two
+
+on:
+  push:
+    paths:
+      - '22x22/PROCESS_N22_FINAL_TWO'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: postprocess-n22-final-two
+  cancel-in-progress: false
+
+jobs:
+  archive-and-update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download aggregate, replicas, prior aggregate, and logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf downloaded-overall gathered prior job-logs regenerated
+          mkdir -p downloaded-overall gathered prior job-logs regenerated
+          gh run download 29868888706 --repo "$GITHUB_REPOSITORY" --name n22-final-two-overall --dir downloaded-overall
+          gh run download 29868888706 --repo "$GITHUB_REPOSITORY" --pattern 'n22-final-two-shard-*' --dir gathered
+          gh run download 29842033980 --repo "$GITHUB_REPOSITORY" --name n22-profile-dynamic-overall --dir prior
+          test -f downloaded-overall/overall.json
+          test -f downloaded-overall/SUMMARY.md
+          test -f prior/overall.json
+          test "$(find gathered -maxdepth 1 -type d -name 'n22-final-two-shard-*' | wc -l)" -eq 20
+          gh api --paginate repos/${GITHUB_REPOSITORY}/actions/runs/29868888706/jobs > jobs.json
+          python - <<'PY' > job-list.tsv
+          import json, re
+          data=json.load(open('jobs.json',encoding='utf-8'))
+          for job in data.get('jobs',[]):
+              name=re.sub(r'[^A-Za-z0-9_.-]+','-',job['name']).strip('-')
+              print(f"{job['id']}\t{name}")
+          PY
+          while IFS=$'\t' read -r job_id job_name; do
+            test -n "$job_id" || continue
+            gh api repos/${GITHUB_REPOSITORY}/actions/jobs/${job_id}/logs > "job-logs/${job_id}-${job_name}.log" || true
+          done < job-list.tsv
+          test "$(find job-logs -type f | wc -l)" -ge 22
+
+      - name: Independently rebuild and validate exact result
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python 22x22/collect_n22_final_two.py \
+            --schedule 22x22/final_two_schedule.json \
+            --prior-overall prior/overall.json \
+            --input-dir gathered \
+            --overall regenerated/overall.json \
+            --summary regenerated/SUMMARY.md \
+            --run-id 29868888706 \
+            --run-url https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29868888706 \
+            --run-sha f2407396a660c5e4a7f11d4052b38eb604f4d013
+          cmp downloaded-overall/overall.json regenerated/overall.json
+          cmp downloaded-overall/SUMMARY.md regenerated/SUMMARY.md
+          python - <<'PY'
+          import json
+          o=json.load(open('regenerated/overall.json',encoding='utf-8'))
+          assert o['expected_replica_records']==20
+          assert o['records_found']==20
+          assert o['complete_replica_set'] is True
+          assert o['missing_replica_assignments']==[]
+          assert o['duplicate_replica_assignments']==[]
+          assert o['unexpected_replica_assignments']==[]
+          assert o['contradictory_child_ids']==[]
+          assert o['technical_record_count']==0
+          assert all(r.get('status')!='MODEL_INVALID' for r in o['replica_records'])
+          assert set(o['selected_final_statuses'])=={'652','1132'}
+          assert o['conclusion'] in {
+              'PROVED_D_MONO_22_EQUALS_33',
+              'FOUND_VALID_34_POINT_CONFIGURATION',
+              'FOLLOWUP_RUN_INCOMPLETE',
+          }
+          print(json.dumps({
+              'conclusion':o['conclusion'],
+              'replica_status_counts':o['replica_status_counts'],
+              'selected_final_statuses':o['selected_final_statuses'],
+              'remaining_child_ids':o['remaining_child_ids'],
+              'cumulative_all_children_infeasible':o['cumulative_all_children_infeasible'],
+          },indent=2))
+          PY
+
+      - name: Archive and update repository status
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json, re, shutil
+          from pathlib import Path
+
+          run_id=29868888706
+          run_url=f'https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/{run_id}'
+          archive=Path(f'22x22/runs/2026-07-22-run-{run_id}')
+          if archive.exists(): shutil.rmtree(archive)
+          archive.mkdir(parents=True)
+          shutil.copy2('regenerated/overall.json',archive/'overall.json')
+          shutil.copy2('regenerated/SUMMARY.md',archive/'SUMMARY.md')
+          shutil.copytree('gathered',archive/'shards')
+          shutil.copytree('job-logs',archive/'job-logs')
+          o=json.load(open('regenerated/overall.json',encoding='utf-8'))
+          conclusion=o['conclusion']
+          counts=o['replica_status_counts']
+          selected=o['selected_final_statuses']
+          remaining=o['remaining_child_ids']
+          (archive/'README.md').write_text(f'''# GitHub Actions run {run_id}
+
+Source: {run_url}
+
+Overall artifact: `n22-final-two-overall`, id `8516897994`, SHA-256 `8160e67070ea1428c90a20876313adfd52da843ceff78d466e05a8243fbd6ef0`.
+
+This run executed twenty full-budget independent replicas over the two final exact profile children.
+
+- child 652 replica statuses: `{counts.get('652',{})}`
+- child 1132 replica statuses: `{counts.get('1132',{})}`
+- selected final statuses: `{selected}`
+- missing / duplicate / unexpected assignments: 0
+- contradictory child results: 0
+- `MODEL_INVALID`: 0
+- technical records: 0
+- memory-guard records: {o['memory_guard_record_count']}
+- cumulative exact exclusions: {o['cumulative_all_children_infeasible']} / 2640
+- remaining exact children: {remaining}
+- solver work: {o['current_solver_job_hours']:.2f} job-hours
+- conclusion: `{conclusion}`
+
+Files:
+
+- `overall.json` — independently regenerated exact aggregate;
+- `SUMMARY.md` — independently regenerated summary;
+- `shards/` — all twenty replica records and resource logs;
+- `job-logs/` — GitHub Actions job logs.
+
+The 33-point lower construction was independently checked with `python 22x22/verify_22x22.py`.
+''',encoding='utf-8')
+
+          block=f'''### 29868888706 — десять полноразмерных попыток на каждый из двух последних случаев
+
+Ссылка: {run_url}
+
+Архив: `{archive.as_posix()}/`
+
+- child 652: `{counts.get('652',{})}`;
+- child 1132: `{counts.get('1132',{})}`;
+- выбранные строгие статусы: `{selected}`;
+- пропуски, дубли, противоречия, MODEL_INVALID и технические ошибки: 0;
+- итог: `{conclusion}`.
+'''
+
+          start_path=Path('START_HERE.md')
+          start=start_path.read_text(encoding='utf-8')
+          lines=start.splitlines()
+          for i,line in enumerate(lines):
+              if line.startswith('Последнее существенное обновление:'):
+                  lines[i]=f'Последнее существенное обновление: **22 июля 2026 года**, после разбора прогона `{run_id}`.'
+                  break
+          start='\n'.join(lines)+'\n'
+          marker='\n---\n\n## 6. Рациональный сертификат'
+          if '### 29868888706 — десять полноразмерных попыток' not in start:
+              start=start.replace(marker,'\n'+block+marker,1)
+
+          root_path=Path('README.md')
+          root=root_path.read_text(encoding='utf-8')
+          n22_path=Path('22x22/README.md')
+          n22=n22_path.read_text(encoding='utf-8')
+          n22block=f'''### Run 29868888706
+
+Archive: `{archive.as_posix()}/`
+
+Twenty full-budget independent replicas were run over the final two exact children:
+
+- child 652: `{counts.get('652',{})}`;
+- child 1132: `{counts.get('1132',{})}`;
+- selected final statuses: `{selected}`;
+- missing/duplicate/unexpected/contradictory/model-invalid/technical: 0;
+- cumulative exact exclusions: {o['cumulative_all_children_infeasible']} / 2640.
+
+Source run: {run_url}
+'''
+          if '### Run 29868888706' not in n22:
+              n22=n22.replace('\n## Current follow-up attack','\n'+n22block+'\n## Current follow-up attack',1)
+
+          if conclusion=='PROVED_D_MONO_22_EQUALS_33':
+              assert remaining==[] and o['cumulative_all_children_infeasible']==2640
+              root=re.sub(r'\| `22×22` \| .*? \| .*? \|','| `22×22` | `D_mono(22) = 33` | closed |',root,count=1)
+              start=re.sub(r'\| `22×22` \| .*? \| .*? \|','| `22×22` | `D_mono(22) = 33` | закрыт |',start,count=1)
+              start=start.replace('Активный размер: `22×22`.','Активный размер: `23×23`.')
+              n22=re.sub(r'33\s*<=\s*D_mono\(22\)\s*<=\s*34','D_mono(22) = 33',n22)
+              pos=n22.find('## Current follow-up attack')
+              if pos>=0:
+                  nxt=n22.find('\n## ',pos+5)
+                  if nxt<0: nxt=len(n22)
+                  n22=n22[:pos]+'''## Closed result
+
+All 2640 exact profile children are `INFEASIBLE`. Together with the independently verified 33-point construction, this proves `D_mono(22) = 33`.
+'''+n22[nxt:]
+              p23=Path('23x23'); p23.mkdir(exist_ok=True)
+              if not (p23/'README.md').exists():
+                  (p23/'README.md').write_text('# 23x23 checkerboard no-three-in-line\n\nActive frontier after the exact closure of 22x22. The first large search targets a valid 35-point construction in both checkerboard colors and independently validates every candidate against all grid lines.\n',encoding='utf-8')
+              (p23/'READY_AFTER_N22').write_text(f'n22 closed by run {run_id}: D_mono(22)=33\n',encoding='utf-8')
+          elif conclusion=='FOUND_VALID_34_POINT_CONFIGURATION':
+              feasible=[r for r in o['replica_records'] if r.get('status') in {'FEASIBLE','OPTIMAL'}]
+              assert feasible
+              Path('22x22/config_34.json').write_text(json.dumps({'board_size':22,'target':34,'points':feasible[0]['solution']},indent=2)+'\n',encoding='utf-8')
+              root=re.sub(r'\| `22×22` \| .*? \| .*? \|','| `22×22` | `D_mono(22) = 34` | closed |',root,count=1)
+              start=re.sub(r'\| `22×22` \| .*? \| .*? \|','| `22×22` | `D_mono(22) = 34` | закрыт |',start,count=1)
+              p23=Path('23x23'); p23.mkdir(exist_ok=True)
+              (p23/'READY_AFTER_N22').write_text(f'n22 closed by run {run_id}: D_mono(22)=34\n',encoding='utf-8')
+          else:
+              pos=n22.find('## Current follow-up attack')
+              if pos>=0:
+                  nxt=n22.find('\n## ',pos+5)
+                  if nxt<0: nxt=len(n22)
+                  n22=n22[:pos]+f'''## Current follow-up attack
+
+After twenty full-budget independent replicas, the exact remaining children are `{remaining}`. The certified status remains `33 <= D_mono(22) <= 34`. Previously excluded children must not be recomputed. The replica statistics in the run archive must guide the next exact split or solver strategy.
+'''+n22[nxt:]
+
+          start_path.write_text(start,encoding='utf-8')
+          root_path.write_text(root,encoding='utf-8')
+          n22_path.write_text(n22,encoding='utf-8')
+          Path('22x22/LAST_N22_FINAL_TWO_CONCLUSION').write_text(conclusion+'\n',encoding='utf-8')
+          PY
+
+      - name: Commit verified archive and status
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add START_HERE.md README.md 22x22 23x23 || true
+          git commit -m 'archive and verify n22 final-two run 29868888706'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload postprocessing record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-final-two-postprocessing
+          path: |
+            downloaded-overall/
+            regenerated/
+            jobs.json
+            job-list.tsv
+          retention-days: 30
