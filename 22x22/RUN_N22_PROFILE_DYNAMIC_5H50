@@ -1,4 +1,6 @@
-source_run_id=29815441947
-remaining=10
-seed_base=2026072300
-triggered_by=assistant_after_verified_archive
+source_run_id=29868888706
+remaining_child=652
+main_diagonal_pair=40
+subcases=21
+partition=exact_row_twos_x_exact_column_twos
+seed_base=2026073000
