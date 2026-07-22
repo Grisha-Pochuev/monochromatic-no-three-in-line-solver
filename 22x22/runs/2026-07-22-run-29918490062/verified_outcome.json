@@ -1,0 +1,33 @@
+{
+  "run_id": 29918490062,
+  "run_url": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29918490062",
+  "run_head_sha": "f8040a9b138b9ebf7b84b04bee31bcfd4bcf3ab0",
+  "parent_child_id": 652,
+  "partition": "exact_row_twos_x_exact_column_twos",
+  "expected_subcases": 21,
+  "records_found": 21,
+  "status_counts": {
+    "INFEASIBLE": 4,
+    "UNKNOWN": 17,
+    "FEASIBLE": 0,
+    "OPTIMAL": 0,
+    "MODEL_INVALID": 0
+  },
+  "closed_subcases": [
+    {"subcase_id": 5, "row_twos": 12, "column_twos": 17},
+    {"subcase_id": 10, "row_twos": 13, "column_twos": 17},
+    {"subcase_id": 17, "row_twos": 15, "column_twos": 17},
+    {"subcase_id": 19, "row_twos": 16, "column_twos": 17}
+  ],
+  "remaining_subcase_ids": [0,1,2,3,4,6,7,8,9,11,12,13,14,15,16,18,20],
+  "missing_subcase_ids": [],
+  "duplicate_subcase_ids": [],
+  "unexpected_subcase_ids": [],
+  "validated_solutions": [],
+  "solver_job_hours": 39.09463377541966,
+  "total_branches": 821921325,
+  "total_conflicts": 502969578,
+  "conclusion": "ROWCOL_SPLIT_INCOMPLETE",
+  "certified_lower_bound": 33,
+  "certified_upper_bound": 34
+}
