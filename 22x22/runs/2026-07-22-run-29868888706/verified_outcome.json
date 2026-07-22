@@ -1,0 +1,31 @@
+{
+  "run_id": 29868888706,
+  "run_url": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29868888706",
+  "overall_artifact_id": 8516897994,
+  "overall_artifact_sha256": "8160e67070ea1428c90a20876313adfd52da843ceff78d466e05a8243fbd6ef0",
+  "conclusion": "FOLLOWUP_RUN_INCOMPLETE",
+  "expected_replica_records": 20,
+  "records_found": 20,
+  "complete_replica_set": true,
+  "replica_status_counts": {
+    "652": {"UNKNOWN": 10},
+    "1132": {"INFEASIBLE": 5, "UNKNOWN": 5}
+  },
+  "selected_final_statuses": {
+    "652": "UNKNOWN",
+    "1132": "INFEASIBLE"
+  },
+  "remaining_child_ids": [652],
+  "remaining_pair_indices": [40],
+  "cumulative_all_children_infeasible": 2639,
+  "total_children": 2640,
+  "missing_replica_assignments": [],
+  "duplicate_replica_assignments": [],
+  "unexpected_replica_assignments": [],
+  "contradictory_child_ids": [],
+  "technical_record_count": 0,
+  "memory_guard_record_count": 0,
+  "solver_job_hours": 104.30,
+  "certified_lower_bound": 33,
+  "certified_upper_bound": 34
+}
