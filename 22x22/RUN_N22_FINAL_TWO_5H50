@@ -1,3 +1,3 @@
 source_run=29868888706
-mode=verified_postprocessing
-correct_run_sha=824844d25c733e40a238c79fceb55a96e89d31c3
+mode=minimal_outcome_extractor
+attempt=1
