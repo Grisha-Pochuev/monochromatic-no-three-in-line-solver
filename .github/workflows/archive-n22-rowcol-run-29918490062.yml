@@ -1,0 +1,236 @@
+name: archive n22 rowcol run 29918490062
+
+on:
+  push:
+    paths:
+      - '22x22/ARCHIVE_RUN_29918490062'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: archive-n22-rowcol-29918490062
+  cancel-in-progress: false
+
+jobs:
+  archive:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      GH_TOKEN: ${{ github.token }}
+      PYTHONUNBUFFERED: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download aggregate, all twenty slots, and job logs
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf downloaded gathered rebuilt job-logs
+          mkdir -p downloaded gathered rebuilt job-logs
+          gh run download 29918490062 --repo "$GITHUB_REPOSITORY" --name n22-final-child-rowcol-2h-overall --dir downloaded
+          gh run download 29918490062 --repo "$GITHUB_REPOSITORY" --pattern 'n22-final-child-rowcol-2h-slot-*' --dir gathered
+          test -f downloaded/overall.json
+          test -f downloaded/SUMMARY.md
+          test "$(find gathered -maxdepth 1 -type d -name 'n22-final-child-rowcol-2h-slot-*' | wc -l)" -eq 20
+          gh api --paginate repos/${GITHUB_REPOSITORY}/actions/runs/29918490062/jobs > jobs.json
+          python - <<'PY' > job-list.tsv
+          import json,re
+          for job in json.load(open('jobs.json',encoding='utf-8')).get('jobs',[]):
+              name=re.sub(r'[^A-Za-z0-9_.-]+','-',job['name']).strip('-')
+              print(f"{job['id']}\t{name}")
+          PY
+          while IFS=$'\t' read -r job_id job_name; do
+            test -n "$job_id" || continue
+            gh api repos/${GITHUB_REPOSITORY}/actions/jobs/${job_id}/logs > "job-logs/${job_id}-${job_name}.log" || true
+          done < job-list.tsv
+
+      - name: Independently rebuild and validate aggregate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python 22x22/collect_n22_final_child_rowcol.py \
+            --input-dir gathered \
+            --overall rebuilt/overall.json \
+            --summary rebuilt/SUMMARY.md \
+            --run-id 29918490062 \
+            --run-url https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29918490062 \
+            --run-sha f8040a9b138b9ebf7b84b04bee31bcfd4bcf3ab0
+          cmp downloaded/overall.json rebuilt/overall.json
+          cmp downloaded/SUMMARY.md rebuilt/SUMMARY.md
+          python - <<'PY'
+          import json
+          o=json.load(open('rebuilt/overall.json',encoding='utf-8'))
+          assert o['conclusion']=='ROWCOL_SPLIT_INCOMPLETE'
+          assert o['expected_subcases']==o['records_found']==21
+          assert o['status_counts']=={'INFEASIBLE':4,'UNKNOWN':17,'FEASIBLE':0,'OPTIMAL':0,'MODEL_INVALID':0}
+          assert o['missing_subcase_ids']==[]
+          assert o['duplicate_subcase_ids']==[]
+          assert o['unexpected_subcase_ids']==[]
+          assert [r['subcase_id'] for r in o['records'] if r['status']=='INFEASIBLE']==[5,10,17,19]
+          assert [r['subcase_id'] for r in o['remaining_subcases']]==[0,1,2,3,4,6,7,8,9,11,12,13,14,15,16,18,20]
+          assert o['validated_solutions']==[]
+          PY
+
+      - name: Save complete archive and update project memory
+        shell: bash
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import json,re,shutil
+          from pathlib import Path
+
+          run_id=29918490062
+          run_url=f'https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/{run_id}'
+          archive=Path(f'22x22/runs/2026-07-22-run-{run_id}')
+          if archive.exists():
+              shutil.rmtree(archive)
+          archive.mkdir(parents=True)
+          shutil.copy2('rebuilt/overall.json',archive/'overall.json')
+          shutil.copy2('rebuilt/SUMMARY.md',archive/'SUMMARY.md')
+          shutil.copytree('gathered',archive/'slots')
+          shutil.copytree('job-logs',archive/'job-logs')
+          shutil.copy2('jobs.json',archive/'jobs.json')
+          shutil.copy2('job-list.tsv',archive/'job-list.tsv')
+
+          o=json.load(open('rebuilt/overall.json',encoding='utf-8'))
+          closed=[(r['subcase_id'],r['row_twos'],r['column_twos']) for r in o['records'] if r['status']=='INFEASIBLE']
+          remaining=[(r['subcase_id'],r['row_twos'],r['column_twos']) for r in o['remaining_subcases']]
+          (archive/'README.md').write_text(f'''# GitHub Actions run {run_id}
+
+Source: {run_url}
+
+Overall artifact: `n22-final-child-rowcol-2h-overall`, id `8532410572`, SHA-256 `c68d4a8638ff7421e9ae24fbae24002735cf2227cff7dd15d5c702e37585cd25`.
+
+The aggregate was independently regenerated from all twenty slot artifacts and matched byte-for-byte.
+
+- exact row/column subcases: 21 / 21;
+- `INFEASIBLE`: 4;
+- `UNKNOWN`: 17;
+- `FEASIBLE` / `OPTIMAL`: 0;
+- missing / duplicate / unexpected / model-invalid: 0;
+- solver work: {o['solver_job_hours']:.2f} job-hours;
+- branches: {o['total_branches']:,};
+- conflicts: {o['total_conflicts']:,}.
+
+Strictly closed subcases `(id, row_twos, column_twos)`:
+
+```text
+{closed}
+```
+
+Remaining exact frontier:
+
+```text
+{remaining}
+```
+
+No 34-point configuration was found. `UNKNOWN` is not a proof, so the certified board status remains `33 <= D_mono(22) <= 34`.
+
+Files:
+
+- `overall.json`, `SUMMARY.md` — independently rebuilt aggregate;
+- `slots/` — all twenty solver-slot artifacts, including all 21 exact records and resource logs;
+- `job-logs/` — downloadable GitHub Actions logs;
+- `jobs.json`, `job-list.tsv` — job inventory.
+''',encoding='utf-8')
+          Path('22x22/current_final_child_rowcol_overall.json').write_text(json.dumps(o,indent=2)+'\n',encoding='utf-8')
+
+          n22_path=Path('22x22/README.md')
+          n22=n22_path.read_text(encoding='utf-8')
+          block=f'''### Run {run_id}
+
+Archive: `{archive.as_posix()}/`
+
+The sole child `652` was partitioned into 21 disjoint exact row/column-saturation cases and run for about two hours per case on exactly 20 solver jobs:
+
+- `INFEASIBLE`: 4 — subcases `5`, `10`, `17`, `19`;
+- `UNKNOWN`: 17;
+- `FEASIBLE` / `OPTIMAL`: 0;
+- missing / duplicate / unexpected / model-invalid: 0;
+- solver work: {o['solver_job_hours']:.2f} job-hours;
+- branches: {o['total_branches']:,};
+- conflicts: {o['total_conflicts']:,}.
+
+Source run: {run_url}
+'''
+          if f'### Run {run_id}' not in n22:
+              n22=n22.replace('\n## Current follow-up attack','\n'+block+'\n## Current follow-up attack',1)
+          pos=n22.find('## Current follow-up attack')
+          if pos>=0:
+              nxt=n22.find('\n## ',pos+5)
+              if nxt<0: nxt=len(n22)
+              n22=n22[:pos]+'''## Current follow-up attack
+
+Child `652` is now reduced to 17 exact row/column-saturation subcases. The four strictly excluded subcases are `5=(12,17)`, `10=(13,17)`, `17=(15,17)`, and `19=(16,17)`. The remaining ids are `0,1,2,3,4,6,7,8,9,11,12,13,14,15,16,18,20`. Only these 17 cases may be processed next; the four exclusions and the prior 2639 children must not be recomputed. The certified status remains `33 <= D_mono(22) <= 34`.
+'''+n22[nxt:]
+          n22_path.write_text(n22,encoding='utf-8')
+
+          start_path=Path('START_HERE.md')
+          start=start_path.read_text(encoding='utf-8')
+          start=re.sub(r'Последнее существенное обновление:.*',f'Последнее существенное обновление: **22 июля 2026 года**, после проверки прогона `{run_id}`.',start,count=1)
+          start=start.replace('29868888706: закрыт ещё 1 случай, остался 1','29868888706: закрыт ещё 1 случай, остался child 652\n29918490062: child 652 разделён на 21 часть; 4 INFEASIBLE, 17 UNKNOWN')
+          new_block=f'''## Проверенный итог прогона {run_id}
+
+Ссылка: {run_url}
+
+Архив: `{archive.as_posix()}/`
+
+```text
+точных подслучаев: 21 / 21
+INFEASIBLE: 4
+UNKNOWN: 17
+FEASIBLE/OPTIMAL: 0
+пропуски/дубли/MODEL_INVALID: 0
+работа: {o['solver_job_hours']:.2f} вычислительных часа
+ветвления: {o['total_branches']:,}
+конфликты: {o['total_conflicts']:,}
+```
+
+Строго закрыты подслучаи `5=(12,17)`, `10=(13,17)`, `17=(15,17)`, `19=(16,17)`. Остались ids `0,1,2,3,4,6,7,8,9,11,12,13,14,15,16,18,20`. Ни одной конфигурации из 34 точек не найдено. Статус доски остаётся `33 <= D_mono(22) <= 34`.
+
+'''
+          marker='## Правила тяжёлых запусков'
+          if f'## Проверенный итог прогона {run_id}' not in start:
+              start=start.replace(marker,new_block+marker,1)
+          point='''## Точка продолжения
+
+Активный размер: `22×22`.
+
+Обрабатывать только 17 оставшихся подслучаев ребёнка `652`: `0,1,2,3,4,6,7,8,9,11,12,13,14,15,16,18,20`. Четыре закрытых подслучая и 2639 более ранних детей не пересчитывать. Если все 17 станут `INFEASIBLE`, получаем `D_mono(22)=33`; если будет найдена 34-точечная конфигурация, независимо проверить её и получить `D_mono(22)=34`.
+'''
+          start=re.sub(r'## Точка продолжения\n.*\Z',point,start,flags=re.S)
+          start_path.write_text(start,encoding='utf-8')
+          PY
+
+      - name: Commit verified archive
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add START_HERE.md 22x22
+          git commit -m 'archive n22 rowcol run 29918490062 and record 17 survivors'
+          git pull --rebase origin main
+          git push origin HEAD:main
+
+      - name: Upload archive verification record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-rowcol-29918490062-archive-check
+          path: |
+            downloaded/
+            rebuilt/
+            jobs.json
+            job-list.tsv
+          retention-days: 30
