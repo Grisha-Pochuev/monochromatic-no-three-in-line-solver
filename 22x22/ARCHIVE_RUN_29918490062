@@ -1,0 +1,6 @@
+source_run=29918490062
+parent_child=652
+partition=exact_row_twos_x_exact_column_twos
+subcases=21
+expected_infeasible=4
+expected_unknown=17
