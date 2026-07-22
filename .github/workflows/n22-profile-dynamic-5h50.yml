@@ -1,4 +1,4 @@
-name: n22 dynamic residual frontier 5h50
+name: n22 final child row-column split 5h50
 
 on:
   push:
@@ -11,17 +11,17 @@ permissions:
   actions: read
 
 concurrency:
-  group: n22-profile-dynamic-5h50
-  cancel-in-progress: true
+  group: n22-final-rowcol-proven-workflow
+  cancel-in-progress: false
 
 jobs:
   prepare:
-    name: Validate current n22 frontier
+    name: Validate final child 652 partition
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     outputs:
       run_sha: ${{ steps.record.outputs.run_sha }}
-      seed_base: ${{ steps.schedule.outputs.seed_base }}
+      seed_base: ${{ steps.validate.outputs.seed_base }}
     env:
       PYTHONUNBUFFERED: '1'
       MALLOC_ARENA_MAX: '2'
@@ -32,103 +32,101 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: main
+          fetch-depth: 0
 
       - name: Install pinned OR-Tools
         run: python -m pip install ortools==9.15.6755
 
-      - name: Validate lower construction, schedule, and prior aggregate
-        id: schedule
+      - name: Download prior exact aggregate
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-final-two-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29868888706
+
+      - name: Validate construction, exact frontier, and complete partition
+        id: validate
         shell: bash
         run: |
           set -euo pipefail
           python 22x22/verify_22x22.py
+          python -m py_compile \
+            22x22/prove_upper_22x22_rowcol_subcase.py \
+            22x22/run_n22_rowcol_subcase.py \
+            22x22/collect_n22_rowcol_split.py
           python - <<'PY'
-          import json
-          import os
+          import json, os, sys
           from pathlib import Path
-          schedule = json.loads(Path('22x22/current_remaining_schedule.json').read_text())
-          prior = json.loads(Path('22x22/current_prior_overall.json').read_text())
-          ids = [int(v) for item in schedule['assignments'] for v in item['ids']]
-          assert schedule['board_size'] == 22 and schedule['target'] == 34
-          assert schedule['shards'] == 20 and len(schedule['assignments']) == 20
-          assert len(ids) == schedule['unknown_child_count'] == len(set(ids))
-          assert sorted(ids) == sorted(int(v) for v in prior['remaining_child_ids'])
-          assert not prior['missing_child_ids']
-          assert not prior['duplicate_child_ids']
-          assert not prior['unexpected_child_ids']
-          assert prior['current_status_counts']['MODEL_INVALID'] == 0
-          assert prior['technical_record_count'] == 0
-          print(json.dumps({
-              'remaining': len(ids),
-              'source_run_id': schedule['source_run_id'],
-              'seed_base': schedule['seed_base'],
-          }, indent=2))
-          with open(os.environ['GITHUB_OUTPUT'], 'a', encoding='utf-8') as out:
-              out.write(f"seed_base={int(schedule['seed_base'])}\n")
+          sys.path.insert(0, '22x22')
+          from prove_upper_22x22_rowcol_subcase import ROWCOL_CASES, decode_child
+          prior=json.loads(Path('prior/overall.json').read_text(encoding='utf-8'))
+          assert prior['remaining_child_ids']==[652]
+          assert prior['remaining_pair_indices']==[40]
+          assert prior['cumulative_all_children_infeasible']==2639
+          assert len(ROWCOL_CASES)==21
+          assert len(set(ROWCOL_CASES))==21
+          assert ROWCOL_CASES==[(r,c) for r in range(12,18) for c in range(r,18)]
+          assert decode_child(652)==(40,16,16)
+          seed_base=2026073000
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as out:
+              out.write(f'seed_base={seed_base}\n')
+          print(json.dumps({'child':652,'pair':40,'subcases':ROWCOL_CASES,'seed_base':seed_base},indent=2))
           PY
+
+      - name: Smoke-test one exact subcase
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/run_n22_rowcol_subcase.py \
+            --subcase-id 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --artifact-buffer-seconds 5 \
+            --seed-base 2026073000 \
+            --output-dir smoke-rowcol
+          test -f smoke-rowcol/subcase-00.json
 
       - name: Record this exact continuation run
         id: record
         shell: bash
         run: |
           set -euo pipefail
-          source_run="$(python -c 'import json; print(json.load(open("22x22/current_remaining_schedule.json"))["source_run_id"])')"
-          remaining="$(python -c 'import json; print(json.load(open("22x22/current_remaining_schedule.json"))["unknown_child_count"])')"
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          cat > 22x22/CURRENT_N22_FOLLOWUP_RUN.md <<EOF
-          # Current n22 follow-up run
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cat > 22x22/CURRENT_N22_ROWCOL_RUN.md <<EOF
+          # Current n22 row-column split run
 
           Run id: ${GITHUB_RUN_ID}
           Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
           Trigger SHA: ${GITHUB_SHA}
-          Source exact run: ${source_run}
-          Frontier at launch: ${remaining} profile children.
-          Workflow: n22 dynamic residual frontier 5h50
+          Source exact run: 29868888706
+          Sole remaining child: 652, main-diagonal pair 40
+          Partition: 21 exact cases 12 <= row_twos <= column_twos <= 17
+          Workflow: n22 final child row-column split 5h50
           EOF
-          git add 22x22/CURRENT_N22_FOLLOWUP_RUN.md
-          if ! git diff --cached --quiet; then
-            git commit -m "record n22 residual-frontier run ${GITHUB_RUN_ID}"
-            git push origin HEAD:main
-          fi
+          git add 22x22/CURRENT_N22_ROWCOL_RUN.md
+          git commit -m "record n22 row-column split run ${GITHUB_RUN_ID}"
+          git pull --rebase origin main
+          git push origin HEAD:main
           echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
 
-      - name: Compile and smoke-test the changed schedule
-        shell: bash
-        run: |
-          set -euo pipefail
-          seed_base="$(python -c 'import json; print(json.load(open("22x22/current_remaining_schedule.json"))["seed_base"])')"
-          python -m py_compile \
-            22x22/run_n22_profile_followup_shard.py \
-            22x22/collect_n22_profile_followup.py
-          python 22x22/run_n22_profile_followup_shard.py \
-            --schedule 22x22/current_remaining_schedule.json \
-            --shard 0 \
-            --total-seconds 45 \
-            --workers 4 \
-            --fallback-workers 2 \
-            --memory-guard-mb 13000 \
-            --max-seconds 15 \
-            --artifact-buffer-seconds 5 \
-            --seed-base "$seed_base" \
-            --max-children 1 \
-            --output-dir smoke-dynamic
-          test -f smoke-dynamic/shard-00-summary.json
-          test "$(find smoke-dynamic -name 'child-*.json' ! -name '*-attempt-*' | wc -l)" -eq 1
-
-      - name: Upload validation records
+      - name: Upload preparation records
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: n22-dynamic-preparation
+          name: n22-rowcol-preparation
           path: |
-            22x22/current_remaining_schedule.json
-            22x22/current_prior_overall.json
-            smoke-dynamic/
+            prior/overall.json
+            prior/SUMMARY.md
+            smoke-rowcol/
           retention-days: 30
 
-  long-shards:
-    name: Residual shard ${{ matrix.shard }}
+  subcases:
+    name: Exact row-column subcase ${{ matrix.subcase }}
     needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 355
@@ -136,7 +134,7 @@ jobs:
       fail-fast: false
       max-parallel: 20
       matrix:
-        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+        subcase: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
     env:
       PYTHONUNBUFFERED: '1'
       MALLOC_ARENA_MAX: '2'
@@ -154,15 +152,14 @@ jobs:
       - name: Record machine resources
         run: |
           {
-            echo "=== machine ==="
             date -u
             echo "nproc=$(nproc)"
             free -h
             df -h
             grep -m1 'model name' /proc/cpuinfo || true
-          } | tee machine-${{ matrix.shard }}.log
+          } | tee machine-${{ matrix.subcase }}.log
 
-      - name: Run exact residual shard with memory guard
+      - name: Run one exact subcase with memory guard
         shell: bash
         run: |
           set -uo pipefail
@@ -173,77 +170,87 @@ jobs:
               ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
               sleep 60
             done
-          ) > "memory-${{ matrix.shard }}.log" 2>&1 &
+          ) > "memory-${{ matrix.subcase }}.log" 2>&1 &
           monitor_pid=$!
-          python 22x22/run_n22_profile_followup_shard.py \
-            --schedule 22x22/current_remaining_schedule.json \
-            --shard "${{ matrix.shard }}" \
+          python 22x22/run_n22_rowcol_subcase.py \
+            --subcase-id "${{ matrix.subcase }}" \
             --total-seconds 21000 \
             --workers 4 \
             --fallback-workers 2 \
             --memory-guard-mb 13000 \
-            --max-seconds 20700 \
             --artifact-buffer-seconds 180 \
             --seed-base "${{ needs.prepare.outputs.seed_base }}" \
-            --output-dir "results/shard-${{ matrix.shard }}"
+            --output-dir "results/subcase-${{ matrix.subcase }}"
           rc=$?
           kill "$monitor_pid" 2>/dev/null || true
           wait "$monitor_pid" 2>/dev/null || true
           exit "$rc"
 
-      - name: Final resource snapshot
-        if: always()
-        run: |
-          free -h
-          df -h
-
-      - name: Upload shard records and memory log
+      - name: Upload exact record and resource logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: n22-profile-dynamic-shard-${{ matrix.shard }}
+          name: n22-rowcol-subcase-${{ matrix.subcase }}
           path: |
             results/
-            memory-${{ matrix.shard }}.log
-            machine-${{ matrix.shard }}.log
+            memory-${{ matrix.subcase }}.log
+            machine-${{ matrix.subcase }}.log
           retention-days: 30
 
   collect:
-    name: Collect n22 dynamic residual run
-    needs: [prepare, long-shards]
+    name: Collect exhaustive row-column partition
+    needs: [prepare, subcases]
     if: always()
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ needs.prepare.outputs.run_sha }}
 
-      - name: Install pinned OR-Tools for collector imports
+      - name: Install pinned OR-Tools
         run: python -m pip install ortools==9.15.6755
+
+      - name: Download prior exact aggregate
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-final-two-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29868888706
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: n22-profile-dynamic-shard-*
+          pattern: n22-rowcol-subcase-*
           path: gathered
 
-      - name: Collect and independently validate the exact frontier
+      - name: Collect and independently validate all 21 cases
         run: |
-          python 22x22/collect_n22_profile_followup.py \
-            --schedule 22x22/current_remaining_schedule.json \
-            --prior-overall 22x22/current_prior_overall.json \
+          python 22x22/collect_n22_rowcol_split.py \
+            --prior-overall prior/overall.json \
             --input-dir gathered \
             --overall overall.json \
             --summary SUMMARY.md \
             --run-id "${{ github.run_id }}" \
             --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
             --run-sha "${{ needs.prepare.outputs.run_sha }}"
+          python - <<'PY'
+          import json
+          o=json.load(open('overall.json',encoding='utf-8'))
+          assert o['expected_subcases']==21
+          assert o['records_found']==21
+          assert o['missing_subcase_ids']==[]
+          assert o['duplicate_subcase_ids']==[]
+          assert o['unexpected_subcase_ids']==[]
+          assert o['status_counts']['MODEL_INVALID']==0
+          PY
 
-      - name: Upload overall result
+      - name: Upload complete exact result
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: n22-profile-dynamic-overall
+          name: n22-rowcol-overall
           path: |
             overall.json
             SUMMARY.md
