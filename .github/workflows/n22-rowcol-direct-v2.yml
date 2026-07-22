@@ -1,0 +1,256 @@
+name: n22 final row-column split direct v2
+
+on:
+  push:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: n22-final-rowcol-direct-v2
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    if: contains(github.event.head_commit.message, '[run-n22-rowcol]')
+    name: Validate final child 652 partition
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      run_sha: ${{ steps.record.outputs.run_sha }}
+      seed_base: ${{ steps.validate.outputs.seed_base }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download prior exact aggregate
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-final-two-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29868888706
+
+      - name: Validate construction, frontier, and exhaustive partition
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python -m py_compile \
+            22x22/prove_upper_22x22_rowcol_subcase.py \
+            22x22/run_n22_rowcol_subcase.py \
+            22x22/collect_n22_rowcol_split.py
+          python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, '22x22')
+          from prove_upper_22x22_rowcol_subcase import ROWCOL_CASES, decode_child
+          prior=json.loads(Path('prior/overall.json').read_text(encoding='utf-8'))
+          assert prior['remaining_child_ids']==[652]
+          assert prior['remaining_pair_indices']==[40]
+          assert prior['cumulative_all_children_infeasible']==2639
+          assert len(ROWCOL_CASES)==21
+          assert len(set(ROWCOL_CASES))==21
+          assert ROWCOL_CASES==[(r,c) for r in range(12,18) for c in range(r,18)]
+          pair,plus,minus=decode_child(652)
+          assert (pair,plus,minus)==(40,16,16)
+          seed_base=2026072900
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as out:
+              out.write(f'seed_base={seed_base}\n')
+          print(json.dumps({'child':652,'pair':pair,'plus_twos':plus,'minus_twos':minus,'subcases':ROWCOL_CASES},indent=2))
+          PY
+
+      - name: Smoke-test one subcase
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/run_n22_rowcol_subcase.py \
+            --subcase-id 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --artifact-buffer-seconds 5 \
+            --seed-base 2026072900 \
+            --output-dir smoke-rowcol
+          test -f smoke-rowcol/subcase-00.json
+
+      - name: Record this run
+        id: record
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cat > 22x22/CURRENT_N22_ROWCOL_RUN.md <<EOF
+          # Current n22 row-column split run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Trigger SHA: ${GITHUB_SHA}
+          Source exact run: 29868888706
+          Sole remaining child: 652, main-diagonal pair 40
+          Partition: all 21 exact pairs 12 <= row_twos <= column_twos <= 17
+          Workflow: n22 final row-column split direct v2
+          EOF
+          git add 22x22/CURRENT_N22_ROWCOL_RUN.md
+          git commit -m "record n22 row-column run ${GITHUB_RUN_ID}"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload preparation records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-rowcol-v2-preparation
+          path: |
+            prior/overall.json
+            prior/SUMMARY.md
+            smoke-rowcol/
+          retention-days: 30
+
+  subcases:
+    name: Exact row-column subcase ${{ matrix.subcase }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        subcase: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.subcase }}.log
+
+      - name: Run one exact subcase with memory guard
+        shell: bash
+        run: |
+          set -uo pipefail
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > "memory-${{ matrix.subcase }}.log" 2>&1 &
+          monitor_pid=$!
+          python 22x22/run_n22_rowcol_subcase.py \
+            --subcase-id "${{ matrix.subcase }}" \
+            --total-seconds 21000 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --artifact-buffer-seconds 180 \
+            --seed-base "${{ needs.prepare.outputs.seed_base }}" \
+            --output-dir "results/subcase-${{ matrix.subcase }}"
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Upload record and resource logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-rowcol-v2-subcase-${{ matrix.subcase }}
+          path: |
+            results/
+            memory-${{ matrix.subcase }}.log
+            machine-${{ matrix.subcase }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect exhaustive row-column partition
+    needs: [prepare, subcases]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download prior exact aggregate
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-final-two-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29868888706
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-rowcol-v2-subcase-*
+          path: gathered
+
+      - name: Collect and validate all 21 cases
+        run: |
+          python 22x22/collect_n22_rowcol_split.py \
+            --prior-overall prior/overall.json \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-id "${{ github.run_id }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --run-sha "${{ needs.prepare.outputs.run_sha }}"
+          python - <<'PY'
+          import json
+          o=json.load(open('overall.json',encoding='utf-8'))
+          assert o['expected_subcases']==21
+          assert o['records_found']==21
+          assert o['missing_subcase_ids']==[]
+          assert o['duplicate_subcase_ids']==[]
+          assert o['unexpected_subcase_ids']==[]
+          assert o['status_counts']['MODEL_INVALID']==0
+          PY
+
+      - name: Upload complete exact result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-rowcol-v2-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
