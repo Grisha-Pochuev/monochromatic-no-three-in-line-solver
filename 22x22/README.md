@@ -139,6 +139,23 @@ The exact follow-up processed all 10 survivors from run `29815441947`:
 
 Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29842033980
 
+### Run 29868888706
+
+Archive: `22x22/runs/2026-07-22-run-29868888706/`
+
+Twenty independent full-budget attempts processed the final two exact children:
+
+- child `652`: 10 × `UNKNOWN`;
+- child `1132`: 5 × `INFEASIBLE`, 5 × `UNKNOWN`;
+- selected exact status of child `1132`: `INFEASIBLE`;
+- selected exact status of child `652`: `UNKNOWN`;
+- complete replica records: 20 / 20;
+- missing/duplicate/unexpected/contradictory/model-invalid/technical: 0;
+- cumulative exact exclusions: 2639 / 2640;
+- solver work: 104.30 job-hours.
+
+Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29868888706
+
 ## Current follow-up attack
 
-Only two exact profile children remain `UNKNOWN` after run `29842033980`: child ids `652` and `1132`, belonging to main-diagonal pair indices `40` and `56`. All other 2638 children are strictly `INFEASIBLE`. The certified status remains `33 <= D_mono(22) <= 34`; the board is not closed until both remaining cases are resolved or a valid 34-point construction is found.
+Only exact child `652` remains unresolved. It belongs to main-diagonal pair `40` and has `diag_plus_twos = 16`, `diag_minus_twos = 16`. Ten full-budget attempts all returned `UNKNOWN`, so simply changing the random seed is no longer the best approach. The next exact search partitions this child into the 21 disjoint cases `12 <= row_twos <= column_twos <= 17`. The other 2639 children must not be recomputed. The certified status remains `33 <= D_mono(22) <= 34` until all 21 subcases are excluded or a valid 34-point configuration is found.
