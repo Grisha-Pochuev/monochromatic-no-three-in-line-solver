@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: n22-final-child-rowcol-2h
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
   prepare:
@@ -56,13 +56,17 @@ jobs:
           cases = subcases()
           assert cases == [(r, c) for r in range(12, 18) for c in range(r, 18)]
           assert len(cases) == 21 and len(set(cases)) == 21
-          print(json.dumps({'remaining_child': 652, 'subcases': cases}, indent=2))
+          # Twenty solver slots: slot 0 covers subcases 0 and 20 concurrently;
+          # slots 1..19 cover the correspondingly numbered single subcase.
+          covered = [0, 20] + list(range(1, 20))
+          assert sorted(covered) == list(range(21))
+          print(json.dumps({'remaining_child': 652, 'subcases': cases, 'solver_slots': 20}, indent=2))
           PY
 
       - name: Smoke-test one subcase
         run: |
           python 22x22/prove_upper_22x22_final_child_rowcol.py \
-            --subcase 0 --seconds 15 --workers 4 --seed 2026073200 \
+            --subcase 0 --seconds 15 --workers 4 --seed 2026073400 \
             --output smoke-subcase-00.json
           test -f smoke-subcase-00.json
 
@@ -78,7 +82,7 @@ jobs:
           retention-days: 30
 
   solve:
-    name: Final child 2h subcase ${{ matrix.subcase }}
+    name: Final child 2h slot ${{ matrix.slot }}
     needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: 130
@@ -86,7 +90,7 @@ jobs:
       fail-fast: false
       max-parallel: 20
       matrix:
-        subcase: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        slot: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
     env:
       PYTHONUNBUFFERED: '1'
       MALLOC_ARENA_MAX: '2'
@@ -107,42 +111,65 @@ jobs:
             free -h
             df -h
             grep -m1 'model name' /proc/cpuinfo || true
-          } | tee machine-${{ matrix.subcase }}.log
+          } | tee machine-${{ matrix.slot }}.log
 
-      - name: Solve one exact row-column subcase for two hours
+      - name: Solve assigned exact row-column subcase or pair
+        shell: bash
         run: |
           set -uo pipefail
           mkdir -p result
+          slot=${{ matrix.slot }}
+          if [[ "$slot" -eq 0 ]]; then
+            subcases=(0 20)
+            workers=2
+          else
+            subcases=("$slot")
+            workers=4
+          fi
+
           (
             while true; do
               echo "=== $(date -u +%FT%TZ) ==="
               free -h
-              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 20
               sleep 60
             done
-          ) > memory-${{ matrix.subcase }}.log 2>&1 &
+          ) > memory-${{ matrix.slot }}.log 2>&1 &
           monitor_pid=$!
-          seed=$((2026073200 + ${{ matrix.subcase }} * 100003))
-          python 22x22/prove_upper_22x22_final_child_rowcol.py \
-            --subcase "${{ matrix.subcase }}" \
-            --seconds 7000 \
-            --workers 4 \
-            --seed "$seed" \
-            --output "result/subcase-${{ matrix.subcase }}.json"
-          rc=$?
+
+          pids=()
+          for subcase in "${subcases[@]}"; do
+            seed=$((2026073400 + subcase * 100003))
+            python 22x22/prove_upper_22x22_final_child_rowcol.py \
+              --subcase "$subcase" \
+              --seconds 7000 \
+              --workers "$workers" \
+              --seed "$seed" \
+              --output "result/subcase-${subcase}.json" \
+              > "solver-${subcase}.log" 2>&1 &
+            pids+=("$!")
+          done
+
+          rc=0
+          for pid in "${pids[@]}"; do
+            if ! wait "$pid"; then
+              rc=1
+            fi
+          done
           kill "$monitor_pid" 2>/dev/null || true
           wait "$monitor_pid" 2>/dev/null || true
           exit "$rc"
 
-      - name: Upload exact subcase and resource logs
+      - name: Upload exact subcases and resource logs
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: n22-final-child-rowcol-2h-${{ matrix.subcase }}
+          name: n22-final-child-rowcol-2h-slot-${{ matrix.slot }}
           path: |
             result/
-            machine-${{ matrix.subcase }}.log
-            memory-${{ matrix.subcase }}.log
+            solver-*.log
+            machine-${{ matrix.slot }}.log
+            memory-${{ matrix.slot }}.log
           retention-days: 30
 
   collect:
@@ -159,7 +186,7 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          pattern: n22-final-child-rowcol-2h-*
+          pattern: n22-final-child-rowcol-2h-slot-*
           path: gathered
 
       - name: Collect and validate all 21 exact cases
