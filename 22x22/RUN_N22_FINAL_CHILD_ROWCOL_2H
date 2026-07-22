@@ -1,0 +1,8 @@
+parent_run=29868888706
+parent_child_id=652
+partition=exact_row_twos_x_exact_column_twos
+subcases=21
+seconds_per_subcase=7000
+workers_per_subcase=4
+max_parallel=20
+seed_base=2026073200
