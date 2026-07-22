@@ -1,0 +1,223 @@
+name: n22 final child row-column split 5h50
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_FINAL_CHILD_ROWCOL_5H50'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: n22-final-child-rowcol-5h50
+  cancel-in-progress: false
+
+jobs:
+  prepare:
+    name: Validate final child 652 split
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    outputs:
+      run_sha: ${{ steps.record.outputs.run_sha }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Download and validate exact prior frontier
+        uses: actions/download-artifact@v4
+        with:
+          name: n22-final-two-overall
+          path: prior
+          github-token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          run-id: 29868888706
+
+      - name: Check lower construction and complete partition
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python -m py_compile 22x22/prove_upper_22x22_final_child_rowcol.py 22x22/collect_n22_final_child_rowcol.py
+          python - <<'PY'
+          import json,sys
+          from pathlib import Path
+          sys.path.insert(0,'22x22')
+          from prove_upper_22x22_final_child_rowcol import subcases
+          o=json.loads(Path('prior/overall.json').read_text())
+          assert o['remaining_child_ids']==[652]
+          assert o['cumulative_all_children_infeasible']==2639
+          cases=subcases()
+          assert len(cases)==21 and len(set(cases))==21
+          assert cases==[(r,c) for r in range(12,18) for c in range(r,18)]
+          print(json.dumps({'remaining_child':652,'subcases':cases},indent=2))
+          PY
+
+      - name: Record this exact split run
+        id: record
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cat > 22x22/CURRENT_N22_FINAL_CHILD_ROWCOL_RUN.md <<EOF
+          # Current n22 final-child row/column run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Trigger SHA: ${GITHUB_SHA}
+          Parent exact run: 29868888706
+          Parent child: 652
+          Partition: 21 exact pairs 12 <= row_twos <= column_twos <= 17.
+          EOF
+          git add 22x22/CURRENT_N22_FINAL_CHILD_ROWCOL_RUN.md
+          git commit -m "record n22 final-child rowcol run ${GITHUB_RUN_ID}"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Smoke-test one subcase
+        run: |
+          python 22x22/prove_upper_22x22_final_child_rowcol.py \
+            --subcase 0 --seconds 15 --workers 4 --seed 2026072800 \
+            --output smoke-subcase-00.json
+          test -f smoke-subcase-00.json
+
+      - name: Upload preparation record
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-final-child-rowcol-preparation
+          path: |
+            prior/overall.json
+            prior/SUMMARY.md
+            smoke-subcase-00.json
+          retention-days: 30
+
+  solve:
+    name: Final child rowcol subcase ${{ matrix.subcase }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        subcase: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.subcase }}.log
+
+      - name: Solve one exact row-column subcase
+        run: |
+          set -uo pipefail
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > memory-${{ matrix.subcase }}.log 2>&1 &
+          monitor_pid=$!
+          seed=$((2026072800 + ${{ matrix.subcase }} * 100003))
+          python 22x22/prove_upper_22x22_final_child_rowcol.py \
+            --subcase "${{ matrix.subcase }}" \
+            --seconds 20700 \
+            --workers 4 \
+            --seed "$seed" \
+            --output "result/subcase-${{ matrix.subcase }}.json"
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Upload exact subcase and resource logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-final-child-rowcol-${{ matrix.subcase }}
+          path: |
+            result/
+            machine-${{ matrix.subcase }}.log
+            memory-${{ matrix.subcase }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect final child row-column split
+    needs: [prepare, solve]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-final-child-rowcol-*
+          path: gathered
+
+      - name: Collect and validate all 21 exact cases
+        run: |
+          python 22x22/collect_n22_final_child_rowcol.py \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-id "${{ github.run_id }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --run-sha "${{ needs.prepare.outputs.run_sha }}"
+          python - <<'PY'
+          import json
+          o=json.load(open('overall.json'))
+          assert o['expected_subcases']==21
+          assert o['records_found']==21
+          assert not o['missing_subcase_ids']
+          assert not o['duplicate_subcase_ids']
+          assert not o['unexpected_subcase_ids']
+          assert o['status_counts']['MODEL_INVALID']==0
+          PY
+
+      - name: Upload complete exact result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-final-child-rowcol-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
