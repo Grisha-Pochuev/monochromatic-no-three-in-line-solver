@@ -1,0 +1,244 @@
+name: n22 final child row-column split 5h50
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_ROWCOL_SPLIT_5H50'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  actions: read
+
+concurrency:
+  group: n22-rowcol-split-5h50
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Validate final n22 row-column partition
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    outputs:
+      run_sha: ${{ steps.record.outputs.run_sha }}
+      seed_base: ${{ steps.validate.outputs.seed_base }}
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Validate lower construction, exact frontier, and partition
+        id: validate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/verify_22x22.py
+          python -m py_compile \
+            22x22/prove_upper_22x22_rowcol_subcase.py \
+            22x22/run_n22_rowcol_subcase.py \
+            22x22/collect_n22_rowcol_split.py
+          python - <<'PY'
+          import json, os
+          from pathlib import Path
+          prior=json.loads(Path('22x22/current_prior_overall.json').read_text())
+          assert prior['remaining_child_ids']==[652]
+          assert prior['remaining_pair_indices']==[40]
+          assert prior['cumulative_all_children_infeasible']==2639
+          from sys import path
+          path.insert(0,'22x22')
+          from prove_upper_22x22_rowcol_subcase import ROWCOL_CASES, decode_child
+          assert len(ROWCOL_CASES)==21
+          assert len(set(ROWCOL_CASES))==21
+          assert ROWCOL_CASES==[(r,c) for r in range(12,18) for c in range(r,18)]
+          pair,plus,minus=decode_child(652)
+          assert pair==40 and plus==16 and minus==16
+          seed_base=2026072800
+          with open(os.environ['GITHUB_OUTPUT'],'a',encoding='utf-8') as out:
+              out.write(f'seed_base={seed_base}\n')
+          print({'remaining_child':652,'pair':pair,'diag_plus_twos':plus,'diag_minus_twos':minus,'subcases':len(ROWCOL_CASES),'seed_base':seed_base})
+          PY
+
+      - name: Smoke-test one exact subcase
+        shell: bash
+        run: |
+          set -euo pipefail
+          python 22x22/run_n22_rowcol_subcase.py \
+            --subcase-id 0 \
+            --total-seconds 45 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --artifact-buffer-seconds 5 \
+            --seed-base 2026072800 \
+            --output-dir smoke-rowcol
+          test -f smoke-rowcol/subcase-00.json
+          python - <<'PY'
+          import json
+          r=json.load(open('smoke-rowcol/subcase-00.json'))
+          assert r['child_id']==652 and r['subcase_id']==0
+          assert r['row_twos']==12 and r['column_twos']==12
+          assert r['status'] in {'INFEASIBLE','UNKNOWN','FEASIBLE','OPTIMAL'}
+          PY
+
+      - name: Record this exact continuation run
+        id: record
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          cat > 22x22/CURRENT_N22_ROWCOL_RUN.md <<EOF
+          # Current n22 row-column split run
+
+          Run id: ${GITHUB_RUN_ID}
+          Run URL: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}
+          Trigger SHA: ${GITHUB_SHA}
+          Source exact run: 29868888706
+          Remaining exact child: 652 (main-diagonal pair 40)
+          Partition: all 21 pairs 12 <= row_twos <= column_twos <= 17
+          Workflow: n22 final child row-column split 5h50
+          EOF
+          git add 22x22/CURRENT_N22_ROWCOL_RUN.md
+          git commit -m "record n22 row-column split run ${GITHUB_RUN_ID}"
+          git pull --rebase origin main
+          git push origin HEAD:main
+          echo "run_sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Upload validation records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-rowcol-preparation
+          path: |
+            smoke-rowcol/
+            22x22/current_prior_overall.json
+          retention-days: 30
+
+  subcases:
+    name: Row-column subcase ${{ matrix.subcase }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        subcase: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - name: Record machine resources
+        run: |
+          {
+            echo '=== machine ==='
+            date -u
+            echo "nproc=$(nproc)"
+            free -h
+            df -h
+            grep -m1 'model name' /proc/cpuinfo || true
+          } | tee machine-${{ matrix.subcase }}.log
+
+      - name: Run one exhaustive exact subcase
+        shell: bash
+        run: |
+          set -uo pipefail
+          (
+            while true; do
+              echo "=== $(date -u +%FT%TZ) ==="
+              free -h
+              ps -eo pid,ppid,rss,vsz,%mem,%cpu,cmd --sort=-rss | head -n 15
+              sleep 60
+            done
+          ) > "memory-${{ matrix.subcase }}.log" 2>&1 &
+          monitor_pid=$!
+          python 22x22/run_n22_rowcol_subcase.py \
+            --subcase-id "${{ matrix.subcase }}" \
+            --total-seconds 21000 \
+            --workers 4 \
+            --fallback-workers 2 \
+            --memory-guard-mb 13000 \
+            --artifact-buffer-seconds 180 \
+            --seed-base "${{ needs.prepare.outputs.seed_base }}" \
+            --output-dir "results/subcase-${{ matrix.subcase }}"
+          rc=$?
+          kill "$monitor_pid" 2>/dev/null || true
+          wait "$monitor_pid" 2>/dev/null || true
+          exit "$rc"
+
+      - name: Final resource snapshot
+        if: always()
+        run: |
+          free -h
+          df -h
+
+      - name: Upload exact subcase record and logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-rowcol-subcase-${{ matrix.subcase }}
+          path: |
+            results/
+            memory-${{ matrix.subcase }}.log
+            machine-${{ matrix.subcase }}.log
+          retention-days: 30
+
+  collect:
+    name: Collect n22 row-column split
+    needs: [prepare, subcases]
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare.outputs.run_sha }}
+
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-rowcol-subcase-*
+          path: gathered
+
+      - name: Collect and independently validate exhaustive partition
+        run: |
+          python 22x22/collect_n22_rowcol_split.py \
+            --prior-overall 22x22/current_prior_overall.json \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-id "${{ github.run_id }}" \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" \
+            --run-sha "${{ needs.prepare.outputs.run_sha }}"
+
+      - name: Upload overall result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-rowcol-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 30
