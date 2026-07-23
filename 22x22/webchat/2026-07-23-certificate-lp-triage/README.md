@@ -2,20 +2,20 @@
 
 Date: 2026-07-23
 
-This folder preserves the reproducible part of the local web-chat research performed after the transpose-symmetry audit. No GitHub Actions run was used to generate these files.
+This folder preserves the reproducible part of the local web-chat research performed after the transpose-symmetry audit. No GitHub Actions run was used.
 
 ## Certified result: A <= 2 for child 652
 
-For the historical child `652`, the main diagonal is fixed to `(2,2),(3,3)` and the two diagonal saturation counts are `16/16`.
+For historical child `652`, the main diagonal is fixed to `(2,2),(3,3)` and the two diagonal saturation counts are `16/16`.
 
-Let `A` be the number of selected points at intersections of
+Let `A` count selected points at intersections of
 
 ```text
 x-y in {-2, 2}
 x+y in {16, 18, 20, 22, 24, 26}
 ```
 
-The file `a_bound_803_273_compact.min.json` is a rational dual certificate proving
+`a_bound_803_273_compact.min.json` is an exact rational dual certificate proving
 
 ```text
 A <= 803/273 < 3
@@ -33,34 +33,18 @@ Verify it with:
 python verify_a_bound_803_273.py a_bound_803_273_compact.min.json
 ```
 
-Expected output ends with:
-
-```text
-Certificate verified exactly.
-Therefore A <= 803/273 < 3, so every integral configuration has A <= 2.
-```
-
-This certificate uses exact integer/rational arithmetic and does not use the unsafe unconditional transpose lexicographic cut.
+The verifier uses only exact integer/rational arithmetic and the certificate does not use the unsafe unconditional transpose lexicographic cut.
 
 ## Numerical LP triage of the audited frontier
 
-`lpscan_dom_all.jsonl.gz.b64` is a base64-encoded gzip archive. Decode it with:
-
-```bash
-base64 -d lpscan_dom_all.jsonl.gz.b64 > lpscan_dom_all.jsonl.gz
-gzip -dc lpscan_dom_all.jsonl.gz > lpscan_dom_all.jsonl
-```
-
-It contains 1,130 records corresponding to the profile children reopened by the transpose-symmetry audit.
-
-Numerical SciPy/HiGHS status counts:
+`lpscan_dom_summary.json` records the complete child-id lists from a numerical SciPy/HiGHS scan of all 1,130 profile children reopened by the symmetry audit.
 
 ```text
 LP status 2 (reported infeasible): 443
 LP status 0 (LP optimum found):    687
 ```
 
-Breakdown by the historical status:
+Breakdown:
 
 ```text
 among the 443 numerical LP-infeasible records:
@@ -72,32 +56,23 @@ among the 687 records with an LP optimum:
   old UNKNOWN:    645
 ```
 
-Important: these 443 numerical LP infeasibility results are a **triage set**, not yet 443 certified mathematical exclusions. Each one needs an independently checked rational dual certificate before it can be counted as a proof.
+Important: these 443 numerical LP results are a **triage set**, not yet 443 mathematical proofs. Each needs an independently checked rational dual certificate before it can be counted as a strict exclusion.
 
-`lpscan_dom_summary.json` stores the counts and both child-id lists in an easily inspectable form.
-
-## Line-domain data
-
-`line_domains.json.gz.b64` is a base64-encoded gzip archive of the exact allowed occupancy domains used to strengthen the LP models for the audited children. Decode it analogously:
-
-```bash
-base64 -d line_domains.json.gz.b64 > line_domains.json.gz
-gzip -dc line_domains.json.gz > line_domains.json
-```
+The large raw local scan and line-domain cache were not committed through the text-only connector; their SHA-256 hashes are retained below so a later upload can be checked byte-for-byte.
 
 ## Exploratory dual-rationalization log
 
-`exact_dual_support2.out` is retained as an investigation log. It contains a promising numerical objective below 34, but it also explicitly reports:
+`exact_dual_support2.out` is an investigation log. It contains a promising numerical objective below 34, but it also explicitly reports:
 
 ```text
 exact stationarity False
 ```
 
-Therefore this file is **not a valid exact certificate** and must not be cited as a proof. It is useful only as a starting point for future rational reconstruction.
+Therefore this file is **not a valid exact certificate** and must not be cited as a proof.
 
 ## Certified board status
 
-No valid 34-point configuration was found and the remaining frontier is not fully certified infeasible. The rigorous status remains:
+No valid 34-point configuration was found and the remaining frontier is not fully certified infeasible:
 
 ```text
 33 <= D_mono(22) <= 34
