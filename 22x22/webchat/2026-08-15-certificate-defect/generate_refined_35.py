@@ -13,9 +13,9 @@ produces 182 complete child branches.  No symmetry assumption is used.
 Each child uses the stronger exact-defect encoding:
   line defect + selected-point cover excess <= 112,
 with the minimum defect of explicitly underfull lines already deducted.
-It also states explicitly the exact parallel-family incidence identities
-implied by 34 selected points and the already proved upper bounds for ordinary
-contiguous 17x17 through 21x21 subboards.  All of these are redundant exact
+It also states explicitly the exact parallel-family incidence identities,
+point-excess threshold consequences, and the already proved upper bounds for
+ordinary contiguous 17x17 through 21x21 subboards.  All are redundant exact
 consequences, included only to improve propagation.
 """
 from __future__ import annotations
@@ -63,13 +63,7 @@ CASES = refined_cases()
 
 
 def add_contiguous_small_board_bounds(cnf: base.CNF) -> None:
-    """Use only the already closed 17..21 square-board upper bounds.
-
-    If an m x m contiguous subboard contains at most M selected points while
-    the whole board contains exactly 34, its complement must contain at least
-    34-M points.  Encoding the small complement is cheaper than an at-most-M
-    constraint on the large subboard.
-    """
+    """Use only the already closed 17..21 square-board upper bounds."""
     for m, upper in SMALL_EXACT_UPPER.items():
         need_outside = base.TARGET - upper
         for oy in range(base.N - m + 1):
@@ -114,10 +108,7 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
     for i in heavy35:
         cnf.add(-sat[i] if i in underfull else sat[i])
 
-    # Direct consequences of the residual budget.  If an explicitly
-    # underfull line would spend more than the entire residual by becoming
-    # empty, it must contain exactly one point.  Likewise any other line
-    # whose first defect unit exceeds the residual is directly saturated.
+    # Direct consequences of the residual budget.
     for i, (_family, _key, weight, _variables) in enumerate(base.GROUPS):
         if weight <= 0:
             continue
@@ -140,10 +131,9 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
         if required_saturated > 0:
             cnf.require_at_least([sat[i] for i in eligible], required_saturated)
 
-    # Exact parallel-family incidence identities.  For a family of m lines,
-    # write s=#occupancy2 and z=#occupancy0.  Since the total occupancy is
-    # exactly 34, 2s+(m-s-z)=34, hence s-z=34-m.  Equivalently
-    # s + #(not-zero) = 34.
+    # Exact parallel-family incidence identities.  If s is the number of
+    # occupancy-two lines and z the number of empty lines in a parallel
+    # family, exact total occupancy 34 gives s + #(not-zero) = 34.
     families = [(0,22), (22,44), (44,65), (65,87)]
     for lo, hi in families:
         not_zero = [complement(cnf, zero[i]) for i in range(lo, hi)]
@@ -155,16 +145,24 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
     cnf.require_at_least(sat[44:65], 13); cnf.require_at_most(sat[44:65], 17)
     cnf.require_at_least(sat[65:87], 12); cnf.require_at_most(sat[65:87], 17)
 
+    # Point-cover excess budget and cheap threshold cuts.  If each point in a
+    # set costs at least t units, at most floor(residual/t) of them may be
+    # selected.  These cuts are implied by the weighted budget below but make
+    # the implication explicit to the SAT solver.
+    excess_by_var = {
+        base.PID[p]: base.point_excess(p)
+        for p in base.POINTS
+        if base.point_excess(p) > 0
+    }
+    for threshold in sorted(set(excess_by_var.values()), reverse=True):
+        eligible = [v for v, e in excess_by_var.items() if e >= threshold]
+        cnf.require_at_most(eligible, residual // threshold)
+
     # Coupled exact-certificate budget: after the first weight unit for every
     # explicit underfull line is paid, every other underfull line, every zero
     # occupancy extra unit, and every selected-point coverage excess must fit
     # inside `residual`.
-    items: list[tuple[int, int]] = []
-    for p in base.POINTS:
-        excess = base.point_excess(p)
-        if excess > 0:
-            items.append((base.PID[p], excess))
-
+    items: list[tuple[int, int]] = list(excess_by_var.items())
     for i, (_family, _key, weight, _variables) in enumerate(base.GROUPS):
         if weight <= 0:
             continue
