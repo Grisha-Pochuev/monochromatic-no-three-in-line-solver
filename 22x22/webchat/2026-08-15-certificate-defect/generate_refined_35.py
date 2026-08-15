@@ -14,8 +14,9 @@ Each child uses the stronger exact-defect encoding:
   line defect + selected-point cover excess <= 112,
 with the minimum defect of explicitly underfull lines already deducted.
 It also states explicitly the exact parallel-family incidence identities
-implied by 34 selected points, to improve propagation without changing the
-set of solutions.
+implied by 34 selected points and the already proved upper bounds for ordinary
+contiguous 17x17 through 21x21 subboards.  All of these are redundant exact
+consequences, included only to improve propagation.
 """
 from __future__ import annotations
 
@@ -42,6 +43,8 @@ assert [(base.GROUPS[i][0], base.GROUPS[i][1]) for i in NEW35] == [
     ('row', 2), ('row', 19), ('col', 2), ('col', 19)
 ]
 
+SMALL_EXACT_UPPER = {17:26, 18:27, 19:29, 20:30, 21:32}
+
 
 def refined_cases() -> list[tuple[int, tuple[int, ...]]]:
     out: list[tuple[int, tuple[int, ...]]] = []
@@ -59,6 +62,26 @@ def refined_cases() -> list[tuple[int, tuple[int, ...]]]:
 CASES = refined_cases()
 
 
+def add_contiguous_small_board_bounds(cnf: base.CNF) -> None:
+    """Use only the already closed 17..21 square-board upper bounds.
+
+    If an m x m contiguous subboard contains at most M selected points while
+    the whole board contains exactly 34, its complement must contain at least
+    34-M points.  Encoding the small complement is cheaper than an at-most-M
+    constraint on the large subboard.
+    """
+    for m, upper in SMALL_EXACT_UPPER.items():
+        need_outside = base.TARGET - upper
+        for oy in range(base.N - m + 1):
+            for ox in range(base.N - m + 1):
+                outside = [
+                    base.PID[p]
+                    for p in base.POINTS
+                    if not (ox <= p[0] < ox + m and oy <= p[1] < oy + m)
+                ]
+                cnf.require_at_least(outside, need_outside)
+
+
 def build(case_index: int) -> tuple[base.CNF, dict]:
     if not 0 <= case_index < len(CASES):
         raise SystemExit(f'case index must be 0..{len(CASES)-1}')
@@ -71,11 +94,12 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
 
     cnf = base.CNF()
 
-    # Original geometry.
+    # Original geometry and exact total cardinality.
     for line in base.maximal_lines():
         for a, b, c in itertools.combinations(line, 3):
             cnf.add(-a, -b, -c)
     cnf.exact_cardinality(list(range(1, len(base.POINTS) + 1)), base.TARGET)
+    add_contiguous_small_board_bounds(cnf)
 
     # Exact occupancy-2 and occupancy-0 flags for all certificate lines.
     sat: list[int] = []
@@ -119,9 +143,7 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
     # Exact parallel-family incidence identities.  For a family of m lines,
     # write s=#occupancy2 and z=#occupancy0.  Since the total occupancy is
     # exactly 34, 2s+(m-s-z)=34, hence s-z=34-m.  Equivalently
-    # s + #(not-zero) = 34.  This same right-hand side 34 applies to all four
-    # families here (22 rows, 22 columns, 21 difference diagonals, 22 sum
-    # diagonals).
+    # s + #(not-zero) = 34.
     families = [(0,22), (22,44), (44,65), (65,87)]
     for lo, hi in families:
         not_zero = [complement(cnf, zero[i]) for i in range(lo, hi)]
@@ -165,6 +187,7 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
         ],
         'minimum_defect_spent': spent,
         'residual_budget': residual,
+        'small_board_bounds': SMALL_EXACT_UPPER,
         'vars': cnf.nvars,
         'clauses': len(cnf.clauses),
     }
