@@ -1,0 +1,126 @@
+name: n22 weight-24 count 261 cases 2026-08-15
+
+on:
+  push:
+    branches:
+      - webchat/n22-certificate-defect-2026-08-15
+    paths:
+      - .github/workflows/n22-refined-24-count-2026-08-15.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  KISSAT_URL: https://github.com/arminbiere/kissat/releases/download/rel-4.0.4/kissat-4.0.4-linux-amd64.zip
+
+jobs:
+  solve:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit count split in every shard
+        run: python 22x22/webchat/2026-08-15-certificate-defect/verify_refined_24_count.py
+      - name: Install Kissat 4.0.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 4 --retry-delay 2 "$KISSAT_URL" -o /tmp/kissat.zip
+          mkdir -p /tmp/kissat-unpack
+          unzip -q /tmp/kissat.zip -d /tmp/kissat-unpack
+          KISSAT="$(find /tmp/kissat-unpack -type f -name 'kissat*' | head -n 1)"
+          chmod +x "$KISSAT"
+          echo "KISSAT=$KISSAT" >> "$GITHUB_ENV"
+          "$KISSAT" --version
+      - name: Solve count-refined cases
+        shell: bash
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          printf 'case\tstatus\trc\tseconds\tmeta\n' > "results/summary-${SHARD}.tsv"
+          for index in $(seq "$SHARD" 20 260); do
+            cnf="results/case-${index}.cnf"
+            meta="results/meta-${index}.txt"
+            log="results/solver-${index}.log"
+            python 22x22/webchat/2026-08-15-certificate-defect/generate_refined_24_count.py \
+              --index "$index" --output "$cnf" | tee "$meta"
+            start=$(date +%s)
+            set +e
+            timeout 35s "$KISSAT" "$cnf" > "$log" 2>&1
+            rc=$?
+            set -e
+            stop=$(date +%s)
+            seconds=$((stop-start))
+            if grep -q '^s UNSATISFIABLE' "$log"; then status=UNSAT
+            elif grep -q '^s SATISFIABLE' "$log"; then status=SAT
+            elif [ "$rc" -eq 124 ]; then status=TIMEOUT
+            else status=ERROR
+            fi
+            one_line_meta=$(tr '\n\t' '  ' < "$meta")
+            printf '%s\t%s\t%s\t%s\t%s\n' "$index" "$status" "$rc" "$seconds" "$one_line_meta" \
+              >> "results/summary-${SHARD}.tsv"
+            rm -f "$cnf"
+            if [ "$status" = UNSAT ]; then
+              tail -n 30 "$log" > "results/solver-${index}.tail.txt" || true
+              rm -f "$log"
+            fi
+          done
+          cat "results/summary-${SHARD}.tsv"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n22-refined24-count-shard-${{ matrix.shard }}
+          path: results/
+          retention-days: 14
+
+  collect:
+    needs: solve
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-refined24-count-shard-*
+          path: gathered
+          merge-multiple: true
+      - name: Collect statuses
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import csv,json
+          rows=[]
+          for p in Path('gathered').glob('summary-*.tsv'):
+              with p.open(encoding='utf-8') as f:
+                  rows.extend(dict(r) for r in csv.DictReader(f,delimiter='\t'))
+          rows.sort(key=lambda r:int(r['case']))
+          counts={}
+          for r in rows: counts[r['status']]=counts.get(r['status'],0)+1
+          payload={
+              'expected_cases':261,
+              'records':len(rows),
+              'missing':sorted(set(range(261))-{int(r['case']) for r in rows}),
+              'status_counts':counts,
+              'unsat':[int(r['case']) for r in rows if r['status']=='UNSAT'],
+              'sat':[int(r['case']) for r in rows if r['status']=='SAT'],
+              'timeout':[int(r['case']) for r in rows if r['status']=='TIMEOUT'],
+              'error':[int(r['case']) for r in rows if r['status']=='ERROR'],
+          }
+          Path('overall-refined24-count.json').write_text(json.dumps(payload,indent=2)+'\n',encoding='utf-8')
+          print(json.dumps(payload,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n22-refined24-count-overall
+          path: overall-refined24-count.json
+          retention-days: 14
