@@ -1,0 +1,88 @@
+name: n22 safe SAT v2 121 branches 2026-08-15
+
+on:
+  push:
+    branches:
+      - webchat/n22-safe-sat-v2-2026-08-15
+    paths:
+      - '22x22/webchat/2026-08-15-safe-sat-v2/**'
+      - '.github/workflows/n22-safe-sat-v2-2026-08-15.yml'
+  workflow_dispatch:
+
+jobs:
+  solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        branch: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install official Kissat binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 4 --retry-delay 2 \
+            https://github.com/arminbiere/kissat/releases/download/rel-4.0.4/kissat-4.0.4-linux-amd64.zip \
+            -o /tmp/kissat.zip
+          mkdir -p /tmp/kissat-unpack
+          unzip -q /tmp/kissat.zip -d /tmp/kissat-unpack
+          KISSAT="$(find /tmp/kissat-unpack -type f -name 'kissat*' | head -n 1)"
+          chmod +x "$KISSAT"
+          echo "KISSAT=$KISSAT" >> "$GITHUB_ENV"
+          "$KISSAT" --version
+
+      - name: Generate branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          python 22x22/webchat/2026-08-15-safe-sat-v2/generate_branch_strong.py \
+            --index '${{ matrix.branch }}' --output results/branch.cnf \
+            | tee results/generator.txt
+          head -n 1 results/branch.cnf | tee results/header.txt
+
+      - name: Solve branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          start=$(date +%s)
+          set +e
+          timeout 60s "$KISSAT" results/branch.cnf > results/solver.log 2>&1
+          rc=$?
+          set -e
+          stop=$(date +%s)
+          seconds=$((stop-start))
+
+          if grep -q '^s UNSATISFIABLE' results/solver.log; then
+            status=UNSAT
+            rm -f results/branch.cnf
+          elif grep -q '^s SATISFIABLE' results/solver.log; then
+            status=SAT
+          elif [ "$rc" -eq 124 ]; then
+            status=TIMEOUT
+            rm -f results/branch.cnf
+          else
+            status=ERROR
+          fi
+
+          printf 'branch\tstatus\trc\tseconds\n%s\t%s\t%s\t%s\n' \
+            '${{ matrix.branch }}' "$status" "$rc" "$seconds" \
+            | tee results/summary.tsv
+
+      - name: Upload result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-safe-sat-v2-branch-${{ matrix.branch }}
+          path: results/
+          if-no-files-found: warn
+          retention-days: 14
