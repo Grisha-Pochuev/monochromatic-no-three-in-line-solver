@@ -1,0 +1,27 @@
+name: n22 exact certificate audits 2026-08-15
+
+on:
+  push:
+    branches:
+      - webchat/n22-certificate-defect-2026-08-15
+    paths:
+      - .github/workflows/n22-certificate-audit-2026-08-15.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify exact 140-branch partition
+        run: python 22x22/webchat/2026-08-15-certificate-defect/verify_partition.py
+      - name: Verify weight-35 refinement
+        run: python 22x22/webchat/2026-08-15-certificate-defect/verify_refined_35.py
+      - name: Verify 16 integer Farkas exclusions
+        run: python 22x22/webchat/2026-08-15-certificate-defect/verify_farkas_16.py
