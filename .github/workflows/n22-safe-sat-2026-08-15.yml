@@ -1,0 +1,92 @@
+name: n22 safe SAT 121 branches 2026-08-15
+
+on:
+  push:
+    branches:
+      - webchat/n22-safe-sat-2026-08-15
+    paths:
+      - '22x22/webchat/2026-08-15-safe-sat/**'
+      - '.github/workflows/n22-safe-sat-2026-08-15.yml'
+  workflow_dispatch:
+
+jobs:
+  solve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install official Kissat binary
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl -fL --retry 4 --retry-delay 2 \
+            https://github.com/arminbiere/kissat/releases/download/rel-4.0.4/kissat-4.0.4-linux-amd64.zip \
+            -o /tmp/kissat.zip
+          rm -rf /tmp/kissat-unpack
+          mkdir -p /tmp/kissat-unpack
+          unzip -q /tmp/kissat.zip -d /tmp/kissat-unpack
+          KISSAT="$(find /tmp/kissat-unpack -type f -name 'kissat*' | head -n 1)"
+          test -n "$KISSAT"
+          chmod +x "$KISSAT"
+          echo "KISSAT=$KISSAT" >> "$GITHUB_ENV"
+          "$KISSAT" --version
+
+      - name: Solve shard
+        shell: bash
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          set -euo pipefail
+          mkdir -p results
+          printf 'branch\tstatus\trc\tseconds\n' > results/summary.tsv
+
+          for idx in $(seq "$SHARD" 20 120); do
+            cnf="results/branch_${idx}.cnf"
+            log="results/branch_${idx}.log"
+
+            python 22x22/webchat/2026-08-15-safe-sat/generate_branch.py \
+              --index "$idx" --output "$cnf" \
+              > "results/branch_${idx}.generate.txt"
+
+            start=$(date +%s)
+            set +e
+            timeout 240s "$KISSAT" "$cnf" > "$log" 2>&1
+            rc=$?
+            set -e
+            stop=$(date +%s)
+            seconds=$((stop-start))
+
+            if grep -q '^s UNSATISFIABLE' "$log"; then
+              status=UNSAT
+              rm -f "$cnf"
+            elif grep -q '^s SATISFIABLE' "$log"; then
+              status=SAT
+            elif [ "$rc" -eq 124 ]; then
+              status=TIMEOUT
+              rm -f "$cnf"
+            else
+              status=ERROR
+            fi
+
+            printf '%s\t%s\t%s\t%s\n' "$idx" "$status" "$rc" "$seconds" | tee -a results/summary.tsv
+          done
+
+      - name: Upload shard records
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n22-safe-sat-shard-${{ matrix.shard }}
+          path: results/
+          if-no-files-found: warn
+          retention-days: 14
