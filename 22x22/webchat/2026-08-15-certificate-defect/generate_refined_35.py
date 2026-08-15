@@ -13,6 +13,9 @@ produces 182 complete child branches.  No symmetry assumption is used.
 Each child uses the stronger exact-defect encoding:
   line defect + selected-point cover excess <= 112,
 with the minimum defect of explicitly underfull lines already deducted.
+It also states explicitly the exact parallel-family incidence identities
+implied by 34 selected points, to improve propagation without changing the
+set of solutions.
 """
 from __future__ import annotations
 
@@ -87,6 +90,19 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
     for i in heavy35:
         cnf.add(-sat[i] if i in underfull else sat[i])
 
+    # Direct consequences of the residual budget.  If an explicitly
+    # underfull line would spend more than the entire residual by becoming
+    # empty, it must contain exactly one point.  Likewise any other line
+    # whose first defect unit exceeds the residual is directly saturated.
+    for i, (_family, _key, weight, _variables) in enumerate(base.GROUPS):
+        if weight <= 0:
+            continue
+        if i in underfull:
+            if weight > residual:
+                cnf.add(-zero[i])
+        elif weight > residual:
+            cnf.add(sat[i])
+
     # Cheap consequences for lighter lines from the remaining budget.
     positive_weights = sorted({w for _f, _k, w, _g in base.GROUPS if w > 0}, reverse=True)
     for threshold in positive_weights:
@@ -100,7 +116,18 @@ def build(case_index: int) -> tuple[base.CNF, dict]:
         if required_saturated > 0:
             cnf.require_at_least([sat[i] for i in eligible], required_saturated)
 
-    # Occupancy consequences of exactly 34 points in each parallel family.
+    # Exact parallel-family incidence identities.  For a family of m lines,
+    # write s=#occupancy2 and z=#occupancy0.  Since the total occupancy is
+    # exactly 34, 2s+(m-s-z)=34, hence s-z=34-m.  Equivalently
+    # s + #(not-zero) = 34.  This same right-hand side 34 applies to all four
+    # families here (22 rows, 22 columns, 21 difference diagonals, 22 sum
+    # diagonals).
+    families = [(0,22), (22,44), (44,65), (65,87)]
+    for lo, hi in families:
+        not_zero = [complement(cnf, zero[i]) for i in range(lo, hi)]
+        cnf.exact_cardinality(sat[lo:hi] + not_zero, 34)
+
+    # The weaker count bounds are retained as cheap propagation aids.
     cnf.require_at_least(sat[0:22], 12);  cnf.require_at_most(sat[0:22], 17)
     cnf.require_at_least(sat[22:44], 12); cnf.require_at_most(sat[22:44], 17)
     cnf.require_at_least(sat[44:65], 13); cnf.require_at_most(sat[44:65], 17)
