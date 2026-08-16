@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Complete final positive-weight split at certificate weight 3.
 
-Input is the current rigorous-open weight-8 frontier.  The only remaining
-positive certificate groups are row/col 6 and 15, each of weight 3.  Every
-parent is split by the exact number k3=0..4 of these four lines that are
-underfull, omitting only counts whose minimum defect 3*k3 exceeds the current
-residual budget.
+Input is the current rigorous-open residual-tightened weight-8 frontier after
+run 31921064464.  The only remaining positive certificate groups are row/col
+6 and 15, each of weight 3.  Every surviving parent is split by the exact
+number k3=0..4 of these four lines that are underfull, omitting only counts
+whose minimum defect 3*k3 exceeds the current residual budget.
 
 After fixing k3 there are no unprocessed positive-weight line groups left.
 We therefore re-apply residual_tightening with processed_min_weight=3: the
@@ -22,7 +22,7 @@ from pathlib import Path
 import generate_refined_8_count_exact as level8
 import generate_refined_8_count_tight as tight8
 import residual_tightening
-import weight8_frontier as frontier
+import weight8_tight_frontier as frontier
 
 base=level8.base
 NEW3=[i for i,(_family,_key,weight,_group) in enumerate(base.GROUPS) if weight==3]
@@ -32,6 +32,7 @@ assert [(base.GROUPS[i][0],base.GROUPS[i][1],base.GROUPS[i][2]) for i in NEW3]==
 
 TRIPLE_TO_LEVEL8_INDEX={triple:i for i,triple in enumerate(level8.CASES)}
 OPEN8=list(frontier.OPEN)
+assert len(OPEN8)==1457
 assert all(t in TRIPLE_TO_LEVEL8_INDEX for t in OPEN8)
 
 
