@@ -1,0 +1,33 @@
+{
+  "run": 31921064464,
+  "expected_cases": 1469,
+  "records": 1469,
+  "missing": [],
+  "status_counts": {
+    "UNSAT": 12,
+    "TIMEOUT": 1457,
+    "SAT": 0,
+    "ERROR": 0
+  },
+  "unsat_open_indices": [
+    807,
+    860,
+    863,
+    986,
+    1125,
+    1167,
+    1169,
+    1172,
+    1180,
+    1188,
+    1190,
+    1243
+  ],
+  "survivor_rule": "all open_weight8_index values 0..1468 except unsat_open_indices",
+  "survivor_count": 1457,
+  "notes": [
+    "TIMEOUT is not counted as a proof.",
+    "No SAT cases were returned.",
+    "The open indices are mapped deterministically to weight-8 triples by generate_weight8_open_tight.py."
+  ]
+}
