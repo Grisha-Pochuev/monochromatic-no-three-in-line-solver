@@ -6,6 +6,8 @@ on:
       - webchat/n22-certificate-defect-2026-08-15
     paths:
       - .github/workflows/n22-farkas-weight15-audit-2026-08-16.yml
+      - 22x22/webchat/2026-08-15-certificate-defect/verify_farkas_weight15_94_dynamic.py
+      - 22x22/webchat/2026-08-15-certificate-defect/verify_refined_15_count_exact.py
   workflow_dispatch:
 
 permissions:
