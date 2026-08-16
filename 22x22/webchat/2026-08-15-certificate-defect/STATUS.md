@@ -1,6 +1,6 @@
-# n=22 certificate-defect frontier — 2026-08-15
+# n=22 certificate-defect frontier — updated 2026-08-16
 
-This file records the current symmetry-safe target-34 attack.  Nothing here
+This file records the current symmetry-safe target-34 attack. Nothing here
 changes the certified board status until the complete frontier is excluded.
 
 ## Board status
@@ -9,131 +9,230 @@ changes the certified board status until the complete frontier is excluded.
 33 <= D_mono(22) <= 34
 ```
 
-The 33-point construction remains `22x22/config_33.json`.  The rational
-certificate `22x22/upper_certificate_34_four_direction.json` has denominator
-187, objective numerator 6470, and target-34 slack 112.
+The 33-point construction remains `22x22/config_33.json`. The rational
+four-direction certificate `22x22/upper_certificate_34_four_direction.json`
+has denominator 187, objective numerator 6470, and target-34 slack 112.
 
-## Complete 140-branch defect partition
+## Heavy-line parent partition
 
-`generate_branch.py` and `verify_partition.py` give a complete partition by
-the actual underfull subset among the 37 certificate lines of weight at least
-40.  Three lines of weights 115, 117, 115 are forced saturated; among the
-other 34 heavy lines at most two can be underfull.  Exactly 140 cases result.
-No transpose lex-leader or row/column orientation assumption is used.
+`generate_branch.py` and `verify_partition.py` give a complete 140-case
+partition by the actual underfull subset among certificate lines of weight at
+least 40. No transpose lex-leader or row/column orientation assumption is
+used.
 
-Run `31895454066` returned:
-
-```text
-records: 140 / 140
-UNSAT:   64
-SAT:      0
-TIMEOUT: 76
-ERROR:    0
-```
-
-The 64 exact solver exclusions are:
+Run `31895454066`:
 
 ```text
-14 15 27 28 35 36 37 38 39 40 42 44 45 48 50 51 54 57 58 61 63 64
-68 70 71 72 73 74 75 76 77 78 79 80 81 83 85 86 89 90 92 94 95 99
-101 102 103 105 106 110 111 114 117 118 119 120 121 126 127 131 132
-135 137 138
+140 / 140 records
+64 UNSAT
+76 TIMEOUT
+0 SAT
+0 ERROR
 ```
 
-## Exact-defect follow-up
-
-`generate_branch_exact.py` distinguishes occupancy 2/1/0 on certificate
-lines and couples exact line defect with selected-point cover excess.
-Run `31895926125` processed the 76 previous survivors and returned:
-
-```text
-records: 76 / 76
-UNSAT:    7
-SAT:      0
-TIMEOUT: 69
-ERROR:    0
-```
-
-Newly closed parent branches:
+The exact-defect follow-up run `31895926125` proved seven more parents UNSAT:
 
 ```text
 41 47 55 67 98 104 123
 ```
 
-Therefore 71 of the original 140 parent branches are now solver-excluded and
-69 parent branches remain computationally open.
+Thus 71/140 original parent cases are rigorously excluded and 69 survive.
 
-## Weight-35 refinement
+## Weight-35 refinement and Farkas overlap
 
-The only additional certificate lines of weight exactly 35 are:
+The 69 surviving parents split completely by the four weight-35 lines
+`row 2`, `row 19`, `col 2`, `col 19` into 175 refined cases.
 
-```text
-row 2, row 19, column 2, column 19
-```
-
-The original 76-parent refinement had 182 complete children.  Removing the
-seven newly proved-UNSAT parents leaves 69 parents and 175 complete refined
-cases.  `generate_refined_35_v2.py` uses the latest stronger encoding,
-including:
-
-- exact occupancy-2 and occupancy-0 flags;
-- exact parallel-family incidence identities;
-- residual-defect implications;
-- point-excess threshold cuts;
-- the already proved contiguous 17x17..21x21 upper bounds;
-- the coupled certificate defect/excess budget.
-
-The strengthened 175-case workflow is run `31896568122`.  It completed
-successfully with:
+Run `31896568122`:
 
 ```text
-records: 175 / 175
-UNSAT:    24
-SAT:       0
-TIMEOUT: 151
-ERROR:     0
+175 / 175 records
+24 UNSAT
+151 TIMEOUT
+0 SAT
+0 ERROR
 ```
 
-The 24 solver-UNSAT refined indices are:
+Solver-UNSAT refined indices:
 
 ```text
 11 12 13 14 66 67 68 69 75 76 77 78 94 95 96 97 98 99 131 132 133 134 135 136
 ```
 
-The machine-readable summary is committed as
-`results/run-31896568122-overall-refined35-v2.json`.
+The independent exact integer Farkas audit `31897006416` covers exactly these
+16 refined indices:
 
-## Exact Farkas exclusions inside the refinement
+```text
+11 12 13 14 94 95 96 97 98 99 131 132 133 134 135 136
+```
 
-A numerical LP scan of the 175 weight-35 cases found 16 infeasible cases.
-These were rationalized exactly.  `verify_farkas_16.py` stores five integer
-Farkas representatives and transports them only by parity-preserving board
-symmetries.  The verifier uses integer arithmetic and the Python standard
-library only.
+Therefore the Farkas set is a subset of the 24 solver-UNSAT cases:
 
-The 16 refined cases covered are the four cases where exactly three of
-`row2,row19,col2,col19` are underfull with no old >=40 underfull line, plus
-all twelve cases where `sum=8` or `sum=34` is underfull together with exactly
-two of those four weight-35 lines.
+```text
+intersection = 16
+union        = 24
+survivors    = 151
+```
 
-The independent audit workflow `31897006416` completed successfully.
-Before reporting a single final count of open refined leaves, explicitly
-compute the overlap between these 16 exact-Farkas cases and the 24 solver-UNSAT
-indices above.
+The Farkas certificates independently confirm 16 solver exclusions but do not
+reduce the 151-case remainder further.
+
+## Weight-24 count refinement
+
+The six next certificate lines of weight 24 are:
+
+```text
+row 3, row 18, col 3, col 18, diff -16, diff 16
+```
+
+`generate_refined_24_count.py` splits the 151 survivors by the exact number of
+these six lines that are underfull, giving 261 complete children.
+
+Run `31897269984` proved 17 children UNSAT and left 244 TIMEOUT; no SAT case
+was found. The exact closed child indices are stored in
+`generate_refined_22_count.py`.
+
+## Weight-22 frontier
+
+The only weight-22 certificate lines are `sum=6` and `sum=36`. The 244
+weight-24 survivors split into 395 complete weight-22 children.
+
+The rigorous union of three independent exclusion sources is recorded in
+`weight22_frontier.py`:
+
+- run `31918747065`: 43 solver-UNSAT, 352 TIMEOUT, no SAT;
+- exact integer Farkas audit `31919145658`: 39 Farkas-UNSAT, with 38 overlapping
+  the first solver set and one Farkas-only child;
+- exact-identity run `31918874582`: 55 solver-UNSAT, adding 13 new children
+  beyond the preceding union.
+
+After taking the exact union, **57/395 weight-22 children are rigorously closed
+and 338 remain open**.
+
+The strengthened formulas use the exact certificate identity
+
+```text
+D + E = 112
+```
+
+where `D` is line defect and `E` is selected-point cover excess. The lower
+half of this equality is encoded by `exact_identity.py`; its weighted-threshold
+encoding was exhaustively audited successfully in run `31897447939`.
+
+## Weight-15 frontier
+
+The 338 open weight-22 parents split by the exact number of underfull weight-15
+lines (`row/col 4` and `row/col 17`) into 723 complete children.
+
+`weight15_frontier.py` records:
+
+- exact Farkas audit run `31919694722`: 94 children closed;
+- solver run `31919924181` on the remaining children: 8 additional UNSAT,
+  621 TIMEOUT, no SAT.
+
+The two sets are disjoint by construction. Therefore **102/723 are closed and
+621 remain open**.
+
+## Weight-8 frontier
+
+The 621 open weight-15 parents split by the exact number of underfull weight-8
+lines into 1,943 complete children.
+
+Exact integer Farkas audits, all without symmetry, closed:
+
+```text
+k8=4:  95   run 31919955840
+k8=3: 134   run 31920209088
+k8=2: 142   run 31920410133
+k8=1: 103   run 31920752842
+k8=0:   0   run 31920859228
+```
+
+Thus **474/1,943** are rigorously Farkas-UNSAT and 1,469 remained open at this
+stage. This state is encoded in `weight8_frontier.py`.
+
+## Residual-tightened weight-8 SAT run
+
+`residual_tightening.py` adds only consequences of the exact remaining defect
+budget. Run `31921064464` processed exactly the 1,469 rigorous-open weight-8
+children with this tightened encoding:
+
+```text
+1469 / 1469 records
+12 UNSAT
+1457 TIMEOUT
+0 SAT
+0 ERROR
+```
+
+The 12 UNSAT indices in `generate_weight8_open_tight.OPEN_TRIPLES` are:
+
+```text
+807 860 863 986 1125 1167 1169 1172 1180 1188 1190 1243
+```
+
+The compact machine-readable result is committed as
+`results/run-31921064464-overall-weight8-open-tight.json`. The current exact
+1457-parent frontier is encoded in `weight8_tight_frontier.py`.
+
+Its remaining k8 distribution is:
+
+```text
+k8=0: 619
+k8=1: 435
+k8=2: 232
+k8=3: 112
+k8=4:  59
+```
+
+## Final positive-weight split: weight 3
+
+The only positive certificate lines not yet explicitly processed are:
+
+```text
+row 6, row 15, col 6, col 15
+```
+
+all of weight 3. `generate_refined_3_count_tight.py` splits each of the 1,457
+current parents by the exact number `k3=0..4` of these lines that are
+underfull, subject only to the remaining defect budget. After this split no
+unprocessed positive-weight certificate line remains.
+
+Audit run `31948905325` completed successfully:
+
+```text
+parents:  1457
+children: 6676
+k3=0:     1457
+k3=1:     1457
+k3=2:     1371
+k3=3:     1261
+k3=4:     1130
+symmetry: none
+```
+
+The same audit also rechecked the residual-tightening arithmetic for every
+residual `R=0..112` and all positive certificate weights.
+
+**These 6,676 weight-3 children are the current complete rigorous frontier.**
+They have been partitioned and audited, but have not yet all been proved
+UNSAT. Hence the board is not closed yet.
 
 ## Current continuation point
 
-Start with `HANDOFF.md`.  The immediate task is to compute the exact union of
-solver-UNSAT and exact-Farkas refined leaves, produce the exact survivor list,
-and subdivide only those survivors using further certificate-defect structure.
-Do not return to the old unsafe transpose-based partition.
+Start with `HANDOFF.md`. The next attack should operate only on the 6,676
+children generated by `generate_refined_3_count_tight.py`. Since weight 3 is
+the last positive certificate level, further refinement should use exact
+zero-occupancy charges, selected-point cover excess, exact Farkas certificates,
+or proof-producing SAT runs rather than another positive-weight line level.
 
 ## Rigor rules
 
-- `SAT` would have to be independently checked as a 34-point construction.
-- `TIMEOUT` / `UNKNOWN` is never a proof.
-- The old unconditional transpose lex rule remains forbidden.
-- Numerical LP infeasibility is not counted unless rationalized and checked
-  exactly; the 16 cases above have such integer Farkas certificates.
-- A final publication-quality closure should replay the final UNSAT leaves
-  with proof traces and an independent proof checker.
+- `SAT` would require independent checking as a valid 34-point construction.
+- `TIMEOUT` / `UNKNOWN` is never a proof and always remains in the frontier.
+- The old unconditional transpose lex rule is forbidden.
+- No result above uses that unsafe transpose pruning.
+- Numerical LP infeasibility counts only after exact rational/integer
+  certification.
+- Final publication-quality closure should replay all final UNSAT leaves with
+  proof traces and an independent checker.
