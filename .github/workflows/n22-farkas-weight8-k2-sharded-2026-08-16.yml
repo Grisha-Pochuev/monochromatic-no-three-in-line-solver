@@ -1,0 +1,74 @@
+name: n22 weight-8 k2 sharded exact Farkas 2026-08-16
+
+on:
+  push:
+    branches:
+      - webchat/n22-certificate-defect-2026-08-15
+    paths:
+      - .github/workflows/n22-farkas-weight8-k2-sharded-2026-08-16.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install exact-audit dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy sympy
+      - name: Audit shard exactly
+        shell: bash
+        env:
+          SHARD: ${{ matrix.shard }}
+        run: |
+          cd 22x22/webchat/2026-08-15-certificate-defect
+          python verify_refined_8_count_exact.py
+          python audit_farkas_weight8_k2_shard.py --shard "$SHARD" --shards 20 --output "weight8-k2-shard-${SHARD}.json"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n22-weight8-k2-farkas-shard-${{ matrix.shard }}
+          path: 22x22/webchat/2026-08-15-certificate-defect/weight8-k2-shard-${{ matrix.shard }}.json
+          retention-days: 14
+
+  collect:
+    needs: audit
+    if: always()
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-weight8-k2-farkas-shard-*
+          path: gathered
+          merge-multiple: true
+      - name: Collect exact closures
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          files=sorted(Path('gathered').glob('weight8-k2-shard-*.json'))
+          closed=[]; selected=0
+          for p in files:
+              d=json.loads(p.read_text())
+              selected+=d['selected']
+              closed.extend(d['closed_children'])
+          out={'expected_children':376,'records':selected,'artifact_files':len(files),
+               'exact_closed_count':len(closed),'exact_closed_children':closed}
+          Path('overall-weight8-k2-farkas.json').write_text(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n22-weight8-k2-farkas-overall
+          path: overall-weight8-k2-farkas.json
+          retention-days: 14
