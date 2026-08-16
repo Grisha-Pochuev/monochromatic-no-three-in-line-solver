@@ -83,7 +83,25 @@ including:
 - the already proved contiguous 17x17..21x21 upper bounds;
 - the coupled certificate defect/excess budget.
 
-The strengthened 175-case workflow is run `31896568122`.
+The strengthened 175-case workflow is run `31896568122`.  It completed
+successfully with:
+
+```text
+records: 175 / 175
+UNSAT:    24
+SAT:       0
+TIMEOUT: 151
+ERROR:     0
+```
+
+The 24 solver-UNSAT refined indices are:
+
+```text
+11 12 13 14 66 67 68 69 75 76 77 78 94 95 96 97 98 99 131 132 133 134 135 136
+```
+
+The machine-readable summary is committed as
+`results/run-31896568122-overall-refined35-v2.json`.
 
 ## Exact Farkas exclusions inside the refinement
 
@@ -98,7 +116,17 @@ The 16 refined cases covered are the four cases where exactly three of
 all twelve cases where `sum=8` or `sum=34` is underfull together with exactly
 two of those four weight-35 lines.
 
-The independent audit workflow is run `31897006416`.
+The independent audit workflow `31897006416` completed successfully.
+Before reporting a single final count of open refined leaves, explicitly
+compute the overlap between these 16 exact-Farkas cases and the 24 solver-UNSAT
+indices above.
+
+## Current continuation point
+
+Start with `HANDOFF.md`.  The immediate task is to compute the exact union of
+solver-UNSAT and exact-Farkas refined leaves, produce the exact survivor list,
+and subdivide only those survivors using further certificate-defect structure.
+Do not return to the old unsafe transpose-based partition.
 
 ## Rigor rules
 
