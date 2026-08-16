@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Generate only the 629 rigorous-open weight-15 count children."""
+"""Generate only the 621 rigorous-open weight-15 count children."""
 from __future__ import annotations
 
 import argparse
@@ -11,7 +11,7 @@ import weight15_frontier as frontier
 PAIR_TO_LEVEL15_INDEX={pair:i for i,pair in enumerate(level15.CASES)}
 assert len(PAIR_TO_LEVEL15_INDEX)==len(level15.CASES)==723
 OPEN_LEVEL15_INDICES=[PAIR_TO_LEVEL15_INDEX[pair] for pair in frontier.OPEN_PAIRS]
-assert len(OPEN_LEVEL15_INDICES)==629
+assert len(OPEN_LEVEL15_INDICES)==621
 
 
 def build(open_index: int):
