@@ -1,0 +1,28 @@
+name: n22 final weight-3 partition audit 2026-08-16
+
+on:
+  push:
+    branches:
+      - webchat/n22-certificate-defect-2026-08-15
+    paths:
+      - .github/workflows/n22-weight3-partition-audit-2026-08-16.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Audit final positive-weight split
+        run: |
+          cd 22x22/webchat/2026-08-15-certificate-defect
+          python weight8_frontier.py
+          python verify_residual_tightening_logic.py
+          python verify_refined_3_count_tight.py
