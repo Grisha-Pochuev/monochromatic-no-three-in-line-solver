@@ -1,0 +1,28 @@
+name: n22 weight-22 Farkas audit 2026-08-16
+
+on:
+  push:
+    branches:
+      - webchat/n22-certificate-defect-2026-08-15
+    paths:
+      - .github/workflows/n22-farkas-weight22-audit-2026-08-16.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify prior and new exact Farkas certificates
+        run: |
+          cd 22x22/webchat/2026-08-15-certificate-defect
+          python verify_refined_22_count.py
+          python verify_farkas_16.py
+          python verify_farkas_weight22_39.py
