@@ -1,20 +1,25 @@
 #!/usr/bin/env python3
 """Rigorous open frontier after the weight-15 count split.
 
-The current weight-22 frontier has 338 rigorous open parents.  Splitting each
+The current weight-22 frontier has 338 rigorous open parents. Splitting each
 by the exact number of underfull weight-15 lines (row/col 4 and 17) gives 723
 complete/disjoint children.
 
-Run 31919694722 reconstructed and then checked exact nonnegative integer
-Farkas multipliers for every exact geometric identity subcase of the 94 count
-children listed below: 1,288 identity subcases in total.  No symmetry was used
-in that audit.  Hence those 94 children are rigorously UNSAT and 629 remain.
+Run 31919694722 reconstructed and checked exact nonnegative integer Farkas
+multipliers for every exact geometric identity subcase of 94 children: 1,288
+identity subcases in total, with no symmetry.
+
+Run 31919924181 then solved only the 629 children not already closed by those
+Farkas certificates. Its complete result was 8 UNSAT, 621 TIMEOUT, 0 SAT,
+0 ERROR. TIMEOUT remains open. Hence the rigorous union closes 102 of 723 and
+leaves 621 open.
 """
 from __future__ import annotations
 
 import generate_refined_15_count_exact as level15
 
 FARKAS_AUDIT_RUN=31919694722
+SAT_RUN=31919924181
 
 FARKAS_CLOSED_PAIRS={
     (2,4),(4,4),(6,4),(11,1),(12,4),(13,3),(14,2),(15,3),(16,2),
@@ -32,10 +37,22 @@ FARKAS_CLOSED_PAIRS={
 }
 assert len(FARKAS_CLOSED_PAIRS)==94
 
+# Open-case indices from run 31919924181 mapped back to their (count22,k15)
+# identities in the old 629-entry Farkas-open ordering.
+SAT_UNSAT_OPEN_INDICES={241,365,367,482,490,493,622,627}
+SAT_UNSAT_PAIRS={
+    (131,1),(213,1),(214,1),(286,2),(292,1),(293,2),(389,1),(393,1),
+}
+assert len(SAT_UNSAT_OPEN_INDICES)==len(SAT_UNSAT_PAIRS)==8
+assert SAT_UNSAT_PAIRS.isdisjoint(FARKAS_CLOSED_PAIRS)
+
 ALL_PAIRS=list(level15.CASES)
 assert len(level15.OPEN_COUNT22)==338
 assert len(ALL_PAIRS)==723
 assert FARKAS_CLOSED_PAIRS <= set(ALL_PAIRS)
+assert SAT_UNSAT_PAIRS <= set(ALL_PAIRS)
 
-OPEN_PAIRS=[pair for pair in ALL_PAIRS if pair not in FARKAS_CLOSED_PAIRS]
-assert len(OPEN_PAIRS)==629
+CLOSED_PAIRS=FARKAS_CLOSED_PAIRS|SAT_UNSAT_PAIRS
+OPEN_PAIRS=[pair for pair in ALL_PAIRS if pair not in CLOSED_PAIRS]
+assert len(CLOSED_PAIRS)==102
+assert len(OPEN_PAIRS)==621
