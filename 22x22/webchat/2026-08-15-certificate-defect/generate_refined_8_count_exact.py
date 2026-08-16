@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """Complete exact-count refinement at certificate weight 8.
 
-Input frontier: 629 rigorous-open weight-15 count children.
+Input frontier: 621 rigorous-open weight-15 count children after combining the
+94 exact Farkas closures with the 8 UNSAT children from run 31919924181.
 New lines: row/col 5 and 16, all of certificate weight 8.
 For each parent we split by the exact number k=0..4 of these four lines that
 are underfull, omitting only counts whose minimum defect 8*k already exceeds
 the parent's remaining certificate budget.
 
-The parent CNF already contains the audited exact identity D+E=112.  This is a
+The parent CNF already contains the audited exact identity D+E=112. This is a
 complete and disjoint partition; no symmetry pruning is used.
 """
 from __future__ import annotations
@@ -26,7 +27,7 @@ assert [(base.GROUPS[i][0],base.GROUPS[i][1],base.GROUPS[i][2]) for i in NEW8]==
 
 PAIR_TO_LEVEL15_INDEX={pair:i for i,pair in enumerate(level15.CASES)}
 OPEN15=list(frontier.OPEN_PAIRS)
-assert len(OPEN15)==629
+assert len(OPEN15)==621
 
 
 def residual_of(pair: tuple[int,int]) -> int:
@@ -44,7 +45,7 @@ def split_cases() -> list[tuple[int,int,int]]:
     return result
 
 CASES=split_cases()
-assert len(CASES)==1951
+assert len(CASES)==1943
 
 
 def build(case_index: int):
