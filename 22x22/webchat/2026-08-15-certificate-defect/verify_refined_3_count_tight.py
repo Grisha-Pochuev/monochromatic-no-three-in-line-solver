@@ -3,9 +3,10 @@
 from collections import Counter
 
 import generate_refined_3_count_tight as model
-import weight8_frontier as frontier
+import weight8_tight_frontier as frontier
 
 assert model.OPEN8==frontier.OPEN
+assert len(model.OPEN8)==1457
 expected=[]
 for triple in model.OPEN8:
     residual=model.residual_before_weight3(triple)
