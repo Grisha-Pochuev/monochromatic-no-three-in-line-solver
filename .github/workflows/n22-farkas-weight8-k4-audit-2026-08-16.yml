@@ -1,0 +1,36 @@
+name: n22 weight-8 k4 exact Farkas audit 2026-08-16
+
+on:
+  push:
+    branches:
+      - webchat/n22-certificate-defect-2026-08-15
+    paths:
+      - .github/workflows/n22-farkas-weight8-k4-audit-2026-08-16.yml
+      - 22x22/webchat/2026-08-15-certificate-defect/verify_farkas_weight8_k4_95_dynamic.py
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install exact-audit dependencies
+        run: python -m pip install --disable-pip-version-check numpy scipy sympy
+      - name: Reconstruct and verify all integer Farkas certificates
+        run: |
+          cd 22x22/webchat/2026-08-15-certificate-defect
+          python weight22_frontier.py
+          python weight15_frontier.py
+          python verify_farkas_weight8_k4_95_dynamic.py --output weight8-k4-farkas-95-certificates.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n22-weight8-k4-farkas-95-certificates
+          path: 22x22/webchat/2026-08-15-certificate-defect/weight8-k4-farkas-95-certificates.json
+          retention-days: 14
