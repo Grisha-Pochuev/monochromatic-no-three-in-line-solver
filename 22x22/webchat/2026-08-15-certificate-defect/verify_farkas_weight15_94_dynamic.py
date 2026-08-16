@@ -2,19 +2,19 @@
 """Discover and EXACTLY verify integer Farkas certificates for 94 weight-15 children.
 
 The list CLOSED_CHILDREN was obtained by an LP screening of the current
-rigorous weight-22 frontier.  Screening alone is NOT a proof.  This program
+rigorous weight-22 frontier. Screening alone is NOT a proof. This program
 revisits every exact identity subcase of each listed count child, discovers a
 nonnegative Farkas ray numerically, converts its support to an exact rational
 solution, clears denominators to nonnegative INTEGER multipliers, and finally
 checks with Python integers that all 242 point coefficients cancel and the
 right-hand side is strictly negative.
 
-There are 1,288 identity subcases.  Every one is verified separately.  No
+There are 1,288 identity subcases. Every one is verified separately. No
 symmetry (transpose or otherwise) is used for pruning, identification, or
 certificate transport in this audit.
 
-The numerical LP is only a certificate finder.  Correctness is decided solely
-by the final integer equalities/inequality.  If exact reconstruction fails,
+The numerical LP is only a certificate finder. Correctness is decided solely
+by the final integer equalities/inequality. If exact reconstruction fails,
 the program fails instead of declaring the subcase closed.
 """
 from __future__ import annotations
@@ -85,7 +85,23 @@ def all_maximal_lines():
 
 
 def group_members(index):
-    return [PID[p] for p in base.GROUPS[index][3]]
+    """Return 0-based point indices by reconstructing the group geometrically.
+
+    base.GROUPS[index][3] contains CNF variable IDs, not coordinate tuples.
+    Reconstructing from (family,key) avoids depending on that encoding.
+    """
+    family,key,_weight,_variables=base.GROUPS[index]
+    if family=='row':
+        pts=[p for p in POINTS if p[1]==key]
+    elif family=='col':
+        pts=[p for p in POINTS if p[0]==key]
+    elif family=='diff':
+        pts=[p for p in POINTS if p[0]-p[1]==key]
+    elif family=='sum':
+        pts=[p for p in POINTS if p[0]+p[1]==key]
+    else:
+        raise AssertionError(f'bad group family {family!r}')
+    return [PID[p] for p in pts]
 
 BASE_ROWS=[]
 BASE_B=[]
