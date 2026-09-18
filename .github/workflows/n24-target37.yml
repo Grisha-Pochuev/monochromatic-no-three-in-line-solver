@@ -1,0 +1,92 @@
+name: n24 target 37 search
+
+on:
+  push:
+    paths:
+      - '24x24/RUN_N24_TARGET37'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: n24-target37-search
+  cancel-in-progress: true
+
+jobs:
+  search:
+    name: n24 target 37 attempt ${{ matrix.attempt }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        attempt: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      OMP_NUM_THREADS: '1'
+      OPENBLAS_NUM_THREADS: '1'
+      MKL_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+      - name: Run exact all-lines target-37 search
+        shell: bash
+        run: |
+          seed=$(( 2026091800 + ${{ matrix.attempt }} * 100003 ))
+          python 24x24/search_n24_target37.py \
+            --parity 0 \
+            --seconds 600 \
+            --workers 4 \
+            --seed "$seed" \
+            --output result-${{ matrix.attempt }}.json
+      - name: Upload attempt
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: n24-target37-attempt-${{ matrix.attempt }}
+          path: result-${{ matrix.attempt }}.json
+          retention-days: 30
+
+  collect:
+    name: Collect n24 target-37 search
+    needs: search
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n24-target37-attempt-*
+          path: gathered
+      - name: Validate and summarize
+        shell: bash
+        run: |
+          python - <<'PY'
+          import json, sys
+          from pathlib import Path
+          sys.path.insert(0, '24x24')
+          from search_n24_target37 import validate
+          records=[]
+          for path in sorted(Path('gathered').rglob('result-*.json')):
+              r=json.loads(path.read_text())
+              if r.get('status') in {'FEASIBLE','OPTIMAL'}:
+                  validate([tuple(p) for p in r['solution']], int(r['parity']))
+              records.append(r)
+          counts={s:sum(r.get('status')==s for r in records)
+                  for s in ('INFEASIBLE','UNKNOWN','FEASIBLE','OPTIMAL','MODEL_INVALID')}
+          feasible=[r for r in records if r.get('status') in {'FEASIBLE','OPTIMAL'}]
+          out={'run_id':'${{ github.run_id }}','counts':counts,
+               'records_found':len(records),'validated_solutions':feasible,
+               'conclusion':'FOUND_37' if feasible else 'NO_37_FOUND_IN_BUDGET'}
+          Path('overall.json').write_text(json.dumps(out,indent=2)+'\n')
+          print(json.dumps(out,indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: n24-target37-overall
+          path: overall.json
+          retention-days: 30
