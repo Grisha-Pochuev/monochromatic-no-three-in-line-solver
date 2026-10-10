@@ -156,6 +156,21 @@ Twenty independent full-budget attempts processed the final two exact children:
 
 Source run: https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/29868888706
 
-## Current follow-up attack
+## Current status (2026-10-10)
 
-Only exact child `652` remains unresolved. It belongs to main-diagonal pair `40` and has `diag_plus_twos = 16`, `diag_minus_twos = 16`. Ten full-budget attempts all returned `UNKNOWN`, so simply changing the random seed is no longer the best approach. The next exact search partitions this child into the 21 disjoint cases `12 <= row_twos <= column_twos <= 17`. The other 2639 children must not be recomputed. The certified status remains `33 <= D_mono(22) <= 34` until all 21 subcases are excluded or a valid 34-point configuration is found.
+Symmetry audit (`SYMMETRY_AUDIT_2026-07-22.md`): only the 1510 analytic exclusions survive from the
+historical partition; 1130 children were reopened.
+
+Strict exclusions in the 2640-child partition:
+
+- 1510 analytic (certificate-defect bound);
+- 402 exact Farkas certificates (`webchat/2026-10-10-farkas-gap/`);
+- 502 INFEASIBLE in gap run 38029269220 (`runs/2026-10-10-run-38029269220/`), valid via the
+  complementary-orientation lemma;
+
+total **2414 / 2640**. Open: 225 gap children (`runs/2026-10-10-run-38029269220/remaining_children.txt`)
+and child 652 (63 subcases r,c,A; `webchat/2026-10-10-round2/`).
+
+Next run: round 2 (`webchat/2026-10-10-round2/README.md`), 288 items, 20 shards × 5h40.
+
+Certified status: `33 <= D_mono(22) <= 34`. UNKNOWN is not a proof.

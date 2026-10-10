@@ -38,3 +38,8 @@ Engine: `22x22/prove_upper_22x22_profile_child_gap.py`.
 `gap_schedule.json` — 727 children in 20 shards. Workflow `.github/workflows/n22-gap-727-5h50.yml`,
 trigger `22x22/RUN_N22_GAP_727_5H50`. Phase A: 120 s per child; phase B: remaining time on survivors.
 UNKNOWN is not a proof. Certified status stays `33 <= D_mono(22) <= 34` until all 728 are closed.
+
+## Outcome (run 38029269220)
+
+502 INFEASIBLE, 225 UNKNOWN, 0 FEASIBLE. Archive: `22x22/runs/2026-10-10-run-38029269220/`.
+Strict total: 1510 + 402 + 502 = 2414 / 2640. Survivors go to round 2 (`../2026-10-10-round2/`).

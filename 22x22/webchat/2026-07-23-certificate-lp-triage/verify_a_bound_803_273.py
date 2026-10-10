@@ -30,7 +30,7 @@ def main():
   else: raise AssertionError(label)
  for rec in d['lower_bound_multipliers']:
   m=int(rec['multiplier_scaled']); assert m>=0
-  coeff[PID[tuple(rec['point'])]]-=m
+  coeff[PID[tuple(rec["point"])]]+=m  # x>=0 times m>=0 is added (sign fixed 2026-10-10)
  for rec in d['upper_bound_multipliers']:
   m=int(rec['multiplier_scaled']); assert m<=0
   coeff[PID[tuple(rec['point'])]]+=m

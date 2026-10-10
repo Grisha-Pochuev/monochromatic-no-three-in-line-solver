@@ -1,0 +1,124 @@
+name: n22 round2 288 5h40
+
+on:
+  push:
+    paths:
+      - '22x22/RUN_N22_ROUND2_288_5H40'
+  workflow_dispatch:
+
+concurrency:
+  group: n22-round2-288-5h40
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Verify inputs and certificates
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned dependencies
+        run: python -m pip install ortools==9.15.6755 scipy numpy
+      - name: Verify known 33-point construction
+        run: python 22x22/verify_22x22.py
+      - name: Verify A <= 2 certificate for child 652
+        run: |
+          cd 22x22/webchat/2026-07-23-certificate-lp-triage
+          python verify_a_bound_803_273.py a_bound_803_273_compact.min.json
+      - name: Verify round-2 schedule
+        run: |
+          python - <<'PY'
+          import json
+          d = json.load(open('22x22/webchat/2026-10-10-round2/round2_schedule.json'))
+          rem = [int(x) for x in open('22x22/runs/2026-10-10-run-38029269220/remaining_children.txt').read().split()]
+          its = [it for s in d['assignments'] for it in s['items']]
+          assert len(d['assignments']) == 20 and len(its) == 288
+          gap = sorted(it['child'] for it in its if it['kind'] == 'gap')
+          assert gap == sorted(rem) and len(set(gap)) == 225 and 652 not in gap
+          c = sorted((it['r'], it['c'], it['a']) for it in its if it['kind'] == 'c652')
+          assert c == [(r, cc, a) for r in range(12, 18) for cc in range(r, 18) for a in range(3)]
+          print('schedule ok', len(its))
+          PY
+      - name: Smoke-test engines and runner
+        run: |
+          cd 22x22
+          mkdir -p ../smoke
+          python prove_upper_22x22_child652_subcase.py --r 12 --c 12 --a 0 --seconds 15 --output ../smoke/c652-eq.json > /dev/null
+          python prove_upper_22x22_child652_subcase.py --r 13 --c 15 --a 2 --seconds 15 --output ../smoke/c652-lt.json > /dev/null
+          python run_n22_round2_shard.py --shard 0 --total-seconds 120 --min-seconds 20 --max-items 2 --output-dir ../smoke/runner
+          test -f ../smoke/runner/shard-00-summary.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n22-round2-verification
+          path: smoke/
+          retention-days: 30
+
+  shards:
+    name: Round2 shard ${{ matrix.shard }}
+    needs: verify
+    runs-on: ubuntu-latest
+    timeout-minutes: 355
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
+    env:
+      PYTHONUNBUFFERED: '1'
+      MALLOC_ARENA_MAX: '2'
+      OMP_NUM_THREADS: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+      - name: Machine
+        run: |
+          nproc; free -h
+      - name: Run 5h40 round-2 shard
+        run: |
+          cd 22x22
+          python run_n22_round2_shard.py \
+            --shard ${{ matrix.shard }} \
+            --total-seconds 20400 \
+            --min-seconds 60 \
+            --workers 4 \
+            --memory-guard-mb 13000 \
+            --output-dir ../results/shard-${{ matrix.shard }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n22-round2-shard-${{ matrix.shard }}
+          path: results/
+          retention-days: 30
+
+  collect:
+    name: Collect n22 round 2
+    needs: shards
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned OR-Tools
+        run: python -m pip install ortools==9.15.6755
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: n22-round2-shard-*
+          path: gathered
+      - name: Collect all 288 items
+        run: |
+          python 22x22/collect_n22_round2.py \
+            --input-dir gathered \
+            --overall overall.json \
+            --summary SUMMARY.md \
+            --run-url "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          cat SUMMARY.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: n22-round2-overall
+          path: |
+            overall.json
+            SUMMARY.md
+          retention-days: 90

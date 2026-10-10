@@ -1,0 +1,1692 @@
+{
+ "description": "n22 round 2: 225 survivors of gap run 38029269220 (G model) + child 652 split into 63 subcases (r,c,A), 12<=r<=c<=17, A in {0,1,2}",
+ "source_run": "https://github.com/Grisha-Pochuev/monochromatic-no-three-in-line-solver/actions/runs/38029269220",
+ "assignments": [
+  {
+   "shard": 0,
+   "load": 16.0,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 718,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 988,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1097,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1198,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1432,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1528,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1671,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1947,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2242,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2506,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 12,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 13,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 16,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 17,
+     "c": 17,
+     "a": 0,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 1,
+   "load": 16.0,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 736,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1006,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1101,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1216,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1437,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1546,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1672,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1948,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2247,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2511,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 12,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 14,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 16,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 17,
+     "c": 17,
+     "a": 1,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 2,
+   "load": 16.0,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 741,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1011,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1102,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1221,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1438,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1551,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1828,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1966,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2248,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2512,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 12,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 14,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 17,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 17,
+     "c": 17,
+     "a": 2,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 3,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 267,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 621,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 742,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1012,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1107,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1222,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1456,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1552,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1851,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1971,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2266,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2517,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 13,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 14,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 17,
+     "a": 1,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 4,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 291,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 622,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 747,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1017,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1108,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1223,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1461,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1557,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1852,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1972,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2271,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2518,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 13,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 15,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 17,
+     "a": 2,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 5,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 292,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 627,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 748,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1018,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1126,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1227,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1462,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1558,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1858,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1977,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2272,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2578,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 13,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 15,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 15,
+     "a": 0,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 6,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 297,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 645,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 771,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1036,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1132,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1228,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1467,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1576,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1876,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1978,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2277,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2601,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 14,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 15,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 15,
+     "a": 1,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 7,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 321,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 646,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 772,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1041,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1137,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1246,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1468,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1581,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1881,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2001,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2278,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2602,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 14,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 16,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 15,
+     "a": 2,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 8,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 322,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 651,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 778,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1042,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1138,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1251,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1485,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1582,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1882,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2002,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2296,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2607,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 14,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 16,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 16,
+     "a": 0,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 9,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 328,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 657,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 802,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1043,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1155,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1252,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1486,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1587,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1887,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2008,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2301,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2608,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 15,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 16,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 16,
+     "a": 1,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 10,
+   "load": 16.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 352,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 658,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 807,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1047,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1156,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1257,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1491,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1588,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1888,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2031,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2302,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2638,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 15,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 17,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 16,
+     "a": 2,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 11,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 472,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 676,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 808,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1048,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1161,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1282,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1492,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1606,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1906,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2032,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2307,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 15,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 17,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 17,
+     "a": 0,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 12,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 502,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 681,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 892,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1065,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1162,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1312,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1497,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1611,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1911,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2038,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2308,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 16,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 17,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 17,
+     "a": 1,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 13,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 531,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 682,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 922,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1066,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1167,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1318,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1498,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1612,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1912,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2062,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2332,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 16,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 14,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 15,
+     "c": 17,
+     "a": 2,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 14,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 532,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 687,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 952,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1071,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1168,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1342,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1515,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1617,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1917,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2067,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2452,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 16,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 14,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 16,
+     "c": 16,
+     "a": 0,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 15,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 538,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 688,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 957,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1072,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1186,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1372,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1516,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1618,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1918,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2211,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2458,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 17,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 14,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 16,
+     "c": 16,
+     "a": 1,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 16,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 561,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 706,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 958,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1073,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1191,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1402,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1521,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1641,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1935,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2212,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2481,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 17,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 15,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 16,
+     "c": 16,
+     "a": 2,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 17,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 562,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 711,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 976,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1077,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1192,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1408,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1522,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1642,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1936,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2217,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2482,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 12,
+     "c": 17,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 15,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 16,
+     "c": 17,
+     "a": 0,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 18,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 567,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 712,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 982,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1078,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1193,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1426,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1523,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1647,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1941,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2236,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2487,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 13,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 15,
+     "a": 2,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 16,
+     "c": 17,
+     "a": 1,
+     "weight": 1.5
+    }
+   ]
+  },
+  {
+   "shard": 19,
+   "load": 15.5,
+   "items": [
+    {
+     "kind": "gap",
+     "child": 598,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 717,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 987,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1096,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1197,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1431,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1527,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1648,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 1942,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2241,
+     "weight": 1.0
+    },
+    {
+     "kind": "gap",
+     "child": 2488,
+     "weight": 1.0
+    },
+    {
+     "kind": "c652",
+     "r": 13,
+     "c": 13,
+     "a": 1,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 14,
+     "c": 16,
+     "a": 0,
+     "weight": 1.5
+    },
+    {
+     "kind": "c652",
+     "r": 16,
+     "c": 17,
+     "a": 2,
+     "weight": 1.5
+    }
+   ]
+  }
+ ]
+}
