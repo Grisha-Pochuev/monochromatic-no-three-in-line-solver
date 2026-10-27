@@ -1,0 +1,1211 @@
+{
+ "c652-r13-c14-a2": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1692.8379142284393,
+   "requested_seed": 2027147397,
+   "branches": 19533301,
+   "conflicts": 14114034,
+   "peak_rss_mb": 250.734375
+  }
+ ],
+ "gap-1036": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2488.983809709549,
+   "requested_seed": 2027109555,
+   "branches": 27853635,
+   "conflicts": 21130528,
+   "peak_rss_mb": 255.3125
+  }
+ ],
+ "gap-1641": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1681.9509460926056,
+   "requested_seed": 2027113790,
+   "branches": 22004260,
+   "conflicts": 15891094,
+   "peak_rss_mb": 252.76171875
+  }
+ ],
+ "c652-r12-c17-a1": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 4917.172302484512,
+   "requested_seed": 2027146900,
+   "branches": 52154095,
+   "conflicts": 40418961,
+   "peak_rss_mb": 299.6328125
+  }
+ ],
+ "gap-0988": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1435.9322714805603,
+   "requested_seed": 2027109219,
+   "branches": 19946537,
+   "conflicts": 14327696,
+   "peak_rss_mb": 255.09765625
+  }
+ ],
+ "gap-1587": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1817.1083335876465,
+   "requested_seed": 2027113412,
+   "branches": 22055742,
+   "conflicts": 15321574,
+   "peak_rss_mb": 258.234375
+  }
+ ],
+ "c652-r12-c12-a0": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 3098.7825503349304,
+   "requested_seed": 2027146543,
+   "branches": 30191288,
+   "conflicts": 22106475,
+   "peak_rss_mb": 272.3359375
+  }
+ ],
+ "gap-0717": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2590.1058797836304,
+   "requested_seed": 2027107322,
+   "branches": 26922507,
+   "conflicts": 19783842,
+   "peak_rss_mb": 264.6953125
+  }
+ ],
+ "gap-1521": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2663.2328510284424,
+   "requested_seed": 2027112950,
+   "branches": 28645988,
+   "conflicts": 21077954,
+   "peak_rss_mb": 263.4296875
+  }
+ ],
+ "gap-2482": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2076.399822473526,
+   "requested_seed": 2027119677,
+   "branches": 22893949,
+   "conflicts": 16477409,
+   "peak_rss_mb": 248.98828125
+  }
+ ],
+ "c652-r12-c13-a2": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2642.2853631973267,
+   "requested_seed": 2027146627,
+   "branches": 27439222,
+   "conflicts": 20354587,
+   "peak_rss_mb": 267.49609375
+  }
+ ],
+ "gap-0748": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1856.2466731071472,
+   "requested_seed": 2027107539,
+   "branches": 20470537,
+   "conflicts": 14603435,
+   "peak_rss_mb": 259.05078125
+  }
+ ],
+ "gap-1546": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 5130.385616064072,
+   "requested_seed": 2027113125,
+   "branches": 44376682,
+   "conflicts": 33697720,
+   "peak_rss_mb": 279.24609375
+  }
+ ],
+ "gap-2602": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1638.3167445659637,
+   "requested_seed": 2027120517,
+   "branches": 20377583,
+   "conflicts": 14342592,
+   "peak_rss_mb": 245.87890625
+  }
+ ],
+ "c652-r12-c12-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 5085.06325173378,
+   "requested_seed": 2027146550,
+   "branches": 40375675,
+   "conflicts": 29951593,
+   "peak_rss_mb": 306.42578125
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 1745.703919172287,
+   "requested_seed": 2028146553,
+   "branches": 20495078,
+   "conflicts": 14057228,
+   "peak_rss_mb": 252.23046875
+  }
+ ],
+ "gap-0718": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2707.4326918125153,
+   "requested_seed": 2027107329,
+   "branches": 26750333,
+   "conflicts": 19482911,
+   "peak_rss_mb": 274.61328125
+  }
+ ],
+ "gap-1522": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6272.836710453033,
+   "requested_seed": 2027112957,
+   "branches": 15210267,
+   "conflicts": 437852,
+   "peak_rss_mb": 289.4765625
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 1744.8604278564453,
+   "requested_seed": 2028112960,
+   "branches": 22326957,
+   "conflicts": 15806432,
+   "peak_rss_mb": 242.24609375
+  }
+ ],
+ "gap-2511": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2779.486227989197,
+   "requested_seed": 2027119880,
+   "branches": 32042808,
+   "conflicts": 24526559,
+   "peak_rss_mb": 257.65234375
+  }
+ ],
+ "c652-r12-c13-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 5085.045667171478,
+   "requested_seed": 2027146620,
+   "branches": 12443565,
+   "conflicts": 355517,
+   "peak_rss_mb": 287.93359375
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 7229.408108949661,
+   "requested_seed": 2028146623,
+   "branches": 14526624,
+   "conflicts": 425346,
+   "peak_rss_mb": 305.00390625
+  }
+ ],
+ "gap-0742": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 4724.527858972549,
+   "requested_seed": 2027107497,
+   "branches": 44155743,
+   "conflicts": 33691560,
+   "peak_rss_mb": 283.6953125
+  }
+ ],
+ "gap-1528": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2509.5297861099243,
+   "requested_seed": 2027112999,
+   "branches": 22069769,
+   "conflicts": 15961867,
+   "peak_rss_mb": 267.3359375
+  }
+ ],
+ "gap-2518": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 788.3569700717926,
+   "requested_seed": 2027119929,
+   "branches": 9578375,
+   "conflicts": 6724668,
+   "peak_rss_mb": 233.95703125
+  }
+ ],
+ "c652-r13-c17-a0": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 5244.032964706421,
+   "requested_seed": 2027147593,
+   "branches": 56198008,
+   "conflicts": 43850436,
+   "peak_rss_mb": 301.6953125
+  }
+ ],
+ "gap-1071": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2090.7377066612244,
+   "requested_seed": 2027109800,
+   "branches": 30775329,
+   "conflicts": 22637362,
+   "peak_rss_mb": 256.79296875
+  }
+ ],
+ "gap-1858": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 856.5917446613312,
+   "requested_seed": 2027115309,
+   "branches": 13639364,
+   "conflicts": 9183819,
+   "peak_rss_mb": 237.98828125
+  }
+ ],
+ "c652-r13-c14-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.04602265358,
+   "requested_seed": 2027147383,
+   "branches": 68610057,
+   "conflicts": 52848277,
+   "peak_rss_mb": 309.83984375
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 4718.2525136470795,
+   "requested_seed": 2028147386,
+   "branches": 53232973,
+   "conflicts": 40230718,
+   "peak_rss_mb": 290.2734375
+  }
+ ],
+ "gap-1012": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 4918.7377235889435,
+   "requested_seed": 2027109387,
+   "branches": 59610443,
+   "conflicts": 46841266,
+   "peak_rss_mb": 285.38671875
+  }
+ ],
+ "gap-1612": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 3920.7115650177,
+   "requested_seed": 2027113587,
+   "branches": 45951586,
+   "conflicts": 35172879,
+   "peak_rss_mb": 288.47265625
+  }
+ ],
+ "c652-r12-c16-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.063511371613,
+   "requested_seed": 2027146823,
+   "branches": 58661191,
+   "conflicts": 44955937,
+   "peak_rss_mb": 305.53515625
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 5841.42578458786,
+   "requested_seed": 2028146826,
+   "branches": 14525862,
+   "conflicts": 577059,
+   "peak_rss_mb": 292.0859375
+  }
+ ],
+ "gap-0958": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1301.5391736030579,
+   "requested_seed": 2027109009,
+   "branches": 16932559,
+   "conflicts": 11957293,
+   "peak_rss_mb": 237.00390625
+  }
+ ],
+ "gap-1576": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 6415.031260251999,
+   "requested_seed": 2027113335,
+   "branches": 60759074,
+   "conflicts": 47799089,
+   "peak_rss_mb": 293.0859375
+  }
+ ],
+ "c652-r12-c17-a0": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 5693.2848653793335,
+   "requested_seed": 2027146893,
+   "branches": 45033884,
+   "conflicts": 34789195,
+   "peak_rss_mb": 294.1953125
+  }
+ ],
+ "gap-0987": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1025.5046045780182,
+   "requested_seed": 2027109212,
+   "branches": 13001183,
+   "conflicts": 8729372,
+   "peak_rss_mb": 235.796875
+  }
+ ],
+ "gap-1582": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 13620.13585114479,
+   "requested_seed": 2027113377,
+   "branches": 93105625,
+   "conflicts": 73161662,
+   "peak_rss_mb": 324.69140625
+  }
+ ],
+ "c652-r12-c16-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.061833143234,
+   "requested_seed": 2027146830,
+   "branches": 14200933,
+   "conflicts": 431163,
+   "peak_rss_mb": 303.171875
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 3495.4684426784515,
+   "requested_seed": 2028146833,
+   "branches": 11307746,
+   "conflicts": 217617,
+   "peak_rss_mb": 274.6171875
+  }
+ ],
+ "gap-0982": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 6195.964097976685,
+   "requested_seed": 2027109177,
+   "branches": 56823234,
+   "conflicts": 44494599,
+   "peak_rss_mb": 286.75
+  }
+ ],
+ "gap-1581": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 3865.876330137253,
+   "requested_seed": 2027113370,
+   "branches": 37397876,
+   "conflicts": 27158673,
+   "peak_rss_mb": 272.11328125
+  }
+ ],
+ "c652-r13-c14-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.088819742203,
+   "requested_seed": 2027147390,
+   "branches": 77441138,
+   "conflicts": 59927054,
+   "peak_rss_mb": 314.31640625
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 10580.848251104355,
+   "requested_seed": 2028147393,
+   "branches": 18788294,
+   "conflicts": 1087726,
+   "peak_rss_mb": 339.87109375
+  }
+ ],
+ "gap-1018": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1740.5695905685425,
+   "requested_seed": 2027109429,
+   "branches": 23886275,
+   "conflicts": 17501312,
+   "peak_rss_mb": 270.2421875
+  }
+ ],
+ "gap-1618": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1236.8049705028534,
+   "requested_seed": 2027113629,
+   "branches": 22215727,
+   "conflicts": 15870195,
+   "peak_rss_mb": 251.39453125
+  }
+ ],
+ "c652-r12-c13-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 5085.043699502945,
+   "requested_seed": 2027146613,
+   "branches": 11241829,
+   "conflicts": 438664,
+   "peak_rss_mb": 285.30859375
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 8655.97778749466,
+   "requested_seed": 2028146616,
+   "branches": 71030609,
+   "conflicts": 55717438,
+   "peak_rss_mb": 310.4921875
+  }
+ ],
+ "gap-0741": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 3092.1752331256866,
+   "requested_seed": 2027107490,
+   "branches": 36753573,
+   "conflicts": 28151820,
+   "peak_rss_mb": 276.58203125
+  }
+ ],
+ "gap-1527": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1317.9440367221832,
+   "requested_seed": 2027112992,
+   "branches": 16799188,
+   "conflicts": 11607474,
+   "peak_rss_mb": 244.015625
+  }
+ ],
+ "gap-2512": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2185.6031591892242,
+   "requested_seed": 2027119887,
+   "branches": 28370240,
+   "conflicts": 21241442,
+   "peak_rss_mb": 254.1171875
+  }
+ ],
+ "c652-r12-c14-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.048352718353,
+   "requested_seed": 2027146683,
+   "branches": 13411022,
+   "conflicts": 606177,
+   "peak_rss_mb": 292.28515625
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 10207.27598452568,
+   "requested_seed": 2028146686,
+   "branches": 16006611,
+   "conflicts": 802217,
+   "peak_rss_mb": 327.23828125
+  }
+ ],
+ "gap-0771": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1242.0522291660309,
+   "requested_seed": 2027107700,
+   "branches": 18131635,
+   "conflicts": 12975909,
+   "peak_rss_mb": 235.0
+  }
+ ],
+ "gap-1551": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2106.5301265716553,
+   "requested_seed": 2027113160,
+   "branches": 24919631,
+   "conflicts": 17542490,
+   "peak_rss_mb": 257.875
+  }
+ ],
+ "c652-r13-c13-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.075412511826,
+   "requested_seed": 2027147313,
+   "branches": 15629241,
+   "conflicts": 759463,
+   "peak_rss_mb": 313.84765625
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 10113.095708608627,
+   "requested_seed": 2028147316,
+   "branches": 92549829,
+   "conflicts": 73054291,
+   "peak_rss_mb": 341.23046875
+  }
+ ],
+ "gap-1006": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1069.5050966739655,
+   "requested_seed": 2027109345,
+   "branches": 19630784,
+   "conflicts": 14343386,
+   "peak_rss_mb": 240.52734375
+  }
+ ],
+ "gap-1588": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2376.0156598091125,
+   "requested_seed": 2027113419,
+   "branches": 26535690,
+   "conflicts": 19624447,
+   "peak_rss_mb": 282.7890625
+  }
+ ],
+ "c652-r12-c15-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.042605400085,
+   "requested_seed": 2027146760,
+   "branches": 22379195,
+   "conflicts": 231421,
+   "peak_rss_mb": 295.7578125
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 8392.320318698883,
+   "requested_seed": 2028146763,
+   "branches": 14117404,
+   "conflicts": 598926,
+   "peak_rss_mb": 321.19921875
+  }
+ ],
+ "gap-0952": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2388.6902601718903,
+   "requested_seed": 2027108967,
+   "branches": 27029018,
+   "conflicts": 20145551,
+   "peak_rss_mb": 256.13671875
+  }
+ ],
+ "gap-1558": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2775.992428302765,
+   "requested_seed": 2027113209,
+   "branches": 22889411,
+   "conflicts": 16516819,
+   "peak_rss_mb": 279.42578125
+  }
+ ],
+ "c652-r12-c15-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.0504286289215,
+   "requested_seed": 2027146753,
+   "branches": 15240162,
+   "conflicts": 609839,
+   "peak_rss_mb": 300.6328125
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 10695.502004861832,
+   "requested_seed": 2028146756,
+   "branches": 16911191,
+   "conflicts": 971845,
+   "peak_rss_mb": 334.80859375
+  }
+ ],
+ "gap-0802": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1903.8582711219788,
+   "requested_seed": 2027107917,
+   "branches": 26200259,
+   "conflicts": 19130783,
+   "peak_rss_mb": 258.19921875
+  }
+ ],
+ "gap-1557": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 957.3586702346802,
+   "requested_seed": 2027113202,
+   "branches": 14452116,
+   "conflicts": 9450715,
+   "peak_rss_mb": 241.04296875
+  }
+ ],
+ "c652-r13-c13-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.063142538071,
+   "requested_seed": 2027147320,
+   "branches": 16637270,
+   "conflicts": 614900,
+   "peak_rss_mb": 318.796875
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 10330.954221248627,
+   "requested_seed": 2028147323,
+   "branches": 17416553,
+   "conflicts": 879508,
+   "peak_rss_mb": 353.93359375
+  }
+ ],
+ "gap-1011": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1299.0905060768127,
+   "requested_seed": 2027109380,
+   "branches": 24386496,
+   "conflicts": 17948528,
+   "peak_rss_mb": 248.47265625
+  }
+ ],
+ "gap-1611": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1927.5790016651154,
+   "requested_seed": 2027113580,
+   "branches": 30883353,
+   "conflicts": 22529021,
+   "peak_rss_mb": 258.58203125
+  }
+ ],
+ "c652-r13-c15-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.5123410224915,
+   "requested_seed": 2027147453,
+   "branches": 14455440,
+   "conflicts": 534819,
+   "peak_rss_mb": 289.51171875
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 9316.987337589264,
+   "requested_seed": 2028147456,
+   "branches": 14258230,
+   "conflicts": 609491,
+   "peak_rss_mb": 314.203125
+  }
+ ],
+ "gap-1041": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2013.4538083076477,
+   "requested_seed": 2027109590,
+   "branches": 24520516,
+   "conflicts": 18150155,
+   "peak_rss_mb": 249.8828125
+  }
+ ],
+ "gap-1642": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2226.6239988803864,
+   "requested_seed": 2027113797,
+   "branches": 26551382,
+   "conflicts": 19206503,
+   "peak_rss_mb": 261.765625
+  }
+ ],
+ "c652-r13-c15-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.073829174042,
+   "requested_seed": 2027147460,
+   "branches": 49697212,
+   "conflicts": 37261653,
+   "peak_rss_mb": 301.9765625
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 2616.3563001155853,
+   "requested_seed": 2028147463,
+   "branches": 9512725,
+   "conflicts": 182601,
+   "peak_rss_mb": 261.1875
+  }
+ ],
+ "gap-1042": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6779.646196126938,
+   "requested_seed": 2027109597,
+   "branches": 59704588,
+   "conflicts": 46582333,
+   "peak_rss_mb": 285.85546875
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 2615.730720758438,
+   "requested_seed": 2028109600,
+   "branches": 9617360,
+   "conflicts": 177250,
+   "peak_rss_mb": 256.98046875
+  }
+ ],
+ "gap-1672": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1545.0829439163208,
+   "requested_seed": 2027114007,
+   "branches": 19794359,
+   "conflicts": 13934860,
+   "peak_rss_mb": 248.05859375
+  }
+ ],
+ "c652-r12-c14-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.052362918854,
+   "requested_seed": 2027146690,
+   "branches": 60219885,
+   "conflicts": 45925884,
+   "peak_rss_mb": 311.80859375
+  }
+ ],
+ "gap-0772": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1914.6501779556274,
+   "requested_seed": 2027107707,
+   "branches": 27750001,
+   "conflicts": 20661321,
+   "peak_rss_mb": 255.67578125
+  }
+ ],
+ "gap-1552": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 11643.475838661194,
+   "requested_seed": 2027113167,
+   "branches": 21332422,
+   "conflicts": 983410,
+   "peak_rss_mb": 317.79296875
+  }
+ ],
+ "c652-r13-c16-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.045766353607,
+   "requested_seed": 2027147523,
+   "branches": 14404311,
+   "conflicts": 711437,
+   "peak_rss_mb": 303.59765625
+  },
+  {
+   "tag": "R2",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 10373.389577150345,
+   "requested_seed": 2028147526,
+   "branches": 18919692,
+   "conflicts": 1251359,
+   "peak_rss_mb": 336.78125
+  }
+ ],
+ "gap-1048": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2239.910056114197,
+   "requested_seed": 2027109639,
+   "branches": 25273483,
+   "conflicts": 18466016,
+   "peak_rss_mb": 265.71875
+  }
+ ],
+ "gap-1851": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 944.4780719280243,
+   "requested_seed": 2027115260,
+   "branches": 16693268,
+   "conflicts": 12210165,
+   "peak_rss_mb": 247.48046875
+  }
+ ],
+ "c652-r14-c17-a1": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 5865.558178186417,
+   "requested_seed": 2027148300,
+   "branches": 56200117,
+   "conflicts": 43708667,
+   "peak_rss_mb": 309.5390625
+  }
+ ],
+ "c652-r14-c16-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.047025680542,
+   "requested_seed": 2027148230,
+   "branches": 59129636,
+   "conflicts": 44703592,
+   "peak_rss_mb": 299.87109375
+  }
+ ],
+ "c652-r13-c17-a1": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 6377.80073595047,
+   "requested_seed": 2027147600,
+   "branches": 60064820,
+   "conflicts": 46666588,
+   "peak_rss_mb": 312.28125
+  }
+ ],
+ "gap-1072": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6980.87097120285,
+   "requested_seed": 2027109807,
+   "branches": 68799050,
+   "conflicts": 53504909,
+   "peak_rss_mb": 304.859375
+  }
+ ],
+ "gap-1876": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 1258.581222295761,
+   "requested_seed": 2027115435,
+   "branches": 19324324,
+   "conflicts": 14413279,
+   "peak_rss_mb": 241.52734375
+  }
+ ],
+ "c652-r16-c17-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.049594640732,
+   "requested_seed": 2027149693,
+   "branches": 13572361,
+   "conflicts": 532380,
+   "peak_rss_mb": 290.38671875
+  }
+ ],
+ "c652-r15-c16-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.0484845638275,
+   "requested_seed": 2027148930,
+   "branches": 63345176,
+   "conflicts": 47930379,
+   "peak_rss_mb": 304.44140625
+  }
+ ],
+ "c652-r14-c16-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.0576803684235,
+   "requested_seed": 2027148223,
+   "branches": 16265307,
+   "conflicts": 767056,
+   "peak_rss_mb": 302.65234375
+  }
+ ],
+ "gap-1107": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 970.1280210018158,
+   "requested_seed": 2027110052,
+   "branches": 15477659,
+   "conflicts": 10335062,
+   "peak_rss_mb": 243.74609375
+  }
+ ],
+ "c652-r14-c15-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.079851865768,
+   "requested_seed": 2027148160,
+   "branches": 16681751,
+   "conflicts": 646563,
+   "peak_rss_mb": 314.40234375
+  }
+ ],
+ "c652-r15-c17-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.928478240967,
+   "requested_seed": 2027148993,
+   "branches": 12600132,
+   "conflicts": 512757,
+   "peak_rss_mb": 289.14453125
+  }
+ ],
+ "c652-r15-c16-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.049191713333,
+   "requested_seed": 2027148923,
+   "branches": 13919280,
+   "conflicts": 534706,
+   "peak_rss_mb": 289.30859375
+  }
+ ],
+ "c652-r13-c16-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.059014797211,
+   "requested_seed": 2027147530,
+   "branches": 54900573,
+   "conflicts": 41259950,
+   "peak_rss_mb": 307.76953125
+  }
+ ],
+ "gap-1066": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 3564.7553062438965,
+   "requested_seed": 2027109765,
+   "branches": 37394548,
+   "conflicts": 28750045,
+   "peak_rss_mb": 266.01953125
+  }
+ ],
+ "gap-1852": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 3833.0727944374084,
+   "requested_seed": 2027115267,
+   "branches": 39061228,
+   "conflicts": 30071179,
+   "peak_rss_mb": 265.85546875
+  }
+ ],
+ "c652-r15-c15-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.051975011826,
+   "requested_seed": 2027148853,
+   "branches": 14334160,
+   "conflicts": 753028,
+   "peak_rss_mb": 312.515625
+  }
+ ],
+ "c652-r14-c14-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.058307170868,
+   "requested_seed": 2027148083,
+   "branches": 60508567,
+   "conflicts": 46403118,
+   "peak_rss_mb": 307.078125
+  }
+ ],
+ "gap-1078": [
+  {
+   "tag": "R1",
+   "status": "INFEASIBLE",
+   "elapsed_seconds": 2536.3515129089355,
+   "requested_seed": 2027109849,
+   "branches": 23983115,
+   "conflicts": 17271722,
+   "peak_rss_mb": 267.67578125
+  }
+ ],
+ "c652-r16-c16-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.038109064102,
+   "requested_seed": 2027149630,
+   "branches": 13978721,
+   "conflicts": 446551,
+   "peak_rss_mb": 297.15625
+  }
+ ],
+ "c652-r15-c15-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.050127983093,
+   "requested_seed": 2027148860,
+   "branches": 14529953,
+   "conflicts": 586620,
+   "peak_rss_mb": 307.3359375
+  }
+ ],
+ "c652-r14-c17-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.067984580994,
+   "requested_seed": 2027148293,
+   "branches": 12146637,
+   "conflicts": 560638,
+   "peak_rss_mb": 294.71484375
+  }
+ ],
+ "c652-r14-c15-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.050506591797,
+   "requested_seed": 2027148153,
+   "branches": 15036002,
+   "conflicts": 561196,
+   "peak_rss_mb": 296.68359375
+  }
+ ],
+ "c652-r16-c16-a0": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6781.058137655258,
+   "requested_seed": 2027149623,
+   "branches": 11915240,
+   "conflicts": 461343,
+   "peak_rss_mb": 291.63671875
+  }
+ ],
+ "c652-r14-c14-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.056424617767,
+   "requested_seed": 2027148090,
+   "branches": 12143910,
+   "conflicts": 463410,
+   "peak_rss_mb": 305.12890625
+  }
+ ],
+ "c652-r15-c17-a1": [
+  {
+   "tag": "R1",
+   "status": "UNKNOWN",
+   "elapsed_seconds": 6780.648610115051,
+   "requested_seed": 2027149000,
+   "branches": 12467560,
+   "conflicts": 425518,
+   "peak_rss_mb": 310.6015625
+  }
+ ]
+}
