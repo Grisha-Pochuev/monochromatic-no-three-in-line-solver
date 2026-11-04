@@ -196,3 +196,5 @@ The exact structure can change as the project grows. The main principle is simpl
 ## About
 
 **The Open Mathematics Project:** step-by-step exact solver and verification archive for the monochromatic no-three-in-line problem on checkerboard grids.
+
+Subscribe to my Telegram blog, where I write about psychology and much more: https://t.me/let_people_dance
